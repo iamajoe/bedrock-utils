@@ -33,17 +33,22 @@ function __TASKS_DEV_install {
     echo "Install: [tasks]"
     # TODO: Cargo will install these automatically
 
+    # Check if bin exists and create it otherwise
     if [ ! -d $2 ]; then
-        mkdir $2
+        mkdir -p $2
     fi
 
     pushd ./modules
     # Install stuff
+    # These will install different modules to a bin folder
     ./rust.sh install $2
     ./node.sh install $2
     ./composer.sh install $2
 
     # Now the configs
+    # These config lines will add PATH to the provided config file
+    # If you want to use ~/.zprofile , ~/.bashrc or ~/.profile comment set_user.sh line,
+    # if not a new file will be included in those profiles and created if needed
     ./set_user.sh config $1 $2
     ./git.sh config $1 $2
     ./node.sh config $1 $2
@@ -54,6 +59,7 @@ function __TASKS_DEV_install {
     popd
 
     # Now resource everything
+    # TODO: Sometimes, still needs to restart the terminal
     source $1
 
     # Make it runnable (no longer a .sh)
