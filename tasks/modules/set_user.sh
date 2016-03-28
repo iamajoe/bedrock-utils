@@ -3,7 +3,7 @@
 # Set sources in user files
 # @param {string} profile_file
 # @param {string} userrc
-function _set_user_source {
+function __USER_set_source {
     if [ -f $1 ]; then
         echo -e '\n##############' >> $1
         echo -e '# User custom \n' >> $1
@@ -13,28 +13,16 @@ function _set_user_source {
     fi
 }
 
-# Configs module in user files for dev
-# @param {string} userrc
-# @param {string} bin
-function __config_user_dev {
-    if [ -z "$USERRCDEVSET" ]; then
-        echo -e '\n##############' >> $1
-        echo -e '# Dev\n' >> $1
-        echo -e "export PATH=\"$2:$PATH\"" >> $1
-        echo -e 'export USERRCDEVSET="set"' >> $1
-    fi
-}
-
 # Configs module in user files
 # @param {string} userrc
 # @param {string} bin
-function __config_user {
+function __USER_config {
     if [ -z "$USERRCSET" ]; then
-        echo "Config User..."
+        echo "Config: [tasks/set_user]"
 
         # Set the config folder
-        if [ ! -d ~/.config ]; then
-            mkdir .config
+        if [ ! -d $(dirname $1) ]; then
+            mkdir -p $(dirname $1)
         fi
 
         if [ ! -f $1 ]; then
@@ -42,15 +30,17 @@ function __config_user {
         fi
 
         # Lets add the source
-        _set_user_source ~/.zshrc $1
-        _set_user_source ~/.bashrc $1
-        _set_user_source ~/.profile $1
+        __USER_set_source ~/.zshrc $1
+        __USER_set_source ~/.bashrc $1
+        __USER_set_source ~/.profile $1
 
         # Set the user file
         echo -e '\n##############' >> $1
         echo -e '# Common\n' >> $1
+        echo -e "export PATH=\"/usr/local/bin:/usr/local/sbin:$2:$PATH\"" >> $1
 
-        echo -e 'export PATH="/usr/local/bin:/usr/local/sbin:$PATH"' >> $1
+        echo -e '\n##############' >> $1
+        echo -e '# Dev\n' >> $1
         echo -e 'export USERRCSET="set"' >> $1
     fi
 }
@@ -61,11 +51,11 @@ function __config_user {
 set -e
 case "$1" in
     'config')
-        __config_user $2 $3
-        __config_user_dev $2 $3
+        __USER_config $2 $3
     ;;
 
     *)
-        echo "Usage: $0 config <userrc> <bin>"
+        echo "Usage: $0 ..."
+        echo "    config <userrc> <bin>      # Configs user"
     ;;
 esac

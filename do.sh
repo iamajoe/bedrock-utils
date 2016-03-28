@@ -2,7 +2,7 @@
 
 # Gets source dirname
 # @return {string}
-function __get_dirname {
+function __get_src_dir {
     local file_src=${BASH_SOURCE[0]}
     local base
 
@@ -15,26 +15,55 @@ function __get_dirname {
     echo $base
 }
 
+# Decides tasks environment
+# @param {string} env
+# @return {string}
+function __PROJECT_decide_env {
+    local build
+
+    # Check type of build
+    if [[ $1 == 'prod' ]]; then
+        build='prod'
+    else
+        build='dev'
+    fi
+
+    echo $build
+}
+
 # Install
-function __install_project {
-    pushd $(__get_dirname)/tasks
-    ./do.sh install "$HOME/.config/userrc" "$HOME/.bin"
-    popd
+function __PROJECT_install {
+    echo "Install: [project]"
+    echo "TODO"
 }
 
 # Build
 # @param {string} env
-function __build_project {
-    pushd $(__get_dirname)/tasks
-    ./do.sh build "$HOME/.bin" $1
+function __PROJECT_build {
+    local build=$(__PROJECT_decide_env $2)
+
+    echo "Build: [project] [$build]"
+
+    pushd $(__get_src_dir)/tasks
+    ./do.sh run "$HOME/.bin" $1
     popd
 }
 
 # Run
 # @param {string} env
-function __run_project {
-    pushd $(__get_dirname)/tasks
-    ./do.sh run "$HOME/.bin" $1
+function __PROJECT_run {
+    local build=$(__PROJECT_decide_env $2)
+
+    echo "Run: [project] [$build]"
+    echo "TODO"
+}
+
+# Task dev
+# @param {string} task
+# @param {string} env
+function __PROJECT_task_dev {
+    pushd $(__get_src_dir)/tasks
+    ./do.sh $1 "$HOME/.config/userrc" "$HOME/.bin" $2
     popd
 }
 
@@ -44,18 +73,27 @@ function __run_project {
 set -e
 case "$1" in
     'install')
-        __install_project
+        __PROJECT_install
     ;;
 
     'build')
-        __build_project $2
+        __PROJECT_build $2
     ;;
 
     'run')
-        __run_project $2
+        __PROJECT_run $2
+    ;;
+
+    'task')
+        __PROJECT_task_dev $2 $3
     ;;
 
     *)
-        echo "Usage: $0 install|build [prod]|run [prod]"
+        echo "Usage: $0 ..."
+        echo "    install                        # Install dependencies"
+        echo "    build [prod]                   # Build project in env"
+        echo "    run [prod]                     # Run project"
+        echo "    -------------------------"
+        echo "    task build [prod]              # Builds tasks to be used in build "
     ;;
 esac

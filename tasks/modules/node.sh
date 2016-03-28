@@ -1,25 +1,50 @@
 #!/bin/bash
 
-# Check if user has node
-function __has_node {
+# Check if user has module
+# @param {string} bin
+function __NODE_exist {
     if hash node 2>/dev/null; then
         echo "true"
-    elif [ -d ~/.bin/nvm ]; then
+    elif [ -d "$1/nvm" ]; then
         echo "true"
     else
         echo "false"
     fi
 }
 
-# Install module
-function __install_node {
-    # Finally lets download module
-    if [[ $(__has_node) != "true" ]]; then
-        # Get
-        if [ ! -d ~/.bin/nvm ]; then
-            git clone https://github.com/creationix/nvm.git ~/.bin/nvm
+# Configs module in user files
+# @param {string} userrc
+# @param {string} bin
+function __NODE_config {
+    if [ -z "$NODEISSETINRC" ] && [[ $(__NODE_exist $2) == "true" ]]; then
+        echo "Config: [tasks/node]"
 
-            pushd ~/.bin/nvm
+        # Set npm file
+        # TODO: Provide this to nvm
+        # touch ~/.config/npmrc
+        # echo -e "email=$2" >> ~/.config/npmrc
+
+        # Now add the export
+        echo -e '\n# NODE.js' >> $1
+        # echo -e 'export PATH=~/.bin/npm/bin:$PATH' >> $1
+        echo -e 'export NVM_DIR="$2/nvm"' >> $1
+        echo -e '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> $1
+        echo -e 'export NODEISSETINRC="set"' >> $1
+    fi
+}
+
+# Install module
+# @param {string} bin
+function __NODE_install {
+    # Finally lets download module
+    if [[ $(__NODE_exist $1) != "true" ]]; then
+        # Get
+        if [ ! -d "$1/nvm" ]; then
+            echo "Install: [tasks/node]"
+
+            git clone https://github.com/creationix/nvm.git "$1/nvm"
+
+            pushd "$1/nvm"
             git checkout `git describe --abbrev=0 --tags`
             source nvm.sh
             popd
@@ -31,43 +56,27 @@ function __install_node {
     fi
 }
 
-# Configs node in user files
-function __config_node {
-    if [ -z "$NODEISSETINRC" ] && [[ $(__has_node) == "true" ]]; then
-        echo "Config NODE.js..."
-
-        # Set npm file
-        # TODO: Provide this to nvm
-        # touch ~/.config/npmrc
-        # echo -e "email=$2" >> ~/.config/npmrc
-
-        # Now add the export
-        echo -e '\n# NODE.js' >> $1
-        echo -e 'export PATH=~/.bin/npm/bin:$PATH' >> $1
-        echo -e 'export NVM_DIR="$HOME/.bin/nvm"' >> $1
-        echo -e '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> $1
-        echo -e 'export NODEISSETINRC="set"' >> $1
-    fi
-}
-
 #################################
 # Argument case!
 
 set -e
 case "$1" in
-    'has')
-        __has_node
+    'exist')
+        __NODE_exist $2
     ;;
 
     'config')
-        __config_node $2
+        __NODE_config $2 $3
     ;;
 
     'install')
-        __install_node $2
+        __NODE_install $2
     ;;
 
     *)
-        echo "Usage: $0 has|config <userrc>|install <path>"
+        echo "Usage: $0 ..."
+        echo "    exist <bin>                # Check if Node exists in the system"
+        echo "    config <userrc> <bin>      # Configs Node"
+        echo "    install <bin>              # Installs Node"
     ;;
 esac

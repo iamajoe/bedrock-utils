@@ -1,17 +1,43 @@
 #!/bin/bash
 
-# Install
+# Decides tasks environment
+# @param {string} env
+# @return {string}
+function __TASKS_decide_env {
+    local build
+
+    # Check type of build
+    if [[ $1 == 'prod' ]]; then
+        build='prod'
+    else
+        build='dev'
+    fi
+
+    echo $build
+}
+
+# Runs tasks
+# @param {string} bin
+# @param {string} env
+function __TASKS_run {
+    local build=$(__TASKS_decide_env $2)
+
+    echo "Run: [tasks] [$build]"
+    echo "TODO"
+}
+
+# Install tasks dependencies for dev
 # @param {string} userrc
 # @param {string} bin
-function __install_project {
-    echo "Installing dependencies..."
+function __TASKS_DEV_install {
+    echo "Install: [tasks]"
     # TODO: Cargo will install these automatically
 
     if [ ! -d $2 ]; then
         mkdir $2
     fi
 
-    pushd modules
+    pushd ./modules
     # Install stuff
     ./rust.sh install $2
     ./node.sh install $2
@@ -36,42 +62,16 @@ function __install_project {
     echo -e "\nIt is better for you to restart the terminal!"
 }
 
-# Build
+# Builds tasks for dev
 # @param {string} bin
 # @param {string} env
-function __build_project {
-    local build
+function __TASKS_DEV_build {
+    local build=$(__TASKS_decide_env $2)
 
-    # Check type of build
-    if [[ $2 == 'prod' ]]; then
-        build='prod'
-    else
-        build='dev'
-    fi
+    echo "Build tasks: [$build]"
 
-    echo "Building $build..."
-
-    # Build rust
-    modules/rust.sh build $1 $build
-}
-
-# Run
-# @param {string} bin
-# @param {string} env
-function __run_project {
-    local build
-
-    # Check type of build
-    if [[ $2 == 'prod' ]]; then
-        build='prod'
-    else
-        build='dev'
-    fi
-
-    echo "Running $build..."
-
-    # Run rust
-    modules/rust.sh run $1 $build
+    # Build tasks now
+    ./modules/rust.sh build $1 $build
 }
 
 #################################
@@ -79,19 +79,18 @@ function __run_project {
 
 set -e
 case "$1" in
-    'install')
-        __install_project $2 $3
+    'run')
+        __TASKS_run $2 $3
     ;;
 
     'build')
-        __build_project $2 $3
-    ;;
-
-    'run')
-        __run_project $2 $3
+        __TASKS_DEV_install $2 $3
+        __TASKS_DEV_build $3 $4
     ;;
 
     *)
-        echo "Usage: $0 install <userrc> <bin>|build <bin> [prod]|run <bin> [prod]"
+        echo "Usage: $0 ..."
+        echo "    run <bin> [prod]                 # Runs tasks"
+        echo "    build <userrc> <bin> [prod]      # Builds tasks"
     ;;
 esac

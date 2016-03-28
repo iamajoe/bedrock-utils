@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Check if user has git
-function __has_git {
+# Check if user has module
+# @param {string} bin
+function __GIT_exist {
     if hash git 2>/dev/null; then
         echo "true"
     else
@@ -10,11 +11,13 @@ function __has_git {
 }
 
 # Configs module in user files
-function __config_git {
+# @param {string} userrc
+# @param {string} bin
+function __GIT_config {
     if [ -z "$GITISSETINRC" ]; then
         local ignore_global
 
-        echo "Config Git..."
+        echo "Config: [tasks/git]"
 
         # Now add the export
         echo -e '\n# Git' >> $1
@@ -30,11 +33,11 @@ function __config_git {
         echo -e 'export GITISSETINRC="set"' >> $1
 
         # Create gitignore_global
-        ignore_global=$(dirname $1)/gitignore_global
-        if [ ! -f ignore_global ]; then
-            touch ignore_global
+        ignore_global="$(dirname $1)/gitignore_global"
+        if [ ! -f $ignore_global ]; then
+            touch $ignore_global
             if [[ `uname` == 'Darwin' ]]; then
-                echo -e '.DS_Store' >> ignore_global
+                echo -e '.DS_Store' >> $ignore_global
             fi
         fi
 
@@ -58,15 +61,17 @@ function __config_git {
 
 set -e
 case "$1" in
-    'has')
-        __has_git
+    'exist')
+        __GIT_exist $2
     ;;
 
     'config')
-        __config_git $2
+        __GIT_config $2 $3
     ;;
 
     *)
-        echo "Usage: $0 has|config <userrc>"
+        echo "Usage: $0 ..."
+        echo "    exist <bin>                # Check if Git exists in the system"
+        echo "    config <userrc> <bin>      # Configs Git"
     ;;
 esac

@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Check if user has module
-function __has_brew {
-    if hash brew 2>/dev/null; then
+# @param {string} bin
+function __BREW_exist {
+    if [[ `uname` != 'Darwin' ]]; then
+        echo "false"
+    elif hash brew 2>/dev/null; then
         echo "true"
     else
         echo "false"
@@ -10,9 +13,11 @@ function __has_brew {
 }
 
 # Configs module in user files
-function __config_brew {
-    if [[ `uname` == 'Darwin' ]] && [ -z "$BREWISSETINRC" ] && [[ $(__has_brew) == "true" ]]; then
-        echo "Config Brew..."
+# @param {string} userrc
+# @param {string} bin
+function __BREW_config {
+    if [ -z "$BREWISSETINRC" ] && [[ $(__BREW_exist $2) == "true" ]]; then
+        echo "Config: [tasks/brew]"
 
         # Now add the export
         echo -e '\n# Brew' >> $1
@@ -26,15 +31,17 @@ function __config_brew {
 
 set -e
 case "$1" in
-    'has')
-        __has_brew
+    'exist')
+        __BREW_exist $2
     ;;
 
     'config')
-        __config_brew $2
+        __BREW_config $2 $3
     ;;
 
     *)
-        echo "Usage: $0 has|config <userrc>"
+        echo "Usage: $0 ..."
+        echo "    exist <bin>                # Check if Brew exists in the system"
+        echo "    config <userrc> <bin>      # Configs Brew"
     ;;
 esac

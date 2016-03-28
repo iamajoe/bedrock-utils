@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Check if user has docker
-function __has_docker {
+# Check if user has module
+# @param {string} bin
+function __DOCKER_exist {
     if hash docker-machine 2>/dev/null; then
         echo "true"
     else
@@ -9,10 +10,12 @@ function __has_docker {
     fi
 }
 
-# Configs docker in user files
-function __config_docker {
-    if [ -z "$DOCKERISSETINRC" ] && [[ $(__has_docker) == "true" ]]; then
-        echo "Config Docker..."
+# Configs module in user files
+# @param {string} userrc
+# @param {string} bin
+function __DOCKER_config {
+    if [ -z "$DOCKERISSETINRC" ] && [[ $(__DOCKER_exist $2) == "true" ]]; then
+        echo "Config: [tasks/docker]"
 
         # Now add the export
         echo -e '\n# Docker' >> $1
@@ -26,15 +29,17 @@ function __config_docker {
 
 set -e
 case "$1" in
-    'has')
-        __has_docker
+    'exist')
+        __DOCKER_exist $2
     ;;
 
     'config')
-        __config_docker $2
+        __DOCKER_config $2 $3
     ;;
 
     *)
-        echo "Usage: $0 has|config <userrc>"
+        echo "Usage: $0 ..."
+        echo "    exist <bin>                # Check if Docker exists in the system"
+        echo "    config <userrc> <bin>      # Configs Docker"
     ;;
 esac
