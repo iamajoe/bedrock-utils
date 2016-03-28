@@ -1,83 +1,92 @@
 #!/bin/bash
 
-# Decides tasks environment
-# @param {string} env
+# Gets source dirname
 # @return {string}
-function __TASKS_decide_env {
-    local build
+function __get_src_dir {
+    local file_src=${BASH_SOURCE[0]}
+    local base
 
-    # Check type of build
-    if [[ $1 == 'prod' ]]; then
-        build='prod'
+    if [ -h $file_src ]; then
+        base=$(dirname $(readlink $file_src))
     else
-        build='dev'
+        base=$(dirname $file_src)
     fi
 
-    echo $build
+    echo $base
 }
 
 # Runs tasks
-# @param {string} bin
 # @param {string} env
+# @param {string} bin
 function __TASKS_run {
-    local build=$(__TASKS_decide_env $2)
+    local bin="debug"
 
-    echo "Run: [tasks] [$build]"
-    echo "TODO"
+    if [[ $1 == 'prod' ]]; then
+        bin="release"
+    fi
+
+    echo "Run: [tasks] [$1]"
+
+    # Run tasks now
+    # TODO: Remove this, only here for test purposes
+    ./src/test/target/$bin/main
+    # ./src/minify/$bin/main
 }
 
 # Install tasks dependencies for dev
-# @param {string} userrc
 # @param {string} bin
+# @param {string} userrc
 function __TASKS_DEV_install {
     echo "Install: [tasks]"
     # TODO: Cargo will install these automatically
 
     # Check if bin exists and create it otherwise
-    if [ ! -d $2 ]; then
-        mkdir -p $2
+    if [ ! -d $1 ]; then
+        mkdir -p $1
     fi
 
-    pushd ./modules
     # Install stuff
     # These will install different modules to a bin folder
-    ./rust.sh install $2
-    ./node.sh install $2
-    ./composer.sh install $2
+    ./modules/rust.sh install $1
+    ./modules/node.sh install $1
+    ./modules/composer.sh install $1
 
     # Now the configs
     # These config lines will add PATH to the provided config file
     # If you want to use ~/.zprofile , ~/.bashrc or ~/.profile comment set_user.sh line,
     # if not a new file will be included in those profiles and created if needed
-    ./set_user.sh config $1 $2
-    ./git.sh config $1 $2
-    ./node.sh config $1 $2
-    ./rust.sh config $1 $2
-    ./docker.sh config $1 $2
-    ./brew.sh config $1 $2
-    ./composer.sh config $1 $2
-    popd
+    ./modules/set_user.sh config $2 $1
+    ./modules/git.sh config $2 $1
+    ./modules/node.sh config $2 $1
+    ./modules/rust.sh config $2 $1
+    ./modules/docker.sh config $2 $1
+    ./modules/brew.sh config $2 $1
+    ./modules/composer.sh config $2 $1
 
-    # Now resource everything
-    # TODO: Sometimes, still needs to restart the terminal
-    source $1
+    # Reload config source file
+    source $2
 
     # Make it runnable (no longer a .sh)
     # chmod a=r+w+x $1
-
-    echo -e "\nIt is better for you to restart the terminal!"
 }
 
 # Builds tasks for dev
-# @param {string} bin
 # @param {string} env
+# @param {string} bin
 function __TASKS_DEV_build {
-    local build=$(__TASKS_decide_env $2)
+    local rust_sh="../../modules/rust.sh"
+    local build=$(__get_src_dir)"/build.json"
 
-    echo "Build tasks: [$build]"
+    echo "Build: [tasks] [$1]"
+    echo $build
 
     # Build tasks now
-    ./modules/rust.sh build $1 $build
+    # pushd ./src/test
+    # $rust_sh build $1 $2 $build
+    # popd
+    # pushd ./src/minifyjs
+    # $rust_sh build $1 $2
+    # popd
 }
 
 #################################
@@ -90,13 +99,13 @@ case "$1" in
     ;;
 
     'build')
-        __TASKS_DEV_install $2 $3
-        __TASKS_DEV_build $3 $4
+        __TASKS_DEV_install $4 $3
+        __TASKS_DEV_build $2 $4
     ;;
 
     *)
         echo "Usage: $0 ..."
-        echo "    run <bin> [prod]                 # Runs tasks"
-        echo "    build <userrc> <bin> [prod]      # Builds tasks"
+        echo "    run <prod|dev> <bin>                 # Runs tasks"
+        echo "    build <prod|dev> <userrc> <bin>      # Builds tasks"
     ;;
 esac

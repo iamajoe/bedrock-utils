@@ -5,7 +5,7 @@
 function __COMPOSER_exist {
     if hash composer 2>/dev/null; then
         echo "true"
-    elif [ -d "$1/composer" ]; then
+    elif [ -f "$1/composer" ]; then
         echo "true"
     else
         echo "false"

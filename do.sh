@@ -40,30 +40,31 @@ function __PROJECT_install {
 # Build
 # @param {string} env
 function __PROJECT_build {
-    local build=$(__PROJECT_decide_env $2)
+    local build=$(__PROJECT_decide_env $1)
 
     echo "Build: [project] [$build]"
 
     pushd $(__get_src_dir)/tasks
-    ./do.sh run "$HOME/.bin" $1
+    ./do.sh run $build "$HOME/.bin"
     popd
 }
 
 # Run
 # @param {string} env
 function __PROJECT_run {
-    local build=$(__PROJECT_decide_env $2)
+    local build=$(__PROJECT_decide_env $1)
 
-    echo "Run: [project] [$build]"
+    echo "Run: [project]"
     echo "TODO"
 }
 
 # Task dev
-# @param {string} task
 # @param {string} env
-function __PROJECT_task_dev {
+function __PROJECT_task_dev_build {
+    local build=$(__PROJECT_decide_env $1)
+
     pushd $(__get_src_dir)/tasks
-    ./do.sh $1 "$HOME/.config/userrc" "$HOME/.bin" $2
+    ./do.sh build $build "$HOME/.config/userrc" "$HOME/.bin"
     popd
 }
 
@@ -85,7 +86,7 @@ case "$1" in
     ;;
 
     'task')
-        __PROJECT_task_dev $2 $3
+        __PROJECT_task_dev_build $3
     ;;
 
     *)

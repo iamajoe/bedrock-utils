@@ -1,0 +1,47 @@
+{
+    "FirstName": "John",
+    "LastName": "Doe",
+    "Age": 43,
+    "Address": {
+        "Street": "Downing Street 10",
+        "City": "London",
+        "Country": "Great Britain"
+    },
+    "PhoneNumbers": [
+        "+44 1234567",
+        "+44 2345678"
+    ],
+
+    "prod": {
+        "js": {
+            "src": "",
+            "build": "build/app.js",
+            "packages": [
+                "minifyjs", "uglify"
+            ]
+        },
+        "css": {
+            "src": "",
+            "build": "build/app.css",
+            "packages": [
+                "sass", "autoprefixer", "minifycss"
+            ]
+        }
+    },
+    "dev": {
+        "js": {
+            "src": "",
+            "build": "build/app.js",
+            "packages": [
+                "minifyjs", "uglify"
+            ]
+        },
+        "css": {
+            "src": "",
+            "build": "build/app.css",
+            "packages": [
+                "sass", "autoprefixer", "minifycss"
+            ]
+        }
+    }
+}

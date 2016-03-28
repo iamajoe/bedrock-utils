@@ -1,0 +1,11 @@
+[package]
+name = "minifyjs"
+version = "0.0.1"
+authors = ["Joel Santos <joel@sendoushi.com>"]
+description = "Minify js"
+publish = false
+
+[[bin]]
+
+name = "minifyjs"
+path = "main.rs"

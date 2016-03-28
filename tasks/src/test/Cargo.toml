@@ -1,8 +1,13 @@
 [package]
-name = "main"
+name = "test"
 version = "0.0.1"
 authors = ["Your Name <you@example.com>"]
 description = "Just a tmp build"
-exclude = ["*"]
-include = ["src/**/*"]
 publish = false
+
+[[bin]]
+name = "test"
+path = "main.rs"
+
+[dependencies]
+rustc-serialize = "*"

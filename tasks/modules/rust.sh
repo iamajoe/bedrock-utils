@@ -9,7 +9,7 @@ function __RUST_get_cargo {
     if hash cargo 2>/dev/null; then
         cargo_bin="cargo"
     else
-        cargo_bin="$1/rust/bin/cargo"
+        cargo_bin="$1/multirust/bin/cargo"
     fi
 
     echo $cargo_bin
@@ -20,7 +20,7 @@ function __RUST_get_cargo {
 function __RUST_exist {
     if hash rustc 2>/dev/null; then
         echo "true"
-    elif [ -d "$1/rust" ]; then
+    elif [ -d "$1/multirust" ]; then
         echo "true"
     else
         echo "false"
@@ -65,33 +65,19 @@ function __RUST_install {
 }
 
 # Build module project
-# @param {string} bin
 # @param {string} env
+# @param {string} bin
+# @param {string} data
 function __RUST_build {
-    local cargo_bin=$(__RUST_get_cargo $1)
+    local cargo_bin=$(__RUST_get_cargo $2)
 
-    echo "Build: [tasks/rust] [$2]"
+    echo "Build: [tasks/rust] [$1]"
 
     # Or maybe not yet
-    if [[ '$2' == 'prod' ]]; then
+    if [[ '$1' == 'prod' ]]; then
         $cargo_bin build --release --verbose
     else
         $cargo_bin build --verbose
-    fi
-}
-
-# Run module project
-# @param {string} bin
-# @param {string} env
-function __RUST_run {
-    local cargo_bin=$(__RUST_get_cargo $1)
-
-    echo "Run: [tasks/rust] [$1]"
-
-    if [[ '$1' == 'prod' ]]; then
-        $cargo_bin run --release
-    else
-        $cargo_bin run
     fi
 }
 
@@ -116,16 +102,11 @@ case "$1" in
         __RUST_build $2 $3
     ;;
 
-    'run')
-        __RUST_run $2 $3
-    ;;
-
     *)
         echo "Usage: $0 ..."
-        echo "    exist <bin>                # Check if Rust exists in the system"
-        echo "    config <userrc> <bin>      # Configs Rust"
-        echo "    install <bin>              # Installs Rust"
-        echo "    build <bin> <prod|dev>     # Builds Rust project"
-        echo "    run <bin> <prod|dev>       # Runs Rust project"
+        echo "    exist <bin>                       # Check if Rust exists in the system"
+        echo "    config <userrc> <bin>             # Configs Rust"
+        echo "    install <bin>                     # Installs Rust"
+        echo "    build <prod|dev> <bin> <data>     # Builds Rust project"
     ;;
 esac
