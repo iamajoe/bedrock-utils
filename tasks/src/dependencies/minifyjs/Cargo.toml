@@ -5,7 +5,6 @@ authors = ["Joel Santos <joel@sendoushi.com>"]
 description = "Minify js"
 publish = false
 
-[[bin]]
-
+[lib]
 name = "minifyjs"
 path = "main.rs"

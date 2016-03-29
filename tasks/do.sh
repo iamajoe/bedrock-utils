@@ -28,9 +28,7 @@ function __TASKS_run {
     echo "Run: [tasks] [$1]"
 
     # Run tasks now
-    # TODO: Remove this, only here for test purposes
-    ./src/test/target/$bin/main
-    # ./src/minify/$bin/main
+    ./src/target/$bin/task_build
 }
 
 # Install tasks dependencies for dev
@@ -74,19 +72,12 @@ function __TASKS_DEV_install {
 # @param {string} env
 # @param {string} bin
 function __TASKS_DEV_build {
-    local rust_sh="../../modules/rust.sh"
-    local build=$(__get_src_dir)"/build.json"
-
     echo "Build: [tasks] [$1]"
-    echo $build
 
     # Build tasks now
-    # pushd ./src/test
-    # $rust_sh build $1 $2 $build
-    # popd
-    # pushd ./src/minifyjs
-    # $rust_sh build $1 $2
-    # popd
+    pushd ./src
+    ../modules/rust.sh build $1 $2 $build
+    popd
 }
 
 #################################

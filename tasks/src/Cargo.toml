@@ -1,0 +1,13 @@
+[package]
+name = "task_build"
+version = "0.0.1"
+authors = ["Joel Santos <joel@sendoushi.com>"]
+publish = false
+
+[[bin]]
+name = "task_build"
+path = "main.rs"
+
+[dependencies]
+rustc-serialize = "*"
+minifyjs = { path = "dependencies/minifyjs" }
