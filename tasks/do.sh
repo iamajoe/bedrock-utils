@@ -95,7 +95,9 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    run <prod|dev> <bin>                 # Runs tasks"
         echo "    build <prod|dev> <userrc> <bin>      # Builds tasks"
     ;;

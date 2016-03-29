@@ -90,11 +90,16 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    install                        # Install dependencies"
         echo "    build [prod]                   # Build project in env"
-        echo "    run [prod]                     # Run project"
-        echo "    -------------------------"
+        echo "    run [prod]                     # Run project in env"
+        echo ""
+        echo "    ---------------------------"
+        echo "    # For task developers..."
+        echo ""
         echo "    task build [prod]              # Builds tasks to be used in build "
     ;;
 esac

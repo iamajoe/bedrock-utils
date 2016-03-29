@@ -60,7 +60,9 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    exist <bin>                # Check if Composer exists in the system"
         echo "    config <userrc> <bin>      # Configs Composer"
         echo "    install <bin>              # Installs Composer"

@@ -30,9 +30,17 @@ function __USER_config {
         fi
 
         # Lets add the source
-        __USER_set_source ~/.zshrc $1
-        __USER_set_source ~/.bashrc $1
-        __USER_set_source ~/.profile $1
+        if [[ "~/.zshrc" != "$1" ]] && [[ "$HOME/.zshrc" != "$1" ]]; then
+            __USER_set_source ~/.zshrc $1
+        elif [[ "~/.bashrc" != "$1" ]] && [[ "$HOME/.bashrc" != "$1" ]]; then
+            __USER_set_source ~/.bashrc $1
+        elif [[ "~/.profile" != "$1" ]] && [[ "$HOME/.profile" != "$1" ]]; then
+            __USER_set_source ~/.profile $1
+        else
+            __USER_set_source ~/.zshrc $1
+            __USER_set_source ~/.bashrc $1
+            __USER_set_source ~/.profile $1
+        fi
 
         # Set the user file
         echo -e '\n##############' >> $1
@@ -55,7 +63,9 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    config <userrc> <bin>      # Configs user"
     ;;
 esac

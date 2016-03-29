@@ -74,7 +74,9 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    exist <bin>                # Check if Node exists in the system"
         echo "    config <userrc> <bin>      # Configs Node"
         echo "    install <bin>              # Installs Node"

@@ -67,14 +67,13 @@ function __RUST_install {
 # Build module project
 # @param {string} env
 # @param {string} bin
-# @param {string} data
 function __RUST_build {
     local cargo_bin=$(__RUST_get_cargo $2)
 
     echo "Build: [tasks/rust] [$1]"
 
     # Or maybe not yet
-    if [[ '$1' == 'prod' ]]; then
+    if [[ "$1" == 'prod' ]]; then
         $cargo_bin build --release --verbose
     else
         $cargo_bin build --verbose
@@ -103,10 +102,12 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    exist <bin>                       # Check if Rust exists in the system"
         echo "    config <userrc> <bin>             # Configs Rust"
         echo "    install <bin>                     # Installs Rust"
-        echo "    build <prod|dev> <bin> <data>     # Builds Rust project"
+        echo "    build <prod|dev> <bin>            # Builds Rust project"
     ;;
 esac

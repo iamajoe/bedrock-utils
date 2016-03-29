@@ -70,7 +70,9 @@ case "$1" in
     ;;
 
     *)
+        echo ""
         echo "Usage: $0 ..."
+        echo ""
         echo "    exist <bin>                # Check if Git exists in the system"
         echo "    config <userrc> <bin>      # Configs Git"
     ;;
