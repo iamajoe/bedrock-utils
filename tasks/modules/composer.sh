@@ -21,6 +21,7 @@ function __COMPOSER_config {
 
         # Now add the export
         echo -e '\n# Composer' >> $1
+        echo -e 'alias composer="$2/composer' >> $1
         echo -e 'export COMPOSERISSETINRC="set"' >> $1
     fi
 }
