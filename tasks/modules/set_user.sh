@@ -7,7 +7,7 @@ function __USER_set_source {
     if [ -f $1 ]; then
         echo -e '\n##############' >> $1
         echo -e '# User custom \n' >> $1
-        echo -e 'if [ -z "$USERRCSET" ] && [ -f $1 ]; then' >> $1
+        echo -e "if [ -z \"$USERRCSET\" ] && [ -f $1 ]; then" >> $1
         echo -e "  . $2" >> $1
         echo -e 'fi' >> $1
     fi
