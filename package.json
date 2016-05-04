@@ -2,11 +2,9 @@
   "name": "bedrock_utils",
   "version": "0.0.1",
   "scripts": {
-    "init": ".run/do.sh tmp_redmine init",
     "start": ".run/do.sh tmp_redmine run",
     "stop": ".run/do.sh tmp_redmine stop",
     "destroy": ".run/do.sh tmp_redmine destroy",
-    "vagrant-reload": "pushd .run/tasks; vagrant reload --provision; popd",
     "vagrant-ssh": "pushd .run/tasks; vagrant ssh; popd"
   }
 }
