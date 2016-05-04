@@ -57,8 +57,8 @@ function __TASKS_DEV_install {
     ./modules/git.sh config $2 $1
     ./modules/node.sh config $2 $1
     ./modules/rust.sh config $2 $1
-    ./modules/docker.sh config $2 $1
-    ./modules/brew.sh config $2 $1
+    # ./modules/docker.sh config $2 $1
+    # ./modules/brew.sh config $2 $1
     ./modules/composer.sh config $2 $1
 
     # Reload config source file
