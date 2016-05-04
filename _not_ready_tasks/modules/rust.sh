@@ -36,7 +36,7 @@ function __RUST_config {
 
         # Now add the export
         echo -e '\n# Rust' >> $1
-        echo -e "export PATH=$2/multirust/bin:$PATH" >> $1
+        echo -e "export PATH=$2/multirust/bin:"'$PATH' >> $1
         echo -e 'export RUSTISSETINRC="set"' >> $1
     fi
 }

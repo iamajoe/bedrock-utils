@@ -26,9 +26,9 @@ function __NODE_config {
 
         # Now add the export
         echo -e '\n# NODE.js' >> $1
-        # echo -e 'export PATH=~/.bin/npm/bin:$PATH' >> $1
         echo -e "export NVM_DIR=\"$2/nvm\"" >> $1
         echo -e '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> $1
+        echo -e 'export PATH=$NVM_DIR/versions/node/*/bin:$PATH' >> $1
         echo -e 'export NODEISSETINRC="set"' >> $1
     fi
 }
