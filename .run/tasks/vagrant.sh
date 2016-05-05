@@ -39,8 +39,12 @@ function __VAGRANT_exist {
 # @param {string} action
 # @param {string} arg1
 # @param {string} arg2
+# @param {string} private_ip
+# @param {string} public_ip
 function __VAGRANT_project {
-    export VAGRANT_IP="192.168.33.11"
+    export VAGRANT_IP=$5
+    export VAGRANT_PUBLIC_IP=$6
+
     export VAGRANT_PROJECT_SRC=".run/do.sh"
     export VAGRANT_PROJECT_NAME=$1
 
@@ -78,5 +82,5 @@ function __VAGRANT_project {
 # Argument case!
 
 pushd $(__get_src_dir)
-__VAGRANT_project $1 $2 $3 $4
+__VAGRANT_project $1 $2 $3 $4 $5 $6
 popd

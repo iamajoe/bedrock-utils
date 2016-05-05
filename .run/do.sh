@@ -173,7 +173,7 @@ echo " "
 
 if [[ `uname` != 'Linux' ]]; then
     # Non-linux needs vagrant to run docker
-    ./tasks/vagrant.sh $1 $2 $3 $4
+    ./tasks/vagrant.sh $1 $2 $3 $4 $5 $6
 else
     __PROJECT $1 $2 $3 $4
 fi
