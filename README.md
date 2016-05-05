@@ -1,25 +1,37 @@
-# Bedrock Frontend Utils
+# Bedrock Utils
 
-The idea for this repository is to have a mix of utils to use in frontend environment.
+The idea for this repository is to have a mix of utils to use when developing a project.
 
 #### Common argument explanation
 
+* `<name>` - Name of the project in snake case. It is required
 * `[prod]` - Environment. Default will be set to `dev`
 
 ## Tasks
 
-These are tasks related to the project.
+#### Linux
+
+##### Requirements
+* [Docker](https://www.docker.com/)
+
+##### CLI
 
 ```
-./do.sh install                        # Install dependencies"
-./do.sh build [prod]                   # Build project in env"
-./do.sh run [prod]                     # Run project in env"
+.run/do.sh <name> init                 # Initializes project and its dependencies"
+.run/do.sh <name> run                  # Run project"
+.run/do.sh <name> stop                 # Stops project"
+.run/do.sh <name> destroy              # Destroy dev environment data"
 ```
 
-#### Tasks dev
+#### Windows / OSX
 
-This will build the tasks but it will also install a new set of depencies like for example node and rust.
+##### Requirements
+* [Vagrant](https://www.vagrantup.com/)
+* [NodeJS](http://nodejs.org/)
 
 ```
-./do.sh task build [prod]              # Builds tasks to be used in build "
+npm run start                # Initializes project and its dependencies and runs it"
+npm run stop                 # Stops project"
+npm run destroy              # Destroy dev environment data"
+npm run vagrant-ssh          # Enters vagrant-ssh"
 ```
