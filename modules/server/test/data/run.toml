@@ -1,0 +1,9 @@
+[server]
+name = "Foo"
+mysql = true
+nginx = true
+redmine = false
+initial-db = "/foo/bar"
+mock-db = "/foo/bar"
+vagrant-ip = "192.168.33.11"
+vagrant-public-ip = "192.168.2.100"
