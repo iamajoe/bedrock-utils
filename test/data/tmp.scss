@@ -18,6 +18,8 @@ $bar: 12px;
 }
 
 .another-class {
+    display: flex;
     color: $foo;
     padding: $bar;
+    transition: animation 0.3s ease-out;
 }

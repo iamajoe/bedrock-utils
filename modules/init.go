@@ -9,6 +9,9 @@ import (
 // ---------------------------------
 // Vars
 
+// CmdDir folder of the cmd
+var CmdDir, _ = filepath.Abs(filepath.Dir(os.Args[0]))
+
 // ---------------------------------
 // Public functions
 

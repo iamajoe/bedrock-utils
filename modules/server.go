@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"unsafe"
 )
 
 // ---------------------------------
@@ -9,22 +10,33 @@ import (
 
 // ServerStruct struct for the project
 type ServerStruct struct {
-	VagrantIP       string `toml:"vagrant_ip"`
-	VagrantPublicIP string `toml:"vagrant_public_ip"`
-	Container       []ServerContainerStruct
-	Order           int
-	Env             string
-	Sys             string
+	Php       ServerPhpStruct
+	Container []ServerContainerStruct
+	Order     int
+	Env       string
+	Sys       string
+}
+
+// ServerPhpStruct struct for the php server
+type ServerPhpStruct struct {
+	Public string
+	Port   int
 }
 
 // ServerContainerStruct struct for the container
 type ServerContainerStruct struct {
-	Name      string
-	Type      string
-	Port      int
-	Sleep     int
-	InitialDb string `toml:"initial_db"`
-	MockDb    string `toml:"mock_db"`
+	Name    string
+	Type    string
+	Port    int
+	Sleep   int
+	Options ServerContainerOptionsStruct
+}
+
+// ServerContainerOptionsStruct struct for the container options
+type ServerContainerOptionsStruct struct {
+	Public  string
+	Initial string
+	Mock    string
 }
 
 // ---------------------------------
@@ -71,6 +83,23 @@ func ServerInit(server ServerStruct) (log string, err error) {
 
 // ServerUp sets the server up
 func ServerUp(server ServerStruct) (log string, err error) {
+	// Check if it is just a php
+	if unsafe.Sizeof(server.Php) != 0 {
+		public := server.Php.Public
+		port := server.Php.Port
+
+		if port == 0 {
+			port = 8000
+		}
+
+		log, err = RawCommand(RawStruct{
+			Command: "php",
+			Args:    []string{"-S", "localhost:" + string(port), "-t", public},
+		})
+
+		return log, err
+	}
+
 	return "", errors.New("Sorry. This feature isn't available yet")
 }
 

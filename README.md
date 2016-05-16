@@ -35,99 +35,61 @@ The idea for this repository is to have a mix of utils to use when developing a 
 This repo relies on usage of `*.toml` files. Below I try to explain the best I can how to.
 
 ### Config file parameters
-#### Max of task order 
-You should set the minimum here for better performance
 ```toml
-max_order = 30 # defaults to 30
-```
+max_order = 30 # defaults to 30. set the minimum here for better performance
 
-#### Modules:
-##### Usage (with defaults):
-```toml
-[[<name>]]
-source = ""
-destination = ""
+# General explanation of modules parameters:
+#    [[<name>]] or [<name>]
+#    order = 0 # order in which the module should run
+#    env = "dev|prod|both" # decide on which type of environment it should run
+#    sys = "windows|darwin|linux|freesbd|all" # decide on which system it should run
+
+# Modules parameters with defaults:
+# Copy file / folder / glob
+[[copy]]
+source = "" # required
+destination = "" # required
 ignore = ""
 order = 0
-env = "both"
+env = "dev"
 sys = "all"
 
-# In case of server module, it can't be an array so you should use:
-[server]
-...
-```
-
-###### Source file / glob:
-```toml
-source = "<path>"
-```
-
-###### Destination file where file has other name:
-```toml
-destination = "<path>"
-```
-
-###### Destination folder where file has same name:
-```toml
-destination = "<path>/"
-```
-
-###### Ignore specific file / folder / glob:
-```toml
-ignore = "<path>"
-```
-
-###### Order in which the command should happen:
-```toml
+# Rename file / folder
+[[rename]]
+source = "" # required
+destination = "" # required
+ignore = ""
 order = 0
-```
+env = "dev"
+sys = "all"
 
-###### Decide type of environment:
-```toml
-env = "dev|prod|both"
-```
+# Remove file / folder / glob
+[[remove]]
+source = "" # required
+ignore = ""
+order = 0
+env = "dev"
+sys = "all"
 
-###### Decide type of system:
-```toml
-sys = "windows|darwin|linux|freesbd|all"
-```
-
-##### Modules available:
-**Name:** copy<br/>
-**Description:** Copy files/directories<br/>
-
-**Name:** rename<br/>
-**Description:** Rename files/directories<br/>
-
-**Name:** remove<br/>
-**Description:** Remove files/directories<br/>
-
-**Name:** raw<br/>
-**Description:** Perform raw commands<br/>
-**Usage:**
-```toml
+# Perform raw commands
 [[raw]]
-command = ""
+command = "" # required
 args = [""]
 order = 0
 env = "both"
 sys = "all"
-```
 
-**Name:** style<br/>
-**Description:** Compile style files. Use `[style.options]` to pass options<br/>
-**Usage:**
-```toml
+# Compile style files
 [[style]]
-source = ""
-destination = ""
+source = "" # required
+destination = "" # required
 ignore = ""
 order = 0
 env = "both"
+
 [style.options]
 minify = false
 autoprefixer = ""
-pixrem = false
 precision = 0
 comments = true
 include_paths = [""]
@@ -136,19 +98,15 @@ source_map = true
 font_dir = ""
 base_path = ""
 min_ie = ""
-```
-**Note:** To use `autoprefixer` or `pixrem` you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss)<br/>
 
-**Name:** script<br/>
-**Description:** Compile script files. Use `[script.options]` to pass options<br/>
-**Usage:**
-```toml
+# Compile script files
 [[script]]
-source = ""
-destination = ""
+source = "" # required
+destination = "" # required
 ignore = ""
 order = 0
 env = "both"
+
 [script.options]
 target = ""
 resolve_loader_root = ""
@@ -160,6 +118,7 @@ cache = ""
 watch = ""
 debug = ""
 bail = false
+
 [[script.options.module_loaders]]
 test = ""
 loader = ""
@@ -167,33 +126,45 @@ query_cache_directory = ""
 query_presets = [""]
 include = ""
 exclude = ""
-```
-**Note:** To use `[[script]]` you'll need to install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)<br/>
 
-**Name:** server<br/>
-**Description:** Sets up a server. Use `[[server.container]` to pass each container<br/>
-**Usage:**
-```toml
+# Sets up a server
 [server]
-vagrant_ip = "192.168.33.11"
-vagrant_public_ip = "192.168.2.100"
-[[server.container]]
-name = "foo_mysql"
-type = "mysql"
-initial_db = "/foo/bar"
-mock_db = "/foo/bar"
-port = 3306
-sleep = 30
-[[server.container]]
-name = "foo_nginx"
-type = "nginx"
-port = 8000
-[[server.container]]
-name = "foo_redmine"
-type = "redmine"
 
+[server.php]
+public = "" # file path
+port = 8000
+
+[[server.container]]
+name = ""
+type = "mysql" # required. available types: mysql|nginx|redmine
+port = 0 # defaults to the type default
+sleep = 0 # seconds to wait before continuing
+
+[server.container.options]
+public = "" # file path
+initial = "" # file path. used essentially for DBs
+mock = "" # file path. used essentially for DBs
 ```
-**Note:** To use `[server]`, if you're on `Linux`, install [Docker](https://www.docker.com/), if you're on `Windows` or `OSX`, install [Vagrant](https://www.vagrantup.com/)<br/>
+
+#### Module notes / requirements
+##### Style
+To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) or [pixrem](https://github.com/robwierzbowski/node-pixrem) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss)
+
+##### Script
+Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)
+
+##### Server
+###### `[server.php]`
+Install [PHP](http://php.net/)
+
+###### `[[server.container]]` under `Linux`
+Install [Docker](https://www.docker.com/)
+
+###### `[[server.container]]` under `Windows` or `OSX`
+Install [Vagrant](https://www.vagrantup.com/).<br/>
+Also, you'll need to set two environment variables:
+- `BEDROCK_VAGRANT_IP` - example: `192.168.33.11`
+- `BEDROCK_VAGRANT_PUBLIC_IP` - example: `192.168.2.100`
 
 ### Example: 
 ```toml
@@ -215,7 +186,8 @@ order = 1
 [[style]]
 source = "tmp.scss"
 destination = "tmp/tmp.css"
-env = "env"
+env = "dev"
+
 [style.options]
 comments = true
 source_map = true
@@ -224,10 +196,10 @@ source_map = true
 source = "tmp.scss"
 destination = "tmp/tmp.css"
 env = "prod"
+
 [style.options]
 minify = true
 autoprefixer = "last 2 versions, IE 11"
-pixrem = true
 
 [[script]]
 source = "tmp.js"

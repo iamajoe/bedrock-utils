@@ -16,8 +16,9 @@ order = 1
 [[style]]
 source = "tmp.scss"
 destination = "tmp/tmp.css"
-env = "env"
+env = "dev"
 [style.options]
+autoprefixer = "last 2 versions, IE 11"
 comments = true
 source_map = true
 
