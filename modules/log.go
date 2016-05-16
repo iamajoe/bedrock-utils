@@ -15,6 +15,10 @@ const projectName = "project"
 
 // Log a string
 func Log(module string, str string) {
+	if str == "" {
+		return
+	}
+
 	ct.ChangeColor(ct.White, true, ct.Black, false)
 	fmt.Printf("[" + projectName + "] ")
 	ct.ChangeColor(ct.Green, true, ct.Black, false)
@@ -25,6 +29,10 @@ func Log(module string, str string) {
 
 // LogEmpty logs without module
 func LogEmpty(str string) {
+	if str == "" {
+		return
+	}
+
 	ct.ChangeColor(ct.White, true, ct.Black, false)
 	fmt.Printf("[" + projectName + "] ")
 	ct.ChangeColor(ct.Cyan, true, ct.Black, false)
@@ -34,6 +42,10 @@ func LogEmpty(str string) {
 
 // LogWarn logs a warn
 func LogWarn(module string, str string) {
+	if str == "" {
+		return
+	}
+
 	ct.ChangeColor(ct.White, true, ct.Black, false)
 	fmt.Printf("[" + projectName + "] ")
 	ct.ChangeColor(ct.Yellow, true, ct.Black, false)

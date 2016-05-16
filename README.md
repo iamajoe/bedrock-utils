@@ -1,19 +1,40 @@
 # Bedrock: Utils
 
 The idea for this repository is to have a mix of utils to use when developing a project.
+**Note:** Any kind of path should be absolute or relative to the `*.toml`
+
+## Usage
+```
+./cmd/cmd ...
+    init <*.toml>               # Initializes project"))
+    build <*.toml> [env]        # Builds project"))
+    run <*.toml>                # Run project"))
+    stop <*.toml>               # Stop server"))
+    destroy <*.toml>            # Destroy server related"))
+```
+
+### Example
+
+```sh
+# To build the project
+./cmd/cmd build build.toml
+
+# To run the project
+./cmd/cmd init server.toml
+./cmd/cmd run server.toml
+
+# To remove server
+./cmd/cmd stop server.toml
+./cmd/cmd destroy server.toml
+```
 
 =========
 
-# Build
+## Configure
 
-Just run a `*.toml` into the compiled `cmd` and the build happens.
+This repo relies on usage of `*.toml` files. Below I try to explain the best I can how to.
 
-## Config file
-
-This repo relies on usage of `*.toml` files.
-So, here is how you use them.
-
-### Usage:
+### Config file parameters
 #### Max of task order 
 You should set the minimum here for better performance
 ```toml
@@ -30,6 +51,10 @@ ignore = ""
 order = 0
 env = "both"
 sys = "all"
+
+# In case of server module, it can't be an array so you should use:
+[server]
+...
 ```
 
 ###### Source file / glob:
@@ -145,6 +170,31 @@ exclude = ""
 ```
 **Note:** To use `[[script]]` you'll need to install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)<br/>
 
+**Name:** server<br/>
+**Description:** Sets up a server. Use `[[server.container]` to pass each container<br/>
+**Usage:**
+```toml
+[server]
+vagrant_ip = "192.168.33.11"
+vagrant_public_ip = "192.168.2.100"
+[[server.container]]
+name = "foo_mysql"
+type = "mysql"
+initial_db = "/foo/bar"
+mock_db = "/foo/bar"
+port = 3306
+sleep = 30
+[[server.container]]
+name = "foo_nginx"
+type = "nginx"
+port = 8000
+[[server.container]]
+name = "foo_redmine"
+type = "redmine"
+
+```
+**Note:** To use `[server]`, if you're on `Linux`, install [Docker](https://www.docker.com/), if you're on `Windows` or `OSX`, install [Vagrant](https://www.vagrantup.com/)<br/>
+
 ### Example: 
 ```toml
 max_order = 2
@@ -197,50 +247,6 @@ order = 2
 command = "echo"
 args = ["-n", "Foo", "bar"]
 order = 2
-```
-
-## Run the build
-
-```sh
-./vendor/bedrock_tasks/cmd/cmd config.toml
-```
-
-=================
-
-# Run the project
-The folder `.run` should work as an example for your. Besides `.run/tasks`, you should copy it to your project folder and link it to this cloned project. This way it will be easier to suit the needs of your project.
-
-#### Common argument explanation
-
-* `<name>` - Name of the project in snake case. It is required
-
-## Tasks
-
-#### Linux
-
-##### Requirements
-* [Docker](https://www.docker.com/)
-
-##### CLI
-
-```
-.run/do.sh <name> init                 # Initializes project and its dependencies"
-.run/do.sh <name> run                  # Run project"
-.run/do.sh <name> stop                 # Stops project"
-.run/do.sh <name> destroy              # Destroy dev environment data"
-```
-
-#### Windows / OSX
-
-##### Requirements
-* [Vagrant](https://www.vagrantup.com/)
-* [NodeJS](http://nodejs.org/)
-
-```
-npm run start                # Initializes project and its dependencies and runs it"
-npm run stop                 # Stops project"
-npm run destroy              # Destroy dev environment data"
-npm run vagrant-ssh          # Enters vagrant-ssh"
 ```
 
 ===============
