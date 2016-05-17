@@ -131,24 +131,38 @@ exclude = ""
 [server]
 
 [server.php]
-public = "" # file path
+public = "" # folder path
 port = 8000
 
 [[server.container]]
 name = ""
-type = "mysql" # required. available types: mysql|nginx|redmine
 port = 0 # defaults to the type default
 sleep = 0 # seconds to wait before continuing
 
-[server.container.options]
-public = "" # file path
+[server.container.mysql]
+root_password = ""
+database = ""
+user = ""
+password = ""
 initial = "" # file path. used essentially for DBs
 mock = "" # file path. used essentially for DBs
+
+[server.container.nginx]
+public = "" # folder path
+
+[server.container.vredens_ln_p]
+public = "" # folder path
+logs = "" # folder path
+link = "" # it could for example: "tmp-mysql:myqsl"
+
+[server.container.redmine]
+root_password = ""
+database = ""
 ```
 
 #### Module notes / requirements
 ##### Style
-To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) or [pixrem](https://github.com/robwierzbowski/node-pixrem) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss)
+To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss)
 
 ##### Script
 Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)

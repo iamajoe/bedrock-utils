@@ -25,18 +25,41 @@ type ServerPhpStruct struct {
 
 // ServerContainerStruct struct for the container
 type ServerContainerStruct struct {
-	Name    string
-	Type    string
-	Port    int
-	Sleep   int
-	Options ServerContainerOptionsStruct
+	Name      string
+	Port      int
+	Sleep     int
+	Mysql     ServerContainerMysqlStruct
+	Nginx     ServerContainerNginxStruct
+	VredensLP ServerContainerVredensLPStruct
+	Redmine   ServerContainerRedmineStruct
 }
 
-// ServerContainerOptionsStruct struct for the container options
-type ServerContainerOptionsStruct struct {
-	Public  string
-	Initial string
-	Mock    string
+// ServerContainerMysqlStruct struct for the container
+type ServerContainerMysqlStruct struct {
+	RootPassword string `toml:"root_password"`
+	Database     string
+	User         string
+	Password     string
+	Initial      string
+	Mock         string
+}
+
+// ServerContainerNginxStruct struct for the container
+type ServerContainerNginxStruct struct {
+	Public string
+}
+
+// ServerContainerVredensLPStruct struct for the container
+type ServerContainerVredensLPStruct struct {
+	Public string
+	Logs   string
+	Link   string
+}
+
+// ServerContainerRedmineStruct struct for the container
+type ServerContainerRedmineStruct struct {
+	RootPassword string `toml:"root_password"`
+	Database     string
 }
 
 // ---------------------------------

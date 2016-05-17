@@ -177,6 +177,36 @@ func styleScss(file StyleStruct) (log string, err error) {
 	return
 }
 
+// styleMinifyCss autoprefixes the css
+func styleAutoprefixCSS(file StyleStruct) (log string, err error) {
+	src := file.Dest
+
+	// Install dependencies
+	if NotExist("node_modules/autoprefixer") {
+		_, err = RawCommand(RawStruct{
+			Command: "npm",
+			Args:    []string{"install", "postcss@5.0.21", "autoprefixer@6.3.6"},
+		})
+
+		if err != nil {
+			return "", err
+		}
+	}
+
+	// Lets get the paths for the script
+	basePath := path.Join(CmdDir, "..")
+	vendorPath := path.Join(basePath, "node_modules")
+	scriptPath := path.Join(basePath, "modules/external/style/autoprefix.js")
+
+	// Now lets run the script
+	log, err = RawCommand(RawStruct{
+		Command: "node",
+		Args:    []string{scriptPath, vendorPath, src, file.Options.Autoprefixer},
+	})
+
+	return log, err
+}
+
 // styleMinifyCss minifies the css
 func styleMinifyCSS(file StyleStruct) (log string, err error) {
 	src := file.Dest
@@ -203,34 +233,4 @@ func styleMinifyCSS(file StyleStruct) (log string, err error) {
 	FileRename(FileStruct{Src: src + ".tmp", Dest: src})
 
 	return
-}
-
-// styleMinifyCss autoprefixes the css
-func styleAutoprefixCSS(file StyleStruct) (log string, err error) {
-	src := file.Dest
-
-	// Install dependencies
-	if NotExist("node_modules/autoprefixer") {
-		_, err = RawCommand(RawStruct{
-			Command: "npm",
-			Args:    []string{"install", "postcss", "autoprefixer"},
-		})
-
-		if err != nil {
-			return "", err
-		}
-	}
-
-	// Lets get the paths for the script
-	basePath := path.Join(CmdDir, "..")
-	vendorPath := path.Join(basePath, "node_modules")
-	scriptPath := path.Join(basePath, "modules/external/style/autoprefix.js")
-
-	// Now lets run the script
-	log, err = RawCommand(RawStruct{
-		Command: "node",
-		Args:    []string{scriptPath, vendorPath, src, file.Options.Autoprefixer},
-	})
-
-	return log, err
 }
