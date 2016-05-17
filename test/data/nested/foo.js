@@ -1,33 +1,31 @@
-return (function () {
-    'use strict';
+'use strict';
 
-    // Imports
-    var $;
+// Imports
+var $;
 
-    // Containers
-    var wrapperEl;
+// Containers
+var wrapperEl;
 
-    // --------------------------------
-    // Functions
+// --------------------------------
+// Functions
 
-    /**
-     * Initializes module
-     */
-    var init = function (jQuery) {
-        $ = jQuery;
+/**
+ * Initializes module
+ */
+var init = function (jQuery) {
+    $ = jQuery;
 
-        // Cache elements
-        wrapperEl = wrapperEl || $('.page-module');
+    // Cache elements
+    wrapperEl = wrapperEl || $('.page-module');
 
-        if (!wrapperEl.length) {
-            return;
-        }
+    if (!wrapperEl.length) {
+        return;
+    }
 
-        // TODO: Set whatever
-    };
+    // TODO: Set whatever
+};
 
-    // --------------------------------
-    // Export
+// --------------------------------
+// Export
 
-    return { init: init };
-})();
+module.exports = { init: init };

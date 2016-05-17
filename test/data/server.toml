@@ -1,20 +1,30 @@
 [server]
-vagrant_ip = "192.168.33.11"
-vagrant_public_ip = "192.168.2.100"
 
-[[server.container]]
-name = "foo_mysql"
-type = "mysql"
-initial_db = "/foo/bar"
-mock_db = "/foo/bar"
-port = 3306
-sleep = 30
-
-[[server.container]]
-name = "foo_nginx"
-type = "nginx"
+[server.php]
+public = "" # folder path
 port = 8000
 
 [[server.container]]
-name = "foo_redmine"
-type = "redmine"
+name = ""
+port = 0 # defaults to the type default
+sleep = 0 # seconds to wait before continuing
+
+[server.container.mysql]
+root_password = ""
+database = ""
+user = ""
+password = ""
+initial = "" # file path. used essentially for DBs
+mock = "" # file path. used essentially for DBs
+
+[server.container.nginx]
+public = "" # folder path
+
+[server.container.vredens_ln_p]
+public = "" # folder path
+logs = "" # folder path
+link = "" # it could for example: "tmp-mysql:myqsl"
+
+[server.container.redmine]
+root_password = ""
+database = ""

@@ -26,15 +26,13 @@ type StyleStruct struct {
 type styleOptionsStruct struct {
 	Minify       bool
 	Autoprefixer string
-	Pixrem       bool
+
 	Precision    int      `toml:"precision"`
 	Comments     bool     `toml:"comments"`
 	IncludePaths []string `toml:"include_paths"`
 	HTTPPath     string   `toml:"http_path"`
 	SourceMap    bool     `toml:"source_map"`
-	FontDir      string   `toml:"font_dir"`
 	BasePath     string   `toml:"base_path"`
-	MinIe        string   `toml:"min_ie"`
 }
 
 // ---------------------------------
@@ -163,9 +161,9 @@ func styleScss(file StyleStruct) (log string, err error) {
 		libsass.IncludePaths(file.Options.IncludePaths),
 		libsass.HTTPPath(file.Options.HTTPPath),
 		libsass.SourceMap(file.Options.SourceMap, sourceMapFile),
-		libsass.FontDir(file.Options.FontDir),
 		libsass.BasePath(file.Options.BasePath),
 	)
+	// libsass.FontDir(file.Options.FontDir),
 	if err != nil {
 		return "", err
 	}

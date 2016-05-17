@@ -35,8 +35,13 @@ destination = "tmp/"
 [script.options]
 target = "web"
 devtool = "source-map"
-debug = "true"
+debug = true
 bail = true
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+[script.options.module.loaders.query]
+presets = ["babel-preset-stage-2", "babel-preset-es2015"]
 
 [[raw]]
 command = "echo"

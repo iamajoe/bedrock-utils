@@ -1,9 +1,6 @@
 (function () {
     'use strict';
 
-    // Imports
-    var is = require('bedrock/is');
-
     // Containers
     var fooContainer = require('./nested/foo.js');
     var bodyEl;
@@ -33,8 +30,6 @@
 
         // Set classes
         classList.remove('no-script');
-        is.isIe() && classList.add('is-ie');
-        is.isMobile() && classList.add('is-mobile');
 
         // Initialize
         initModules();
