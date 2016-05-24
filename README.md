@@ -6,11 +6,11 @@ The idea for this repository is to have a mix of utils to use when developing a 
 ## Usage
 ```
 ./cmd/cmd ...
-    init <*.toml>               # Initializes project"))
-    build <*.toml> [env]        # Builds project"))
-    run <*.toml>                # Run project"))
-    stop <*.toml>               # Stop server"))
-    destroy <*.toml>            # Destroy server related"))
+    init <*.toml>               # Initializes project"
+    build <*.toml> [env]        # Builds project"
+    run <*.toml>                # Run project"
+    stop <*.toml>               # Stop server"
+    destroy <*.toml>            # Destroy server related"
 ```
 
 ### Example
