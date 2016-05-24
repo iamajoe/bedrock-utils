@@ -33,6 +33,7 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 
 		// Get the right paths
 		src, ignore := GetPaths(task.Src, task.Ignore)
+		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
@@ -44,9 +45,12 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 			// Copy file
 			Log(taskType, file)
 
+			// Reset dest
+			task.Dest = originalDest
+
 			// Needs this
+			task.Dest = ConstructDest(taskType, task.Dest, file, task.Src)
 			task.Src = file
-			task.Dest = ConstructDest(taskType, task.Dest, file)
 
 			// Instantiate log
 			var logVal string

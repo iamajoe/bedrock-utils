@@ -50,6 +50,7 @@ func StyleTask(config []StyleStruct, order int, env string, sys string) {
 
 		// Get the right paths
 		src, ignore := GetPaths(task.Src, task.Ignore)
+		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
@@ -61,9 +62,12 @@ func StyleTask(config []StyleStruct, order int, env string, sys string) {
 			// Style file
 			Log("style", file)
 
+			// Reset dest
+			task.Dest = originalDest
+
 			// Needs this
+			task.Dest = ConstructDest("style", task.Dest, file, task.Src)
 			task.Src = file
-			task.Dest = ConstructDest("style", task.Dest, file)
 
 			logVal, err := StyleFile(task)
 			LogErr("style", err)
@@ -155,7 +159,7 @@ func styleScss(file StyleStruct) (log string, err error) {
 		libsass.Comments(file.Options.Comments),
 		libsass.IncludePaths(file.Options.IncludePaths),
 		libsass.HTTPPath(file.Options.HTTPPath),
-		libsass.SourceMap(file.Options.SourceMap, dest + ".map"),
+		libsass.SourceMap(file.Options.SourceMap, dest+".map"),
 		libsass.BasePath(file.Options.BasePath),
 	)
 	// libsass.FontDir(file.Options.FontDir),

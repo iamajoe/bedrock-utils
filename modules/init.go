@@ -100,14 +100,18 @@ func GetPaths(srcToPath string, ignoreToPath string) ([]string, []string) {
 }
 
 // ConstructDest constructs dest path
-func ConstructDest(module string, dest string, file string) string {
+func ConstructDest(module string, dest string, src string, originalSrc string) string {
 	if dest == "" {
 		return dest
 	}
 
+	// TODO: Use originalSrc for better globbing in dest
+	// 		 Check the same parts, add the new parts in between
+	// 		 Don't forget to ensure paths in the modules
+
 	// Check if it goes to a directory
 	if string(dest[len(dest)-1]) == "/" {
-		dest = dest + GetFilename(file)
+		dest = dest + GetFilename(src)
 	}
 
 	// Ensure directory exists

@@ -1,10 +1,27 @@
-max_order = 2
+max_order = 3
 
 # Remove everything from the latest build
 [[remove]]
 source = "build/*"
 ignore = "build/.gitkeep"
 order = 1
+
+# TODO: Need to improve the copy glob
+# Copy others
+[[copy]]
+source = "src/components/*.php"
+destination = "build/components/"
+order = 2
+
+[[copy]]
+source = "src/inc/*.php"
+destination = "build/inc/"
+order = 2
+
+[[copy]]
+source = "src/*.php"
+destination = "build/"
+order = 2
 
 # Set styles
 [[style]]

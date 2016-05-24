@@ -1,11 +1,12 @@
 # Bedrock: Utils
 
-The idea for this repository is to have a mix of utils to use when developing a project.
-**Note:** Any kind of path should be absolute or relative to the `*.toml`
+The idea for this repository is to have a mix of utils to use when developing a project.<br>
+**Note:** Any kind of path should be absolute or relative to the `*.toml`<br>
+**Note 2:** Eventually, I'll get this module cross compiled as for the moment select the right file for your OS in the bin
 
 ## Usage
 ```
-./cmd/cmd ...
+./bin/bedrock ...
     init <*.toml>               # Initializes project"
     build <*.toml> [env]        # Builds project"
     run <*.toml>                # Run project"
@@ -17,15 +18,15 @@ The idea for this repository is to have a mix of utils to use when developing a 
 
 ```sh
 # To build the project
-./cmd/cmd build build.toml
+./bin/bedrock build build.toml
 
 # To run the project
-./cmd/cmd init server.toml
-./cmd/cmd run server.toml
+./bin/bedrock init server.toml
+./bin/bedrock run server.toml
 
 # To remove server
-./cmd/cmd stop server.toml
-./cmd/cmd destroy server.toml
+./bin/bedrock stop server.toml
+./bin/bedrock destroy server.toml
 ```
 
 =========

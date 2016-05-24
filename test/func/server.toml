@@ -1,3 +1,5 @@
+max_order = 1
+
 [server]
 
 [server.php]

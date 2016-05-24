@@ -130,6 +130,7 @@ func ScriptTask(config []ScriptStruct, order int, env string, sys string) {
 
 		// Get the right paths
 		src, ignore := GetPaths(task.Src, task.Ignore)
+		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
@@ -141,9 +142,12 @@ func ScriptTask(config []ScriptStruct, order int, env string, sys string) {
 			// Style file
 			Log("script", file)
 
+			// Reset dest
+			task.Dest = originalDest
+
 			// Needs this
+			task.Dest = ConstructDest("script", task.Dest, file, task.Src)
 			task.Src = file
-			task.Dest = ConstructDest("script", task.Dest, file)
 
 			logVal, err := ScriptFile(task)
 			LogErr("script", err)
