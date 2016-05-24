@@ -35,4 +35,23 @@ var task = function (fileSrc, options) {
 // ---------------------------------------------
 // Runtime
 
+var errPath = path.join(vendor, '../autoprefix_error.log');
+
+// Remove old error log
+if (fs.existsSync(errPath)) {
+    fs.unlinkSync(errPath);
+}
+
+// Catch the uncaught errors
+process.on('uncaughtException', function(err) {
+    var data = '';
+    data += '///////////////////////////////\nAUTOPREFIX ERROR:\n\n';
+    data += err;
+    fs.writeFileSync(errPath, data, 'utf-8');
+
+    // Now lets error!
+    throw err;
+})
+
+// Set the task
 task(file, opts);

@@ -142,11 +142,6 @@ func styleScss(file StyleStruct) (log string, err error) {
 		return "", err
 	}
 
-	sourceMapFile, err := os.Create(dest + ".map")
-	if err != nil {
-		return "", err
-	}
-
 	// Decide output style
 	outputStyle := 1
 	if file.Options.Minify {
@@ -160,7 +155,7 @@ func styleScss(file StyleStruct) (log string, err error) {
 		libsass.Comments(file.Options.Comments),
 		libsass.IncludePaths(file.Options.IncludePaths),
 		libsass.HTTPPath(file.Options.HTTPPath),
-		libsass.SourceMap(file.Options.SourceMap, sourceMapFile),
+		libsass.SourceMap(file.Options.SourceMap, dest + ".map"),
 		libsass.BasePath(file.Options.BasePath),
 	)
 	// libsass.FontDir(file.Options.FontDir),

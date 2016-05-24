@@ -112,7 +112,7 @@ type scriptResolveStruct struct {
 
 type scriptPluginsStruct struct {
 	Dedupe  bool
-	NodeEnv string
+	NodeEnv string `toml:"node_env"`
 }
 
 // ---------------------------------

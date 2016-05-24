@@ -1,0 +1,38 @@
+/////////////////////////////
+// Colors
+
+$error-50-color: #ff0000;
+$success-50-color: #3aaf00;
+
+$neutral-0-color: #1a1a1a;
+$neutral-50-color: #999999;
+$neutral-100-color: #fff;
+
+$primary-50-color: #ee5e1b;
+$primary-80-color: #f8b89b;
+
+$secondary-40-color: #87846d;
+$secondary-50-color: #d3ceaa;
+$secondary-100-color: #fffbe8;
+
+/////////////////////////////
+// Animation
+
+$animation-ease: ease-out;
+$animation-time: 0.15s;
+
+/////////////////////////////
+// Media queries
+
+$break-full:        1799px;
+$break-desktop:     1230px;
+$break-tablet:      959px;
+$break-mobile:      767px;
+$break-min-mobile:  320px;
+
+/////////////////////////////
+// Size
+
+$global-padding: 15px;
+$global-padding-tablet: 25px;
+$global-padding-mobile: 15px;

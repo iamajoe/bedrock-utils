@@ -1,0 +1,83 @@
+max_order = 2
+
+# Remove everything from the latest build
+[[remove]]
+source = "build/*"
+ignore = "build/.gitkeep"
+order = 1
+
+# Set styles
+[[style]]
+source = "src/style.scss"
+destination = "build/app.css"
+env = "dev"
+order = 2
+[style.options]
+comments = true
+source_map = true
+
+[[style]]
+source = "src/style.scss"
+destination = "build/app.css"
+env = "prod"
+order = 2
+[style.options]
+autoprefixer = "last 2 versions, IE 11"
+minify = true
+
+# Set scripts
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "dev"
+order = 2
+[script.options]
+target = "web"
+devtool = "source-map"
+cache = true
+debug = true
+bail = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js"]
+[script.options.plugins]
+node_env = "development"
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+[script.options.module.loaders.query]
+cache_directory = true
+presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+[[script.options.module.loaders]]
+test = "regex:.json?$"
+loader = "json-loader"
+[[script.options.module.loaders]]
+test = "regex:.html?$"
+loader = "babel-raw"
+
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "prod"
+order = 2
+[script.options]
+target = "web"
+bail = true
+minify = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js", ".jsx"]
+[script.options.plugins]
+dedupe = true
+node_env = "production"
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+[script.options.module.loaders.query]
+presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+[[script.options.module.loaders]]
+test = "regex:.json?$"
+loader = "json-loader"
+[[script.options.module.loaders]]
+test = "regex:.html?$"
+loader = "babel-raw"

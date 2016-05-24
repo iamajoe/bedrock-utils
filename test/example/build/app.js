@@ -1,0 +1,6 @@
+(function(modules){var installedModules={};function __webpack_require__(moduleId){if(installedModules[moduleId])
+return installedModules[moduleId].exports;var module=installedModules[moduleId]={exports:{},id:moduleId,loaded:false};modules[moduleId].call(module.exports,module,module.exports,__webpack_require__);module.loaded=true;return module.exports;}
+__webpack_require__.m=modules;__webpack_require__.c=installedModules;__webpack_require__.p="";return __webpack_require__(0);})
+([function(module,exports,__webpack_require__){'use strict';var index=__webpack_require__(1);var $=jQuery;$(document).ready(function(){var classList=document.body.classList;classList.remove('no-script');if(is.isIe()){classList.add('is-ie');}
+if(is.isMobile()){classList.add('is-mobile');}
+index.init();});},function(module,exports){'use strict';Object.defineProperty(exports,"__esModule",{value:true});var $=jQuery;var wrapperEl=void 0;var init=function init(){wrapperEl=wrapperEl||$('.page-index');if(!wrapperEl.length){return;}};exports.default={init:init};}]);

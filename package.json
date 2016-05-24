@@ -9,6 +9,13 @@
     "vagrant-reload": "pushd .run/tasks; vagrant reload --provision; popd",
     "vagrant-ssh": "pushd .run/tasks; vagrant ssh; popd",
 
-    "start-public": ".run/do.sh tmp_redmine run 192.168.33.11 192.168.2.100"
+    "start-public": ".run/do.sh tmp_redmine run 192.168.33.11 192.168.2.100",
+
+    "go-install": "cd cmd; go get . ; cd ..; echo \"-> DONE!\"",
+    "go-build": "cd cmd; go build . ; cd ..; echo \"-> DONE!\"",
+
+    "go-test-build": "cmd/cmd build test/func/build.toml",
+
+    "go-example-build": "cmd/cmd build test/example/build.toml"
   }
 }
