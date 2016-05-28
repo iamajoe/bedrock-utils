@@ -35,7 +35,7 @@ var task = function (fileSrc, options) {
 // ---------------------------------------------
 // Runtime
 
-var errPath = path.join(vendor, '../autoprefix_error.log');
+var errPath = path.join(vendor, '../log/autoprefix_error.log');
 
 // Remove old error log
 if (fs.existsSync(errPath)) {

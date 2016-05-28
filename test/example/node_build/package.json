@@ -1,0 +1,14 @@
+{
+  "name": "old_build",
+  "version": "0.0.1",
+  "devDependencies": {
+    "fs-extra": "^0.26.5"
+  },
+  "dependencies": {
+    "bedrock": "git://github.com/Sendoushi/bedrock.git#v0.1.18",
+    "bluebird": "~3.1.1"
+  },
+  "scripts": {
+    "build": "node ./build.js prod"
+  }
+}

@@ -264,7 +264,7 @@ var task = function (options) {
 // ---------------------------------------------
 // Runtime
 
-var errPath = path.join(vendor, '../webpack_error.log');
+var errPath = path.join(vendor, '../log/webpack_error.log');
 
 // Remove old error log
 if (fs.existsSync(errPath)) {
