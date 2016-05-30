@@ -34,19 +34,27 @@ func Init(commandType string, configPath string, env string, sys string) {
 	os.Chdir(path.Dir(configPath))
 	defer os.Chdir(wd)
 
-	// Lets take care of modules
-	// Loop each order
-	for order := 0; order <= config.MaxOrder; order++ {
-		FileTask(config.Copy, "copy", order, env, sys)
-		FileTask(config.Rename, "rename", order, env, sys)
-		StyleTask(config.Style, order, env, sys)
-		ScriptTask(config.Script, order, env, sys)
-		FileTask(config.Remove, "remove", order, env, sys)
-		RawTask(config.Raw, order, env, sys)
-		ServerTask(config.Server, commandType, order, env, sys)
+	// Lets take care of modules ordering
+	runOrder(0, commandType, config, env, sys)
+}
+
+// runOrder runs each instance per order
+func runOrder(order int, commandType string, config ConfigStruct, env string, sys string) {
+	if order > config.MaxOrder {
+		return
 	}
 
-	return
+	FileTask(config.Copy, "copy", order, env, sys)
+	FileTask(config.Rename, "rename", order, env, sys)
+	StyleTask(config.Style, order, env, sys)
+	ScriptTask(config.Script, order, env, sys)
+	FileTask(config.Remove, "remove", order, env, sys)
+	RawTask(config.Raw, order, env, sys)
+	ServerTask(config.Server, commandType, order, env, sys)
+
+	// Rerun
+	order++
+	runOrder(order, commandType, config, env, sys)
 }
 
 // ---------------------------------
