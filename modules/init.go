@@ -4,6 +4,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
+	"sync"
 )
 
 // ---------------------------------
@@ -35,24 +37,69 @@ func Init(commandType string, configPath string, env string, sys string) {
 	defer os.Chdir(wd)
 
 	// Lets take care of modules ordering
-	orderChannel := make(chan int, config.MaxOrder)
 	for order := 0; order <= config.MaxOrder; order++ {
-		runOrder(orderChannel, order, commandType, config, env, sys)
+		Log("main", "Order: "+strconv.Itoa(order))
+		runOrder(order, commandType, config, env, sys)
 	}
 }
 
 // runOrder runs each instance per order
-func runOrder(channel chan int, order int, commandType string, config ConfigStruct, env string, sys string) {
-	go FileTask(config.Copy, "copy", order, env, sys)
-	go FileTask(config.Rename, "rename", order, env, sys)
-	go StyleTask(config.Style, order, env, sys)
-	go ScriptTask(config.Script, order, env, sys)
-	go FileTask(config.Remove, "remove", order, env, sys)
-	go RawTask(config.Raw, order, env, sys)
-	go ServerTask(config.Server, commandType, order, env, sys)
+func runOrder(order int, commandType string, config ConfigStruct, env string, sys string) {
+	var wg sync.WaitGroup
 
-	// Add the order to the channel
-	channel <- order
+	// Now the routines
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		FileTask(config.Copy, "copy", order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		FileTask(config.Rename, "rename", order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		FileTask(config.Remove, "remove", order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		StyleTask(config.Style, order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ScriptTask(config.Script, order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		RawTask(config.Raw, order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ServerTask(config.Server, commandType, order, env, sys)
+	}()
+
+	// Lets wait now
+	wg.Wait()
+
+	// FileTask(config.Copy, "copy", order, env, sys)
+	// FileTask(config.Rename, "rename", order, env, sys)
+	// StyleTask(config.Style, order, env, sys)
+	// ScriptTask(config.Script, order, env, sys)
+	// FileTask(config.Remove, "remove", order, env, sys)
+	// RawTask(config.Raw, order, env, sys)
+	// ServerTask(config.Server, commandType, order, env, sys)
 }
 
 // ---------------------------------

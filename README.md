@@ -248,7 +248,8 @@ database = ""
 
 #### Module notes / requirements
 ##### Style
-To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss)
+To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).<br>
+For now, this module needs to be on an order of its own. Trying to solve that.
 
 ##### Script
 Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)<br>

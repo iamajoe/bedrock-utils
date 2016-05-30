@@ -1,4 +1,4 @@
-max_order = 2
+max_order = 3
 
 [[copy]]
 source = "**/*.scss"
@@ -17,6 +17,7 @@ order = 1
 source = "tmp.scss"
 destination = "tmp/tmp.css"
 env = "dev"
+order = 2
 [style.options]
 autoprefixer = "last 2 versions, IE 11"
 comments = true
@@ -26,6 +27,7 @@ source_map = true
 source = "tmp.scss"
 destination = "tmp/tmp.css"
 env = "prod"
+order = 2
 [style.options]
 minify = true
 
@@ -46,9 +48,9 @@ presets = ["babel-preset-stage-2", "babel-preset-es2015"]
 [[raw]]
 command = "echo"
 args = ["-n", "Foo", "bar"]
-order = 2
+order = 3
 
 [[remove]]
 source = "tmp/*"
 ignore = "**/.gitkeep"
-order = 2
+order = 3

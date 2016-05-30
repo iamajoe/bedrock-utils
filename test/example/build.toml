@@ -11,17 +11,17 @@ order = 1
 [[copy]]
 source = "src/components/*.php"
 destination = "build/components/"
-order = 2
+order = 3
 
 [[copy]]
 source = "src/inc/*.php"
 destination = "build/inc/"
-order = 2
+order = 3
 
 [[copy]]
 source = "src/*.php"
 destination = "build/"
-order = 2
+order = 3
 
 # Set styles
 [[style]]
@@ -47,7 +47,7 @@ minify = true
 source = "src/bootstrap.js"
 destination = "build/app.js"
 env = "dev"
-order = 2
+order = 3
 [script.options]
 target = "web"
 devtool = "source-map"
@@ -76,7 +76,7 @@ loader = "babel-raw"
 source = "src/bootstrap.js"
 destination = "build/app.js"
 env = "prod"
-order = 2
+order = 3
 [script.options]
 target = "web"
 bail = true
