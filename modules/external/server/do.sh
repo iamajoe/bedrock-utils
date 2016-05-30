@@ -23,108 +23,103 @@ function __get_src_dir {
     echo $base
 }
 
-# Gets the public folder
-# @return {string}
-function __PROJECT_get_public_folder {
-    local public="../../"
-
-    # In case is running under vagrant
-    if [ -d /vagrant_project_data ]; then
-        public=/vagrant_project_data
+# Check if user has docker
+function __DOCKER_exist {
+    if hash docker 2>/dev/null; then
+        echo "true"
     else
-        if [ ! -f $(pwd)/public_ln ]; then
-            if [ ! -d $(pwd)/public_ln ]; then
-                ln -s $public $(pwd)/public_ln
-            fi
-        fi
-
-        public=$(pwd)/public_ln
+        echo "false"
     fi
-
-    echo $public
 }
 
 # ------------------------------------------------
 
-# Run
-# @param {string} pkg
-function __PROJECT_run {
-    local public=$(__PROJECT_get_public_folder)
+# Container create
+# @param {string} name
+# @param {string} type
+# @param {string} port
+# @param {string} env_var
+# @param {string} volume
+function __container_create {
+    if ! docker ps -a | grep -q $1; then
+        echo "Creating a new $1 docker container"
 
-    echo "Run: [project]"
+        # Create the docker container
+        docker create --name $1 -p $3 $4 $5 $2
 
-    # TODO: Run whatever you need to run
-
-    # Take care of running mysql
-    # ./tasks/docker.sh $1 run "mysql" $build
-
-    echo "=================================="
-    docker ps -a
-    echo "=================================="
-
-    # Get the ips
-    # ./tasks/docker.sh $1 get-ip "mysql"
+        # Just wait some seconds
+        sleep 3
+    fi
 }
 
-# Stop
-# @param {string} pkg
-function __PROJECT_stop {
-    echo "Stop: [project]"
+# Container run
+# @param {string} name
+# @param {string} sleep
+function __container_run {
+    if docker ps -a | grep -q $1; then
+        echo "Starting the $1 docker container"
+        docker start $1
 
-    # ./tasks/docker.sh $1 stop "mysql"
+        echo "Waiting $2 seconds for $1 to boot"
+        sleep $2
+    fi
 }
 
-# Destroy
-# @param {string} pkg
-function __PROJECT_destroy {
-    echo "Destroy: [project]"
+# Container stop
+# @param {string} name
+function __container_stop {
+    if docker ps -a | grep -q $1; then
+        docker stop $1
 
-    ./tasks/docker.sh $1 destroy-all
+        echo "Waiting 5 seconds for $1 to stop"
+        sleep 5
+    fi
 }
 
-# Init
-# @param {string} pkg
-function __PROJECT_init {
-    local public=$(__PROJECT_get_public_folder)
+# Container destroy
+# @param {string} name
+function __container_destroy {
+    if docker ps -a | grep -q $1; then
+        docker rm $1
 
-    echo "Init: [project]"
-
-    # Create the mysql DB
-    # ./tasks/docker.sh $1 create "mysql"
+        echo "Waiting 5 seconds for $1 to destroy"
+        sleep 5
+    fi
 }
 
 # Run under linux
-# @param {string} pkg
 # @param {string} action
-# @param {string} arg1
-# @param {string} arg2
+# @param {string} name
+# @param {string} type / sleep
+# @param {string} port
+# @param {string} arg
 function __PROJECT {
     set -e
-    case "$2" in
-        'init')
-            __PROJECT_init $1
+    case "$1" in
+        'create')
+            __container_create $2 $3 $4 $5
         ;;
 
         'run')
-            __PROJECT_run $1
+            __container_run $2 $3
         ;;
 
         'stop')
-            __PROJECT_stop $1
+            __container_stop $2
         ;;
 
         'destroy')
-            __PROJECT_destroy $1
+            __container_destroy $2
         ;;
 
         *)
             echo " "
             echo "Usage: ./do.sh ..."
             echo " "
-            echo "    <pkg_name> init                    # Initializes project"
-            echo "    <pkg_name> run                     # Run project"
-            echo "    <pkg_name> stop                    # Stop servers and containers"
-            echo "    <pkg_name> destroy                 # Destroy servers and containers"
+            echo "    create <name> <type> <port> [env_var] [volume]         # Creates container"
+            echo "    run <name> <sleep>                                     # Run container"
+            echo "    stop <name>                                            # Stop container"
+            echo "    destroy <name>                                         # Destroy container"
             echo " "
         ;;
     esac
@@ -137,13 +132,18 @@ pushd $(__get_src_dir)
 
 echo " "
 echo "#####################################"
-echo "# Project: [$1][$2]"
+echo "# Project"
 echo " "
 
 if [[ `uname` != 'Linux' ]]; then
     # Non-linux needs vagrant to run docker
-    ./tasks/vagrant.sh $1 $2 $3 $4 $5 $6
+    __console_err "Vagrant isn't implemented, yet!"
 else
-    __PROJECT $1 $2 $3 $4
+    if [[ $(__DOCKER_exist) == "true" ]]; then
+        __PROJECT $1 $2 $3 $4 $5 $6
+    else
+        __console_err "You need to install Docker!"
+    fi
 fi
+
 popd

@@ -217,34 +217,18 @@ node_env = ""
 # Sets up a server
 [server]
 
-[server.php]
+[[server.php]]
 public = "" # folder path
 port = 8000
 
 [[server.container]]
 name = ""
-port = 0 # defaults to the type default
-sleep = 0 # seconds to wait before continuing
-
-[server.container.mysql]
-root_password = ""
-database = ""
-user = ""
-password = ""
-initial = "" # file path. used essentially for DBs
-mock = "" # file path. used essentially for DBs
-
-[server.container.nginx]
-public = "" # folder path
-
-[server.container.vredens_ln_p]
-public = "" # folder path
-logs = "" # folder path
-link = "" # it could for example: "tmp-mysql:myqsl"
-
-[server.container.redmine]
-root_password = ""
-database = ""
+type = "" # example mysql:5.6 or vredens/ln_p
+port = ""
+link = [""]
+env_var = [""]
+volume = [""]
+sleep = 0 # seconds to wait on run
 ```
 
 #### Module notes / requirements
@@ -260,7 +244,8 @@ For now, only `dedupe` plugin is accepted. If you need other please issue and I'
 `output.filename`, `output.path` and `entry` aren't supported. Use `src` and `dest` instead (although these won't work with arrays). Eventually, I'll get to this.
 
 ##### Server
-This is on the TODO list but not yet implemented
+
+Containers are on the TODO list but not yet implemented
 
 ###### `[server.php]`
 Install [PHP](http://php.net/)

@@ -29,6 +29,10 @@
     "go-example-server-mac": "bin/bedrock_mac run test/example_server/server.toml",
     "go-example-server-linux": "bin/bedrock_linux run test/example_server/server.toml",
 
+    "go-example-container-win": "bin/bedrock_win run test/example_container/server.toml",
+    "go-example-container-mac": "bin/bedrock_mac run test/example_container/server.toml",
+    "go-example-container-linux": "bin/bedrock_linux run test/example_container/server.toml",
+
     "go-example-test-build-times-mac-go": "SECONDS=0; npm run go-example-build-mac prod; echo \"[example-mac-go] $SECONDS secs\" >> log/times.log",
     "go-example-test-build-times-mac-node": "SECONDS=0; pushd test/example/node_build_comparison; npm run build prod; popd; echo \"[example-mac-node] $SECONDS secs\" >> log/times.log",
     "go-example-test-build-times-mac": "echo \"[example-mac] Start time test\"; for i in {1..3}; do npm run go-example-test-build-times-mac-go; npm run go-example-test-build-times-mac-node; done; echo \"[example-mac] Time test ended\""

@@ -37,6 +37,9 @@ func RawTask(config []RawStruct, order int, env string, sys string) {
 		logVal, err := RawCommand(task)
 		LogErr("raw", err)
 		Log("raw] [result", logVal)
+
+		// TODO: Raw Command should log everything!
+		// Not logging a thing!
 	}
 }
 

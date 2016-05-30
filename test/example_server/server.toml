@@ -2,6 +2,6 @@ max_order = 1
 
 [server]
 
-[server.php]
+[[server.php]]
 public = "public" # folder path
 port = 8000

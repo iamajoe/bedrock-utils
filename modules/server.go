@@ -2,8 +2,9 @@ package modules
 
 import (
 	"errors"
+	"path"
 	"strconv"
-	"unsafe"
+	"strings"
 )
 
 // ---------------------------------
@@ -11,56 +12,31 @@ import (
 
 // ServerStruct struct for the project
 type ServerStruct struct {
-	Php       ServerPhpStruct
+	Php       []ServerPhpStruct
 	Container []ServerContainerStruct
-	Order     int
-	Env       string
-	Sys       string
 }
 
 // ServerPhpStruct struct for the php server
 type ServerPhpStruct struct {
 	Public string
 	Port   int
+	Order  int
+	Env    string
+	Sys    string
 }
 
 // ServerContainerStruct struct for the container
 type ServerContainerStruct struct {
-	Name      string
-	Port      int
-	Sleep     int
-	Mysql     ServerContainerMysqlStruct
-	Nginx     ServerContainerNginxStruct
-	VredensLP ServerContainerVredensLPStruct
-	Redmine   ServerContainerRedmineStruct
-}
-
-// ServerContainerMysqlStruct struct for the container
-type ServerContainerMysqlStruct struct {
-	RootPassword string `toml:"root_password"`
-	Database     string
-	User         string
-	Password     string
-	Initial      string
-	Mock         string
-}
-
-// ServerContainerNginxStruct struct for the container
-type ServerContainerNginxStruct struct {
-	Public string
-}
-
-// ServerContainerVredensLPStruct struct for the container
-type ServerContainerVredensLPStruct struct {
-	Public string
-	Logs   string
-	Link   string
-}
-
-// ServerContainerRedmineStruct struct for the container
-type ServerContainerRedmineStruct struct {
-	RootPassword string `toml:"root_password"`
-	Database     string
+	Name   string
+	Type   string
+	Port   string
+	Link   []string
+	EnvVar []string `toml:"env_var"`
+	Volume []string
+	Sleep  int
+	Order  int
+	Env    string
+	Sys    string
 }
 
 // ---------------------------------
@@ -68,77 +44,192 @@ type ServerContainerRedmineStruct struct {
 
 // ServerTask for init
 func ServerTask(task ServerStruct, commandType string, order int, env string, sys string) {
-	// Only some command type should server
-	if commandType != "init" && commandType != "run" && commandType != "stop" && commandType != "destroy" {
-		return
-	}
-
-	var shouldContinue bool
-	if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
-		task.Order, task.Env, task.Sys, order, env, sys,
-	); shouldContinue {
-		return
-	}
-
+	// Log the type
 	Log("server", commandType)
 
-	var logVal string
-	var err error
-
-	switch commandType {
-	case "init":
-		logVal, err = ServerInit(task)
-	case "run":
-		logVal, err = ServerUp(task)
-	case "stop":
-		logVal, err = ServerStop(task)
-	case "destroy":
-		logVal, err = ServerDestroy(task)
-	}
-
-	LogErr("server", err)
-	Log("server] [result", logVal)
-}
-
-// ServerInit sets the server up
-func ServerInit(server ServerStruct) (log string, err error) {
-	return "", errors.New("Sorry. This feature isn't available yet")
-}
-
-// ServerUp sets the server up
-func ServerUp(server ServerStruct) (log string, err error) {
-	// Check if it is just a php
-	if unsafe.Sizeof(server.Php) != 0 {
-		public := server.Php.Public
-		port := server.Php.Port
-
-		if port == 0 {
-			port = 8000
+	// Take care of php
+	for _, php := range task.Php {
+		var shouldContinue bool
+		if php.Order, php.Env, php.Sys, shouldContinue = InitDecision(
+			php.Order, php.Env, php.Sys, order, env, sys,
+		); shouldContinue {
+			continue
 		}
 
-		Log("server", "Running server...")
-		Log("server", "Folder: "+public)
-		Log("server", "   Url: "+"localhost:"+strconv.Itoa(port))
+		// Instantiate log
+		var logVal string
+		var err error
 
-		log, err = RawCommand(RawStruct{
-			Command: "php",
-			Args:    []string{"-S", "localhost:" + strconv.Itoa(port), "-t", public},
-		})
+		switch commandType {
+		case "run":
+			logVal, err = ServerPhpUp(php)
+		case "stop":
+			logVal, err = ServerPhpStop(php)
+		default:
+			continue
+		}
 
-		return log, err
+		// Log whatever
+		LogErr("server", err)
+		Log("server] [result", logVal)
 	}
 
+	// Take care of containers
+	for _, container := range task.Container {
+		var shouldContinue bool
+		if container.Order, container.Env, container.Sys, shouldContinue = InitDecision(
+			container.Order, container.Env, container.Sys, order, env, sys,
+		); shouldContinue {
+			continue
+		}
+
+		// Instantiate log
+		var logVal string
+		var err error
+
+		switch commandType {
+		case "init":
+			logVal, err = ServerContainerInit(container)
+		case "run":
+			logVal, err = ServerContainerUp(container)
+		case "stop":
+			logVal, err = ServerContainerStop(container)
+		case "destroy":
+			logVal, err = ServerContainerDestroy(container)
+		default:
+			continue
+		}
+
+		// Log whatever
+		LogErr("server", err)
+		Log("server] [result", logVal)
+	}
+}
+
+// ---------------------------------
+// PHP functions
+
+// ServerPhpUp sets the server on
+func ServerPhpUp(server ServerPhpStruct) (log string, err error) {
+	public := server.Public
+	port := server.Port
+
+	if port == 0 {
+		port = 8000
+	}
+
+	Log("server", "Running server...")
+	Log("server", "Folder: "+public)
+	Log("server", "   Url: "+"localhost:"+strconv.Itoa(port))
+
+	log, err = RawCommand(RawStruct{
+		Command: "php",
+		Args:    []string{"-S", "localhost:" + strconv.Itoa(port), "-t", public},
+	})
+
+	// TODO: The php server should create a process number,
+	// use & to create running on the background script
+	// and on stop, stop it
+
+	return log, err
+}
+
+// ServerPhpStop sets the server off
+func ServerPhpStop(server ServerPhpStruct) (log string, err error) {
 	return "", errors.New("Sorry. This feature isn't available yet")
 }
 
-// ServerStop sets the server up
-func ServerStop(server ServerStruct) (log string, err error) {
-	return "", errors.New("Sorry. This feature isn't available yet")
+// ---------------------------------
+// Container functions
+
+// ServerContainerInit sets the container init
+func ServerContainerInit(container ServerContainerStruct) (log string, err error) {
+	cmdString := container.Name + " " + container.Type + " " + container.Port
+
+	// Take care of links
+	for _, link := range container.Link {
+		cmdString += "--link " + link + " "
+	}
+
+	// Take care of envVar
+	for _, envVar := range container.EnvVar {
+		i := strings.Index(envVar, "=")
+		envVarVal := envVar[i+1 : len(envVar)]
+
+		// Lets check if it is a path
+		if envVarVal[0:3] == "../" || envVarVal[0:2] == "./" {
+			envVar = envVar[0:i] + "=" + GetAbsolute(envVarVal)
+		}
+
+		cmdString += "--env " + envVar + " "
+	}
+
+	// Take care of volume
+	for _, volume := range container.Volume {
+		i := strings.Index(volume, ":")
+		volumeKey := volume[0:i]
+
+		// Lets check if it is a path
+		if volumeKey[0:3] == "../" || volumeKey[0:2] == "./" {
+			volume = GetAbsolute(volumeKey) + ":" + volume[i+1:len(volume)]
+		}
+
+		cmdString += "--volume " + volume + " "
+	}
+
+	// Now lets get the script path...
+	basePath := path.Join(CmdDir, "..")
+	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+
+	// ...and run the script
+	log, err = RawCommand(RawStruct{
+		Command: scriptPath,
+		Args:    []string{"create", cmdString},
+	})
+
+	return log, err
 }
 
-// ServerDestroy sets the server up
-func ServerDestroy(server ServerStruct) (log string, err error) {
-	return "", errors.New("Sorry. This feature isn't available yet")
+// ServerContainerUp sets the container on
+func ServerContainerUp(container ServerContainerStruct) (log string, err error) {
+	basePath := path.Join(CmdDir, "..")
+	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+
+	// Now lets run the script
+	log, err = RawCommand(RawStruct{
+		Command: scriptPath,
+		Args:    []string{"run", container.Name, strconv.Itoa(container.Sleep)},
+	})
+
+	return log, err
+}
+
+// ServerContainerStop sets the container off
+func ServerContainerStop(container ServerContainerStruct) (log string, err error) {
+	basePath := path.Join(CmdDir, "..")
+	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+
+	// Now lets run the script
+	log, err = RawCommand(RawStruct{
+		Command: scriptPath,
+		Args:    []string{"stop", container.Name},
+	})
+
+	return log, err
+}
+
+// ServerContainerDestroy destroys the container
+func ServerContainerDestroy(container ServerContainerStruct) (log string, err error) {
+	basePath := path.Join(CmdDir, "..")
+	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+
+	// Now lets run the script
+	log, err = RawCommand(RawStruct{
+		Command: scriptPath,
+		Args:    []string{"destroy", container.Name},
+	})
+
+	return log, err
 }
 
 // ---------------------------------
