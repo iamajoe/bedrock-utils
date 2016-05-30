@@ -161,6 +161,7 @@ exclude = ""
 include = [""]
 loader = ""
 loaders = [""]
+dependencies = [""]
 
 [script.options.module.pre_loaders.query]
 cache_directory = false
@@ -184,6 +185,7 @@ exclude = ""
 include = [""]
 loader = ""
 loaders = [""]
+dependencies = [""]
 
 [script.options.module.post_loaders.query]
 cache_directory = false
