@@ -35,26 +35,24 @@ func Init(commandType string, configPath string, env string, sys string) {
 	defer os.Chdir(wd)
 
 	// Lets take care of modules ordering
-	runOrder(0, commandType, config, env, sys)
+	orderChannel := make(chan int, config.MaxOrder)
+	for order := 0; order <= config.MaxOrder; order++ {
+		runOrder(orderChannel, order, commandType, config, env, sys)
+	}
 }
 
 // runOrder runs each instance per order
-func runOrder(order int, commandType string, config ConfigStruct, env string, sys string) {
-	if order > config.MaxOrder {
-		return
-	}
+func runOrder(channel chan int, order int, commandType string, config ConfigStruct, env string, sys string) {
+	go FileTask(config.Copy, "copy", order, env, sys)
+	go FileTask(config.Rename, "rename", order, env, sys)
+	go StyleTask(config.Style, order, env, sys)
+	go ScriptTask(config.Script, order, env, sys)
+	go FileTask(config.Remove, "remove", order, env, sys)
+	go RawTask(config.Raw, order, env, sys)
+	go ServerTask(config.Server, commandType, order, env, sys)
 
-	FileTask(config.Copy, "copy", order, env, sys)
-	FileTask(config.Rename, "rename", order, env, sys)
-	StyleTask(config.Style, order, env, sys)
-	ScriptTask(config.Script, order, env, sys)
-	FileTask(config.Remove, "remove", order, env, sys)
-	RawTask(config.Raw, order, env, sys)
-	ServerTask(config.Server, commandType, order, env, sys)
-
-	// Rerun
-	order++
-	runOrder(order, commandType, config, env, sys)
+	// Add the order to the channel
+	channel <- order
 }
 
 // ---------------------------------
