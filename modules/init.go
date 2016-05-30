@@ -69,18 +69,6 @@ func runOrder(order int, commandType string, config ConfigStruct, env string, sy
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		StyleTask(config.Style, order, env, sys)
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		ScriptTask(config.Script, order, env, sys)
-	}()
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
 		RawTask(config.Raw, order, env, sys)
 	}()
 
@@ -90,16 +78,21 @@ func runOrder(order int, commandType string, config ConfigStruct, env string, sy
 		ServerTask(config.Server, commandType, order, env, sys)
 	}()
 
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ScriptTask(config.Script, order, env, sys)
+	}()
+
+	// TODO: Style has problems with concurrency because of libsass
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		StyleTask(config.Style, order, env, sys)
+	}()
+
 	// Lets wait now
 	wg.Wait()
-
-	// FileTask(config.Copy, "copy", order, env, sys)
-	// FileTask(config.Rename, "rename", order, env, sys)
-	// StyleTask(config.Style, order, env, sys)
-	// ScriptTask(config.Script, order, env, sys)
-	// FileTask(config.Remove, "remove", order, env, sys)
-	// RawTask(config.Raw, order, env, sys)
-	// ServerTask(config.Server, commandType, order, env, sys)
 }
 
 // ---------------------------------

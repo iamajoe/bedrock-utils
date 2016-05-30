@@ -1,0 +1,80 @@
+max_order = 3
+
+# Remove everything from the latest build
+[[remove]]
+source = "build/*"
+ignore = "build/.gitkeep"
+order = 0
+
+# Set scripts
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "dev"
+order = 2
+[script.options]
+target = "web"
+devtool = "source-map"
+cache = true
+debug = true
+bail = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js"]
+[script.options.plugins]
+node_env = "development"
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+dependencies = [
+    "babel-core@6.4.5",
+    "babel-loader@6.2.1",
+    "babel-plugin-transform-runtime@6.4.3",
+    "babel-preset-es2015@6.3.13",
+    "babel-preset-stage-2@6.5.0"
+    # "babel-preset-react@6.5.0",
+]
+[script.options.module.loaders.query]
+cache_directory = true
+presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+[[script.options.module.loaders]]
+test = "regex:.json?$"
+loader = "json-loader"
+[[script.options.module.loaders]]
+test = "regex:.html?$"
+loader = "babel-raw"
+
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "prod"
+order = 2
+[script.options]
+target = "web"
+bail = true
+minify = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js", ".jsx"]
+[script.options.plugins]
+dedupe = true
+node_env = "production"
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+dependencies = [
+    "babel-core@6.4.5",
+    "babel-loader@6.2.1",
+    "babel-plugin-transform-runtime@6.4.3",
+    "babel-preset-es2015@6.3.13",
+    "babel-preset-stage-2@6.5.0"
+    # "babel-preset-react@6.5.0",
+]
+[script.options.module.loaders.query]
+presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+[[script.options.module.loaders]]
+test = "regex:.json?$"
+loader = "json-loader"
+[[script.options.module.loaders]]
+test = "regex:.html?$"
+loader = "babel-raw"

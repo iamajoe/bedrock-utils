@@ -1,7 +1,0 @@
-max_order = 1
-
-[server]
-
-[server.php]
-public = "build" # folder path
-port = 8000

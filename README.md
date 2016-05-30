@@ -172,6 +172,7 @@ exclude = ""
 include = [""]
 loader = ""
 loaders = [""]
+dependencies = [""]
 
 [script.options.module.loaders.query]
 cache_directory = false
@@ -249,7 +250,7 @@ database = ""
 #### Module notes / requirements
 ##### Style
 To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).<br>
-For now, this module needs to be on an order of its own. Trying to solve that.
+For now, this module needs to be on an order of its own or with a `script`. Trying to solve that.
 
 ##### Script
 Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)<br>
@@ -274,7 +275,7 @@ Also, you'll need to set two environment variables:
 - `BEDROCK_VAGRANT_PUBLIC_IP` - example: `192.168.2.100`
 
 ### Examples
-Go under the [test/data](test/data) folder and check the `*.toml`.
+Go under the [test](test) folder and check the `*.toml`.
 
 ===============
 

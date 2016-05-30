@@ -91,6 +91,8 @@ type scriptLoaderStruct struct {
 	Loader  string
 	Loaders []string
 	Query   scriptLoaderQueryStruct
+
+	Dependencies []string
 }
 
 type scriptLoaderQueryStruct struct {
@@ -196,11 +198,28 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	if NotExist("node_modules/webpack") {
 		_, err = RawCommand(RawStruct{
 			Command: "npm",
-			Args:    []string{"install", "webpack@1.12.2", "babel-core@6.4.5", "babel-loader@6.2.1", "babel-plugin-transform-runtime@6.4.3", "babel-preset-es2015@6.3.13", "babel-preset-react@6.5.0", "babel-preset-stage-2@6.5.0"},
+			Args:    []string{"install", "webpack@1.12.2"},
 		})
 
 		if err != nil {
 			return "", err
+		}
+	}
+
+	// Lets install dependencies
+	for _, loader := range file.Options.Module.Loaders {
+		for _, dep := range loader.Dependencies {
+			// Install
+			if NotExist("node_modules/" + dep) {
+				_, err = RawCommand(RawStruct{
+					Command: "npm",
+					Args:    []string{"install", dep},
+				})
+
+				if err != nil {
+					return "", err
+				}
+			}
 		}
 	}
 
