@@ -28,6 +28,7 @@ function get_header_tmpl() {
     <!-- <![endif]-->
         <div id="body-wrapper">
             <header>
+                The header!
             </header>
             <content>
 <?php

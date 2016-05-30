@@ -4,6 +4,7 @@
     <section class="banner">
     </section>
     <section class="content">
+        The content!
     </section>
     <section class="pre-footer">
     </section>

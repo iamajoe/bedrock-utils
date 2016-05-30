@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"strconv"
 	"unsafe"
 )
 
@@ -115,9 +116,13 @@ func ServerUp(server ServerStruct) (log string, err error) {
 			port = 8000
 		}
 
+		Log("server", "Running server...")
+		Log("server", "Folder: "+public)
+		Log("server", "   Url: "+"localhost:"+strconv.Itoa(port))
+
 		log, err = RawCommand(RawStruct{
 			Command: "php",
-			Args:    []string{"-S", "localhost:" + string(port), "-t", public},
+			Args:    []string{"-S", "localhost:" + strconv.Itoa(port), "-t", public},
 		})
 
 		return log, err
