@@ -35,52 +35,50 @@ function __VAGRANT_exist {
 # ------------------------------------------------
 
 # Vagrant project
-# @param {string} pkg
 # @param {string} action
-# @param {string} arg1
-# @param {string} arg2
-# @param {string} private_ip
-# @param {string} public_ip
+# @param {string} name
+# @param {string} type / sleep
+# @param {string} port
+# @param {string} env_var
+# @param {string} volume
 function __VAGRANT_project {
-    export BEDROCK_VAGRANT_IP=$5
-    export BEDROCK_VAGRANT_PUBLIC_IP=$6
+    # export BEDROCK_VAGRANT_IP=...
+    # export BEDROCK_VAGRANT_PUBLIC_IP=...
+    # export BEDROCK_VAGRANT_BASE_PATH=...
+    # export BEDROCK_VAGRANT_BEDROCK_PATH=...
 
-    export BEDROCK_VAGRANT_PROJECT_SRC=".run/do.sh"
-    export BEDROCK_VAGRANT_PROJECT_NAME=$1
+    set -e
+    case "$1" in
+        'create')
+            vagrant up
+            vagrant ssh -c "project_do $1 $2 $3 $4 $6"
+        ;;
 
-    # Vagrant needed for non linux
-    if [[ $(__VAGRANT_exist) == "true" ]]; then
-        set -e
-        case "$2" in
-            'init')
-                vagrant up
-            ;;
+        'run')
+            vagrant up
+            vagrant ssh -c "project_do $1 $2 $3"
+        ;;
 
-            'run')
-                vagrant up
-            ;;
+        'stop')
+            vagrant suspend
+        ;;
 
-            'copy')
-                vagrant up
-            ;;
-
-            'stop')
-                vagrant suspend
-            ;;
-
-            'destroy')
-                vagrant destroy
-                rm -rf ./.vagrant
-            ;;
-        esac
-    else
-        __console_err "You need to install Vagrant!"
-    fi
+        'destroy')
+            vagrant destroy
+            rm -rf ./.vagrant
+        ;;
+    esac
 }
 
 #################################
 # Argument case!
 
 pushd $(__get_src_dir)
-__VAGRANT_project $1 $2 $3 $4 $5 $6
+
+if [[ $(__VAGRANT_exist) == "true" ]]; then
+    __VAGRANT_project $1 $2 $3 $4 $5 $6
+else
+    __console_err "You need to install Vagrant!"
+fi
+
 popd

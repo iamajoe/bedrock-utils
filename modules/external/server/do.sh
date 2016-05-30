@@ -92,12 +92,13 @@ function __container_destroy {
 # @param {string} name
 # @param {string} type / sleep
 # @param {string} port
-# @param {string} arg
+# @param {string} env_var
+# @param {string} volume
 function __PROJECT {
     set -e
     case "$1" in
         'create')
-            __container_create $2 $3 $4 $5
+            __container_create $2 $3 $4 $5 $6
         ;;
 
         'run')
@@ -137,7 +138,7 @@ echo " "
 
 if [[ `uname` != 'Linux' ]]; then
     # Non-linux needs vagrant to run docker
-    __console_err "Vagrant isn't implemented, yet!"
+    ./vagrant/vagrant.sh $1 $2 $3 $4 $5 $6
 else
     if [[ $(__DOCKER_exist) == "true" ]]; then
         __PROJECT $1 $2 $3 $4 $5 $6
