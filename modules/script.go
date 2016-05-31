@@ -195,31 +195,10 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	dest := file.Dest
 
 	// Install dependencies
-	if NotExist("node_modules/webpack") {
-		_, err = RawCommand(RawStruct{
-			Command: "npm",
-			Args:    []string{"install", "webpack@1.12.2"},
-		})
-
-		if err != nil {
-			return "", err
-		}
-	}
-
-	// Lets install dependencies
+	NpmInstall([]string{"webpack@1.12.2"})
 	for _, loader := range file.Options.Module.Loaders {
 		for _, dep := range loader.Dependencies {
-			// Install
-			if NotExist("node_modules/" + dep) {
-				_, err = RawCommand(RawStruct{
-					Command: "npm",
-					Args:    []string{"install", dep},
-				})
-
-				if err != nil {
-					return "", err
-				}
-			}
+			NpmInstall([]string{dep})
 		}
 	}
 
@@ -235,7 +214,7 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	// Lets get the paths for the script
 	basePath := path.Join(CmdDir, "..")
 	vendorPath := path.Join(basePath, "node_modules")
-	scriptPath := path.Join(basePath, "modules/external/script/webpack.js")
+	scriptPath := path.Join(CmdDir, "external/script/webpack.js")
 
 	// Now lets run the script
 	log, err = RawCommand(RawStruct{

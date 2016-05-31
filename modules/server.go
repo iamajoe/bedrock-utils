@@ -44,8 +44,6 @@ type ServerContainerStruct struct {
 
 // ServerTask for init
 func ServerTask(task ServerStruct, commandType string, order int, env string, sys string) {
-	// Log the type
-	Log("server", commandType)
 
 	// Take care of php
 	for _, php := range task.Php {
@@ -55,6 +53,9 @@ func ServerTask(task ServerStruct, commandType string, order int, env string, sy
 		); shouldContinue {
 			continue
 		}
+
+		// Log the type
+		Log("server", commandType+" php")
 
 		// Instantiate log
 		var logVal string
@@ -178,8 +179,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 	}
 
 	// Now lets get the script path...
-	basePath := path.Join(CmdDir, "..")
-	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+	scriptPath := path.Join(CmdDir, "external/server/do.sh")
 
 	// ...and run the script
 	log, err = RawCommand(RawStruct{
@@ -192,8 +192,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 
 // ServerContainerUp sets the container on
 func ServerContainerUp(container ServerContainerStruct) (log string, err error) {
-	basePath := path.Join(CmdDir, "..")
-	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+	scriptPath := path.Join(CmdDir, "external/server/do.sh")
 
 	// Now lets run the script
 	log, err = RawCommand(RawStruct{
@@ -206,8 +205,7 @@ func ServerContainerUp(container ServerContainerStruct) (log string, err error) 
 
 // ServerContainerStop sets the container off
 func ServerContainerStop(container ServerContainerStruct) (log string, err error) {
-	basePath := path.Join(CmdDir, "..")
-	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+	scriptPath := path.Join(CmdDir, "external/server/do.sh")
 
 	// Now lets run the script
 	log, err = RawCommand(RawStruct{
@@ -220,8 +218,7 @@ func ServerContainerStop(container ServerContainerStruct) (log string, err error
 
 // ServerContainerDestroy destroys the container
 func ServerContainerDestroy(container ServerContainerStruct) (log string, err error) {
-	basePath := path.Join(CmdDir, "..")
-	scriptPath := path.Join(basePath, "modules/external/server/do.sh")
+	scriptPath := path.Join(CmdDir, "external/server/do.sh")
 
 	// Now lets run the script
 	log, err = RawCommand(RawStruct{

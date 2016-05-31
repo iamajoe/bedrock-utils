@@ -179,21 +179,12 @@ func styleAutoprefixCSS(file StyleStruct) (log string, err error) {
 	src := file.Dest
 
 	// Install dependencies
-	if NotExist("node_modules/autoprefixer") {
-		_, err = RawCommand(RawStruct{
-			Command: "npm",
-			Args:    []string{"install", "postcss@5.0.21", "autoprefixer@6.3.6"},
-		})
-
-		if err != nil {
-			return "", err
-		}
-	}
+	NpmInstall([]string{"postcss@5.0.21", "autoprefixer@6.3.6"})
 
 	// Lets get the paths for the script
 	basePath := path.Join(CmdDir, "..")
 	vendorPath := path.Join(basePath, "node_modules")
-	scriptPath := path.Join(basePath, "modules/external/style/autoprefix.js")
+	scriptPath := path.Join(CmdDir, "external/style/autoprefix.js")
 
 	// Now lets run the script
 	log, err = RawCommand(RawStruct{
