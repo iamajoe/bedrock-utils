@@ -1,9 +1,5 @@
 package modules
 
-import (
-	"os"
-)
-
 // ---------------------------------
 // Vars
 
@@ -12,11 +8,6 @@ import (
 
 // NpmInstall installs node dependencies
 func NpmInstall(deps []string) (log string, err error) {
-	actualWd, _ := os.Getwd()
-
-	// Lets change for the cmd dir
-	os.Chdir(CmdDir)
-
 	for _, dep := range deps {
 		// Install
 		if NotExist("node_modules/" + dep) {
@@ -30,9 +21,6 @@ func NpmInstall(deps []string) (log string, err error) {
 			}
 		}
 	}
-
-	// Lets change back to the actual wd
-	os.Chdir(actualWd)
 
 	return
 }
