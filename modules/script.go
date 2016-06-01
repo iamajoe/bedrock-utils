@@ -90,14 +90,9 @@ type scriptLoaderStruct struct {
 	Include []string
 	Loader  string
 	Loaders []string
-	Query   scriptLoaderQueryStruct
+	Query   string
 
 	Dependencies []string
-}
-
-type scriptLoaderQueryStruct struct {
-	CacheDirectory bool `toml:"cache_directory"`
-	Presets        []string
 }
 
 type scriptResolveStruct struct {

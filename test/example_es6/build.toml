@@ -34,9 +34,7 @@ dependencies = [
     "babel-preset-stage-2@6.5.0"
     # "babel-preset-react@6.5.0",
 ]
-[script.options.module.loaders.query]
-cache_directory = true
-presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+query = "{ \"cacheDirectory\": true, \"presets\": [\"babel-preset-stage-2\", \"babel-preset-es2015\"] }"
 [[script.options.module.loaders]]
 test = "regex:.json?$"
 loader = "json-loader"
@@ -70,8 +68,7 @@ dependencies = [
     "babel-preset-stage-2@6.5.0"
     # "babel-preset-react@6.5.0",
 ]
-[script.options.module.loaders.query]
-presets = ["babel-preset-stage-2", "babel-preset-es2015"]
+query = "{ \"presets\": [\"babel-preset-stage-2\", \"babel-preset-es2015\"] }"
 [[script.options.module.loaders]]
 test = "regex:.json?$"
 loader = "json-loader"
