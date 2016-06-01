@@ -206,6 +206,7 @@ module_templates = [""]
 [script.options.plugins]
 dedupe = false
 node_env = ""
+webpack_fail = false # https://www.npmjs.com/package/webpack-fail-plugin
 
 # Sets up a server
 [server]
@@ -233,7 +234,7 @@ For now, this module needs to be on an order of its own or with a `script`. Tryi
 Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.github.io/)<br>
 This module is pretty complicated because it tries to proxy to [webpack](https://webpack.github.io/). For general reference, you should use [webpack](https://webpack.github.io/docs/configuration.html)<br>
 Follow the types on top, otherwise you will break the compiler. Whenever you need another type, you may try to string the json. For example `entry = "[\"hey\"]"` will convert into an array when in [webpack](https://webpack.github.io/).Whenever you need a simple regex you can use `regex:` like for example on `loader.test` you can set it as `test = "regex:.js?$"`<br>
-For now, only `dedupe` plugin is accepted. If you need other please issue and I'll implement it asap.<br>
+For now, only `dedupe` and `webpack-fail-plugin` plugins are accepted. If you need other please issue and I'll implement it asap.<br>
 `output.filename`, `output.path` and `entry` aren't supported. Use `src` and `dest` instead (although these won't work with arrays). Eventually, I'll get to this.
 
 ##### Server

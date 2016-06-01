@@ -108,8 +108,9 @@ type scriptResolveStruct struct {
 }
 
 type scriptPluginsStruct struct {
-	Dedupe  bool
-	NodeEnv string `toml:"node_env"`
+	Dedupe      bool
+	NodeEnv     string `toml:"node_env"`
+	WebpackFail bool   `toml:"webpack_fail"`
 }
 
 // ---------------------------------
@@ -190,7 +191,7 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	dest := file.Dest
 
 	// Install dependencies
-	NpmInstall([]string{"webpack@1.12.2"})
+	NpmInstall([]string{"webpack@1.12.2", "webpack-fail-plugin@1.0.4"})
 	for _, loader := range file.Options.Module.Loaders {
 		for _, dep := range loader.Dependencies {
 			NpmInstall([]string{dep})

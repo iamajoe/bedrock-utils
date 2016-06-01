@@ -89,6 +89,12 @@ var convertPlugins = function (obj) {
         }));
     }
 
+    // Set the fail plugin
+    if (obj.webpackFail) {
+        var webpackFail = require(path.join(vendor, 'webpack-fail-plugin'));
+        arr.push(webpackFail);
+    }
+
     return arr;
 };
 
