@@ -1,8 +1,6 @@
 package modules
 
 import (
-	"errors"
-	"io"
 	"os"
 	"os/exec"
 	"strings"
@@ -18,11 +16,6 @@ type RawStruct struct {
 	Order   int
 	Env     string
 	Sys     string
-}
-
-type rawBrokenWriter struct {
-	w io.Writer
-	c int
 }
 
 // ---------------------------------
@@ -57,23 +50,11 @@ func RawTask(config []RawStruct, order int, env string, sys string) {
 func RawCommand(file RawStruct) (log string, err error) {
 	// Create an *exec.Cmd
 	cmd := exec.Command(file.Command, file.Args...)
-	cmd.Stdout = &rawBrokenWriter{os.Stdout, 1}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
 	// Execute command
-	err = cmd.Run() // will wait for command to return
-	if err != nil {
-		return "", err
-	}
+	cmd.Run()
 
 	return
-}
-
-// Write is a writer for the raw command
-func (bw *rawBrokenWriter) Write(data []byte) (int, error) {
-	if bw.c > 0 {
-		bw.c = bw.c - 1
-		return bw.w.Write(data)
-	}
-
-	return 0, errors.New("Command broke")
 }

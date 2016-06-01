@@ -38,14 +38,13 @@ function __DOCKER_exist {
 # @param {string} name
 # @param {string} type
 # @param {string} port
-# @param {string} env_var
-# @param {string} volume
+# @param {string} args
 function __container_create {
     if ! docker ps -a | grep -q $1; then
         echo "Creating a new $1 docker container"
 
         # Create the docker container
-        docker create --name $1 -p $3 $4 $5 $2
+        docker create --name $1 -p $3 "${@:4}" $2
 
         # Just wait some seconds
         sleep 3
@@ -90,15 +89,12 @@ function __container_destroy {
 # Run under linux
 # @param {string} action
 # @param {string} name
-# @param {string} type / sleep
-# @param {string} port
-# @param {string} env_var
-# @param {string} volume
+# @param {*} *
 function __PROJECT {
     set -e
     case "$1" in
         'create')
-            __container_create $2 $3 $4 $5 $6
+            __container_create $2 $3 $4 "${@:5}"
         ;;
 
         'run')
@@ -117,10 +113,10 @@ function __PROJECT {
             echo " "
             echo "Usage: ./do.sh ..."
             echo " "
-            echo "    create <name> <type> <port> [env_var] [volume]         # Creates container"
-            echo "    run <name> <sleep>                                     # Run container"
-            echo "    stop <name>                                            # Stop container"
-            echo "    destroy <name>                                         # Destroy container"
+            echo "    create <name> <type> <port> [args]         # Creates container"
+            echo "    run <name> <sleep>                         # Run container"
+            echo "    stop <name>                                # Stop container"
+            echo "    destroy <name>                             # Destroy container"
             echo " "
         ;;
     esac
@@ -137,11 +133,15 @@ echo "# Project"
 echo " "
 
 if [[ `uname` != 'Linux' ]]; then
+    echo "Running Vagrant: $@"
+
     # Non-linux needs vagrant to run docker
-    ./vagrant/vagrant.sh $1 $2 $3 $4 $5 $6
+    ./vagrant/vagrant.sh $1 $2 $3 $4 "${@:5}"
 else
     if [[ $(__DOCKER_exist) == "true" ]]; then
-        __PROJECT $1 $2 $3 $4 $5 $6
+        echo "Running: $@"
+
+        __PROJECT $1 $2 $3 $4 "${@:5}"
     else
         __console_err "You need to install Docker!"
     fi

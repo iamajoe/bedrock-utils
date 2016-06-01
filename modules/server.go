@@ -84,6 +84,9 @@ func ServerTask(task ServerStruct, commandType string, order int, env string, sy
 			continue
 		}
 
+		// Log the type
+		Log("server", commandType+" container "+container.Type)
+
 		// Instantiate log
 		var logVal string
 		var err error
@@ -146,10 +149,11 @@ func ServerPhpStop(server ServerPhpStruct) (log string, err error) {
 // ServerContainerInit sets the container init
 func ServerContainerInit(container ServerContainerStruct) (log string, err error) {
 	cmdString := container.Name + " " + container.Type + " " + container.Port
+	cmdArg := ""
 
 	// Take care of links
 	for _, link := range container.Link {
-		cmdString += "--link " + link + " "
+		cmdArg += "--link " + link + " "
 	}
 
 	// Take care of envVar
@@ -162,7 +166,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 			envVar = envVar[0:i] + "=" + GetAbsolute(envVarVal)
 		}
 
-		cmdString += "--env " + envVar + " "
+		cmdArg += "-e " + envVar + " "
 	}
 
 	// Take care of volume
@@ -175,7 +179,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 			volume = GetAbsolute(volumeKey) + ":" + volume[i+1:len(volume)]
 		}
 
-		cmdString += "--volume " + volume + " "
+		cmdArg += "-v " + volume + " "
 	}
 
 	// Now lets get the script path...
@@ -184,7 +188,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 	// ...and run the script
 	log, err = RawCommand(RawStruct{
 		Command: scriptPath,
-		Args:    []string{"create", cmdString},
+		Args:    []string{"create", cmdString, cmdArg},
 	})
 
 	return log, err

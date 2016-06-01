@@ -37,26 +37,25 @@ function __VAGRANT_exist {
 # Vagrant project
 # @param {string} action
 # @param {string} name
-# @param {string} type / sleep
-# @param {string} port
-# @param {string} env_var
-# @param {string} volume
+# @param {*} *
 function __VAGRANT_project {
     # export BEDROCK_VAGRANT_IP=...
     # export BEDROCK_VAGRANT_PUBLIC_IP=...
-    # export BEDROCK_VAGRANT_BASE_PATH=...
+    # export BEDROCK_VAGRANT_PROJECT_PATH=...
     # export BEDROCK_VAGRANT_BEDROCK_PATH=...
+
+    project_do="/vagrant_project_bedrock/bin/external/server/do.sh"
 
     set -e
     case "$1" in
         'create')
             vagrant up
-            vagrant ssh -c "project_do $1 $2 $3 $4 $6"
+            vagrant ssh -- -t "$project_do $1 $2 $3 $4 ${@:5}"
         ;;
 
         'run')
             vagrant up
-            vagrant ssh -c "project_do $1 $2 $3"
+            vagrant ssh -- -t "$project_do $1 $2 $3"
         ;;
 
         'stop')
@@ -64,7 +63,7 @@ function __VAGRANT_project {
         ;;
 
         'destroy')
-            vagrant destroy
+            vagrant destroy --force
             rm -rf ./.vagrant
         ;;
     esac
@@ -76,7 +75,7 @@ function __VAGRANT_project {
 pushd $(__get_src_dir)
 
 if [[ $(__VAGRANT_exist) == "true" ]]; then
-    __VAGRANT_project $1 $2 $3 $4 $5 $6
+    __VAGRANT_project $1 $2 $3 $4 "${@:5}"
 else
     __console_err "You need to install Vagrant!"
 fi

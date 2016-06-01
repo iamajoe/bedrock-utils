@@ -2,15 +2,6 @@
   "name": "bedrock_utils",
   "version": "0.0.1",
   "scripts": {
-    "init": ".run/do.sh tmp_redmine init 192.168.33.11 192.168.2.100",
-    "start": ".run/do.sh tmp_redmine run 192.168.33.11 192.168.2.100",
-    "stop": ".run/do.sh tmp_redmine stop",
-    "destroy": ".run/do.sh tmp_redmine destroy",
-    "vagrant-reload": "pushd .run/tasks; vagrant reload --provision; popd",
-    "vagrant-ssh": "pushd .run/tasks; vagrant ssh; popd",
-
-    "start-public": ".run/do.sh tmp_redmine run 192.168.33.11 192.168.2.100",
-
     "go-install": "cd cmd; go get . ; cd ..",
 
     "go-build-win": "rm bin/bedrock_win; cd cmd; go build . ; mv cmd ../bin/bedrock_win; cd ..",
@@ -29,9 +20,23 @@
     "go-example-server-mac": "bin/bedrock_mac run test/example_server/server.toml",
     "go-example-server-linux": "bin/bedrock_linux run test/example_server/server.toml",
 
-    "go-example-container-win": "bin/bedrock_win run test/example_container/server.toml",
-    "go-example-container-mac": "bin/bedrock_mac run test/example_container/server.toml",
-    "go-example-container-linux": "bin/bedrock_linux run test/example_container/server.toml",
+    "go-example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",
+
+    "go-example-container-init-win": "bin/bedrock_win init test/example_container/server.toml",
+    "go-example-container-init-mac": "bin/bedrock_mac init test/example_container/server.toml",
+    "go-example-container-init-linux": "bin/bedrock_linux init test/example_container/server.toml",
+
+    "go-example-container-run-win": "bin/bedrock_win run test/example_container/server.toml",
+    "go-example-container-run-mac": " bin/bedrock_mac run test/example_container/server.toml",
+    "go-example-container-run-linux": "bin/bedrock_linux run test/example_container/server.toml",
+
+    "go-example-container-stop-win": "bin/bedrock_win stop test/example_container/server.toml",
+    "go-example-container-stop-mac": "bin/bedrock_mac stop test/example_container/server.toml",
+    "go-example-container-stop-linux": "bin/bedrock_linux stop test/example_container/server.toml",
+
+    "go-example-container-destroy-win": "bin/bedrock_win destroy test/example_container/server.toml",
+    "go-example-container-destroy-mac": "bin/bedrock_mac destroy test/example_container/server.toml",
+    "go-example-container-destroy-linux": "bin/bedrock_linux destroy test/example_container/server.toml",
 
     "go-example-test-build-times-mac-go": "SECONDS=0; npm run go-example-build-mac prod; echo \"[example-mac-go] $SECONDS secs\" >> log/times.log",
     "go-example-test-build-times-mac-node": "SECONDS=0; pushd test/example/node_build_comparison; npm run build prod; popd; echo \"[example-mac-node] $SECONDS secs\" >> log/times.log",
