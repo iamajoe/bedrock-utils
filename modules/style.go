@@ -182,8 +182,7 @@ func styleAutoprefixCSS(file StyleStruct) (log string, err error) {
 	NpmInstall([]string{"postcss@5.0.21", "autoprefixer@6.3.6"})
 
 	// Lets get the paths for the script
-	basePath := path.Join(CmdDir, "..")
-	vendorPath := path.Join(basePath, "node_modules")
+	vendorPath := NpmFindModules()
 	scriptPath := path.Join(CmdDir, "external/style/autoprefix.js")
 
 	// Now lets run the script

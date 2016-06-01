@@ -264,11 +264,12 @@ var task = function (options) {
 // ---------------------------------------------
 // Runtime
 
-var errPath = path.join(vendor, '../log/webpack_error.log');
+var errPath = path.join(vendor, '../log');
+var errFile = path.join(errPath, 'webpack_error.log');
 
 // Remove old error log
-if (fs.existsSync(errPath)) {
-    fs.unlinkSync(errPath);
+if (fs.existsSync(errFile)) {
+    fs.unlinkSync(errFile);
 }
 
 // Catch the uncaught errors
@@ -278,7 +279,13 @@ process.on('uncaughtException', function(err) {
     data += err;
     data += '\n\n///////////////////////////////\nWEBPACK OPTIONS:\n\n';
     data += JSON.stringify(convert(JSON.parse(opts)), null, 4);
-    fs.writeFileSync(errPath, data, 'utf-8');
+
+    // Lets create the log folder if it doesn't exist
+    if (!fs.existsSync(errPath)) {
+        fs.mkdirSync(errPath);
+    }
+
+    fs.writeFileSync(errFile, data, 'utf-8');
 
     // Now lets error!
     throw err;

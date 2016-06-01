@@ -35,11 +35,12 @@ var task = function (fileSrc, options) {
 // ---------------------------------------------
 // Runtime
 
-var errPath = path.join(vendor, '../log/autoprefix_error.log');
+var errPath = path.join(vendor, '../log');
+var errFile = path.join(errPath, 'autoprefix_error.log');
 
 // Remove old error log
-if (fs.existsSync(errPath)) {
-    fs.unlinkSync(errPath);
+if (fs.existsSync(errFile)) {
+    fs.unlinkSync(errFile);
 }
 
 // Catch the uncaught errors
@@ -47,7 +48,13 @@ process.on('uncaughtException', function(err) {
     var data = '';
     data += '///////////////////////////////\nAUTOPREFIX ERROR:\n\n';
     data += err;
-    fs.writeFileSync(errPath, data, 'utf-8');
+
+    // Lets create the log folder if it doesn't exist
+    if (!fs.existsSync(errPath)) {
+        fs.mkdirSync(errPath);
+    }
+
+    fs.writeFileSync(errFile, data, 'utf-8');
 
     // Now lets error!
     throw err;

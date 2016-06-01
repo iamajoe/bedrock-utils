@@ -212,8 +212,7 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	optionsString := string(options)
 
 	// Lets get the paths for the script
-	basePath := path.Join(CmdDir, "..")
-	vendorPath := path.Join(basePath, "node_modules")
+	vendorPath := NpmFindModules()
 	scriptPath := path.Join(CmdDir, "external/script/webpack.js")
 
 	// Now lets run the script
