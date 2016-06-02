@@ -258,7 +258,7 @@ For now, the best way to understand what templates are available is for you to g
 
 Containers are on the TODO list but not yet implemented
 
-###### `[server.php]`
+###### `[[server.php]]`
 Install [PHP](http://php.net/)
 
 ###### `[[server.container]]` under `Linux`
