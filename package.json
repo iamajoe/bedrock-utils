@@ -3,43 +3,20 @@
   "version": "0.0.1",
   "scripts": {
     "go-install": "cd cmd; go get . ; cd ..",
+    "build": "rm -rf bin/bedrock bin/external; cd cmd; go build . ; mv cmd ../bin/bedrock; cd ..; mv modules/external bin/external",
 
-    "go-build-win": "rm bin/bedrock_win; cd cmd; go build . ; mv cmd ../bin/bedrock_win; cd ..",
-    "go-build-mac": "rm bin/bedrock_mac; cd cmd; go build . ; mv cmd ../bin/bedrock_mac; cd ..",
-    "go-build-linux": "rm bin/bedrock_linux; cd cmd; go build . ; mv cmd ../bin/bedrock_linux; cd ..",
+    "example-build": "bin/bedrock build test/example_build/build.toml",
+    "example-es6": "bin/bedrock build test/example_es6/build.toml",
+    "example-server": "bin/bedrock run test/example_server/server.toml",
 
-    "go-example-build-win": "bin/bedrock_win build test/example_build/build.toml",
-    "go-example-build-mac": "bin/bedrock_mac build test/example_build/build.toml",
-    "go-example-build-linux": "bin/bedrock_linux build test/example_build/build.toml",
+    "example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",
+    "example-container-init": "bin/bedrock init test/example_container/server.toml",
+    "example-container-run": "bin/bedrock run test/example_container/server.toml",
+    "example-container-stop": "bin/bedrock stop test/example_container/server.toml",
+    "example-container-destroy": "bin/bedrock destroy test/example_container/server.toml",
 
-    "go-example-es6-win": "bin/bedrock_win build test/example_es6/build.toml",
-    "go-example-es6-mac": "bin/bedrock_mac build test/example_es6/build.toml",
-    "go-example-es6-linux": "bin/bedrock_linux build test/example_es6/build.toml",
-
-    "go-example-server-win": "bin/bedrock_win run test/example_server/server.toml",
-    "go-example-server-mac": "bin/bedrock_mac run test/example_server/server.toml",
-    "go-example-server-linux": "bin/bedrock_linux run test/example_server/server.toml",
-
-    "go-example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",
-
-    "go-example-container-init-win": "bin/bedrock_win init test/example_container/server.toml",
-    "go-example-container-init-mac": "bin/bedrock_mac init test/example_container/server.toml",
-    "go-example-container-init-linux": "bin/bedrock_linux init test/example_container/server.toml",
-
-    "go-example-container-run-win": "bin/bedrock_win run test/example_container/server.toml",
-    "go-example-container-run-mac": " bin/bedrock_mac run test/example_container/server.toml",
-    "go-example-container-run-linux": "bin/bedrock_linux run test/example_container/server.toml",
-
-    "go-example-container-stop-win": "bin/bedrock_win stop test/example_container/server.toml",
-    "go-example-container-stop-mac": "bin/bedrock_mac stop test/example_container/server.toml",
-    "go-example-container-stop-linux": "bin/bedrock_linux stop test/example_container/server.toml",
-
-    "go-example-container-destroy-win": "bin/bedrock_win destroy test/example_container/server.toml",
-    "go-example-container-destroy-mac": "bin/bedrock_mac destroy test/example_container/server.toml",
-    "go-example-container-destroy-linux": "bin/bedrock_linux destroy test/example_container/server.toml",
-
-    "go-example-test-build-times-mac-go": "SECONDS=0; npm run go-example-build-mac prod; echo \"[example-mac-go] $SECONDS secs\" >> log/times.log",
-    "go-example-test-build-times-mac-node": "SECONDS=0; pushd test/example/node_build_comparison; npm run build prod; popd; echo \"[example-mac-node] $SECONDS secs\" >> log/times.log",
-    "go-example-test-build-times-mac": "echo \"[example-mac] Start time test\"; for i in {1..3}; do npm run go-example-test-build-times-mac-go; npm run go-example-test-build-times-mac-node; done; echo \"[example-mac] Time test ended\""
+    "example-test-build-times-go": "SECONDS=0; npm run example-build prod; echo \"[example-go] $SECONDS secs\" >> log/times.log",
+    "example-test-build-times-node": "SECONDS=0; pushd test/example/node_build_comparison; npm run build prod; popd; echo \"[example-node] $SECONDS secs\" >> log/times.log",
+    "example-test-build-times": "echo \"[example] Start time test\"; for i in {1..3}; do npm run example-test-build-times-go; npm run example-test-build-times-node; done; echo \"[example] Time test ended\""
   }
 }
