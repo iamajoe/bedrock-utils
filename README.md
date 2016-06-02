@@ -2,11 +2,13 @@
 
 The idea for this repository is to have a mix of utils to use when developing a project.<br>
 **Note:** Any kind of path should be absolute or relative to the `*.toml`<br>
-**Note 2:** Eventually, I'll get this module cross compiled as for the moment select the right file for your OS in the bin
+
+## Install
+Select the compressed file related to your platform under [bin](bin), download it and extract it under your project.
 
 ## Usage
 ```
-./bin/bedrock ...
+./bedrock-utils/bedrock ...
     init <*.toml>               # Initializes project"
     build <*.toml> [env]        # Builds project"
     run <*.toml>                # Run project"
@@ -18,15 +20,15 @@ The idea for this repository is to have a mix of utils to use when developing a 
 
 ```sh
 # To build the project
-./bin/bedrock build build.toml
+./bedrock-utils/bedrock build build.toml
 
 # To run the project
-./bin/bedrock init server.toml
-./bin/bedrock run server.toml
+./bedrock-utils/bedrock init server.toml
+./bedrock-utils/bedrock run server.toml
 
 # To remove server
-./bin/bedrock stop server.toml
-./bin/bedrock destroy server.toml
+./bedrock-utils/bedrock stop server.toml
+./bedrock-utils/bedrock destroy server.toml
 ```
 
 =========
@@ -278,4 +280,5 @@ Go under the [test](test) folder and check the `*.toml`.
 ===============
 
 ## Development
-TODO: ...
+- Clone the project
+- Run `npm run build` (or if you don't want to use [Node.js](http://nodejs.org/), check the script under the `package.json`)
