@@ -1,0 +1,9 @@
+{
+    "config": {
+        "vendor-dir": "composer"
+    },
+    "require": {
+        "slim/slim": "^3.0",
+        "twig/twig": "1.23.*"
+    }
+}

@@ -1,0 +1,62 @@
+/*******************
+* Typography fonts
+********************/
+
+$sans-serif-light: sans-serif;
+$sans-serif-regular: sans-serif;
+$sans-serif-medium: sans-serif;
+$sans-serif-bold: sans-serif;
+$sans-serif-italic: sans-serif;
+
+$serif-light: serif;
+$serif-regular: serif;
+$serif-medium: serif;
+$serif-bold: serif;
+$serif-italic: serif;
+
+$font-size-50: 16px;
+$font-size-40: 14px;
+$font-size-30: 12px;
+
+.ss-rg {
+    font-family: $sans-serif-regular;
+    font-weight: 400;
+}
+
+b,
+.ss-bd {
+    font-family: $sans-serif-bold;
+    font-weight: 700;
+}
+
+i,
+.ss-it {
+    font-family: $sans-serif-italic;
+    font-weight: 400;
+    font-style: italic;
+}
+
+/*******************
+* Headings
+********************/
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+/*******************
+* General
+********************/
+// .inverse {
+// }
+
+/*******************
+* Links
+********************/
+a {
+    text-decoration: none;
+    transition: color $animation-time $animation-ease;
+
+    &, &:visited, &:focus {
+        outline: none;
+    }
+}

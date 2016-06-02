@@ -13,6 +13,7 @@ type FileStruct struct {
 	Src    string `toml:"source"`
 	Dest   string `toml:"destination"`
 	Ignore string
+	Force  bool
 	Order  int
 	Env    string
 	Sys    string
@@ -42,7 +43,6 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 				continue
 			}
 
-			// Copy file
 			Log(taskType, file)
 
 			// Reset dest
@@ -74,6 +74,11 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 
 // FileCopy copies * from source to destination
 func FileCopy(file FileStruct) (log string, err error) {
+	// Remove the file if it has force
+	if !NotExist(file.Src) && file.Force {
+		FileRemove(file)
+	}
+
 	srcFile, srcErr := os.Stat(file.Src)
 
 	switch {

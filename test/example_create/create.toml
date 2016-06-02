@@ -1,0 +1,15 @@
+max_order = 2
+
+[[create]]
+type = "none"
+destination = "project"
+
+[[create]]
+type = "style"
+destination = "project"
+order = 1
+
+[[create]]
+type = "php_jquery"
+destination = "project"
+order = 2

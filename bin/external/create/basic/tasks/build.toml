@@ -1,0 +1,105 @@
+max_order = 3
+
+# Remove everything from the latest build
+[[remove]]
+source = "build/*"
+ignore = "build/.gitkeep"
+order = 0
+
+# TODO: Need to improve the copy glob
+# Copy others
+[[copy]]
+source = "src/components"
+destination = "build/"
+order = 1
+
+[[copy]]
+source = "src/containers"
+destination = "build/"
+order = 1
+
+[[copy]]
+source = "src/inc"
+destination = "build/"
+order = 1
+
+[[copy]]
+source = "src/*.php"
+destination = "build/"
+order = 1
+
+[[copy]]
+source = "src/.htaccess"
+destination = "build/"
+order = 1
+
+# Remove stuff not needed for the copy
+# TODO: This should be the ignore under copy
+[[remove]]
+source = "build/*.scss"
+order = 2
+
+[[remove]]
+source = "build/**/*.scss"
+order = 2
+
+[[remove]]
+source = "build/*.js"
+order = 2
+
+[[remove]]
+source = "build/**/*.js"
+order = 2
+
+# Set styles
+[[style]]
+source = "src/style.scss"
+destination = "build/app.css"
+env = "dev"
+order = 3
+[style.options]
+comments = true
+source_map = true
+
+[[style]]
+source = "src/style.scss"
+destination = "build/app.css"
+env = "prod"
+order = 3
+[style.options]
+autoprefixer = "last 2 versions, IE 11"
+minify = true
+
+# Set scripts
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "dev"
+order = 3
+[script.options]
+target = "web"
+devtool = "source-map"
+cache = true
+debug = true
+bail = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js"]
+[script.options.plugins]
+node_env = "development"
+
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "prod"
+order = 3
+[script.options]
+target = "web"
+bail = true
+minify = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js", ".jsx"]
+[script.options.plugins]
+dedupe = true
+node_env = "production"
