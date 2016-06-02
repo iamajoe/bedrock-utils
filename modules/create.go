@@ -44,15 +44,10 @@ func CreateTask(config []CreateStruct, commandType string, order int, env string
 // CreateProject creates a project
 func CreateProject(module CreateStruct) (log string, err error) {
 	modulesFiles, _ := GetGlob(path.Join(CmdDir, "external/create", module.Type, "*"))
-	Log("CREATE", "INSIDE CREATE PROJECT::::")
-	Log("CREATE", path.Join(CmdDir, "external/create", module.Type, "*"))
 	files := []FileStruct{}
 
 	// Go through each in the glob
 	for _, file := range modulesFiles {
-		Log("CREATE FILE", file)
-		Log("CREATE DEST", module.Dest)
-
 		files = append(files, FileStruct{Src: file, Dest: module.Dest, Force: true})
 	}
 
