@@ -82,6 +82,7 @@ func FileCopy(file FileStruct) (log string, err error) {
 		err = srcErr
 	// Check if src is directory
 	case srcFile.IsDir():
+		// TODO: What about the ignores?
 		err = folderCopy(file)
 	// It must be a file
 	default:
@@ -124,6 +125,12 @@ func fileCopy(file FileStruct) (err error) {
 	src := file.Src
 	dest := file.Dest
 
+	// We need to ensure that the folder exists
+	err = EnsurePath(dest)
+	if err != nil {
+		return err
+	}
+
 	// Remove old destination file if exists
 	FileRemove(FileStruct{Src: dest})
 
@@ -140,6 +147,12 @@ func fileCopy(file FileStruct) (err error) {
 func folderCopy(file FileStruct) (err error) {
 	src := file.Src
 	dest := file.Dest
+
+	// We need to ensure that the folder exists
+	err = EnsurePath(dest)
+	if err != nil {
+		return err
+	}
 
 	// Remove old destination file if exists
 	FileRemove(FileStruct{Src: dest})

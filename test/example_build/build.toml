@@ -9,8 +9,8 @@ order = 0
 # TODO: Need to improve the copy glob
 # Copy others
 [[copy]]
-source = "src/components/*.php"
-destination = "build/components/"
+source = "src/components"
+destination = "build/"
 order = 1
 
 [[copy]]
