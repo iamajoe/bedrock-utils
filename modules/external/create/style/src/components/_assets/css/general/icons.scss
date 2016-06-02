@@ -1,0 +1,29 @@
+.icon-wrapper,
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0 !important;
+    line-height: 0 !important;
+}
+
+
+.icon {
+    &,
+    &.icon-small {
+        width: 14px;
+        height: 14px;
+    }
+
+    &.icon-medium {
+        width: 28px;
+        height: 28px;
+    }
+
+    & {
+        fill: $neutral-0-color;
+    }
+
+    &.inverse {
+        fill: $neutral-100-color;
+    }
+}

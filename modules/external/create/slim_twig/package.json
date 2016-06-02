@@ -1,0 +1,25 @@
+{
+  "name": "<%= name %>",
+  "version": "<%= version %>",
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "eslint-config-defaults": "^8.0.2",
+    "eslint-config-sds": "git://github.com/sendoushi/eslint-config-sds.git"
+  },
+  "dependencies": {
+    "bedrock": "git://github.com/Sendoushi/bedrock.git#v0.1.17",
+    "bedrock-utils": "git://github.com/Sendoushi/bedrock_utils.git"
+  },
+  "scripts": {
+    "test": "npm run eslint-test",
+    "eslint": "./node_modules/eslint/bin/eslint.js",
+    "eslint-test": "npm run eslint -- ./config/* ./src/*",
+    "bedrock-task": "./node_modules/bedrock_utils/bin/bedrock_mac",
+    "build": "npm run bedrock-task build ./tasks/build.toml",
+    "build-prod": "npm run eslint-test; npm run build prod",
+    "server-run": "npm run bedrock-task init ./tasks/server.toml; npm run bedrock-task run ./tasks/server.toml",
+    "server-stop": "npm run bedrock-task stop ./tasks/server.toml",
+    "server-destroy": "npm run bedrock-task destroy ./tasks/server.toml",
+    "start": "npm run server-run"
+  }
+}

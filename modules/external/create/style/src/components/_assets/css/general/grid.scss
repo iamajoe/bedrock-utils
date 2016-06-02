@@ -1,0 +1,27 @@
+$grid-margins: 14px;
+
+.grid-wrapper {
+    font-size: 0;
+
+    .grid-100,
+    .grid-50 {
+        display: inline-block;
+        vertical-align: top;
+        font-size: $font-size-50;
+    }
+
+    .grid-100 {
+        width: 100%;
+    }
+
+    .grid-50 {
+        width: calc(50% - #{$grid-margins / 2});
+        margin-right: ($grid-margins / 2);
+
+        &:nth-child(2n) {
+            margin-left: ($grid-margins / 2);
+            margin-right: 0;
+        }
+    }
+
+}

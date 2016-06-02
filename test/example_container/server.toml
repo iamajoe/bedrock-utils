@@ -1,0 +1,33 @@
+max_order = 2
+
+[server]
+
+[[server.container]]
+name = "example-mysql"
+type = "mysql:5.6"
+port = "3306:3306"
+env_var = [
+    "MYSQL_ROOT_PASSWORD=XOACx5zq",
+    "MYSQL_DATABASE=example_db",
+    "MYSQL_USER=example_usr",
+    "MYSQL_PASSWORD=GtdDZuDKW81q",
+    "STARTUP_SQL=./db/mock.sql"
+]
+volume = [
+    "./db/initial.sql:/docker-entrypoint-initdb.d/initial.sql",
+    "./db/mock.sql:/docker-entrypoint-initdb.d/mock.sql"
+]
+sleep = 30
+order = 1
+
+[[server.container]]
+name = "example-nginx"
+type = "vredens/ln_p"
+port = "8000:80"
+link = ["example-mysql:mysql"]
+volume = [
+    "./public:/data/www/public",
+    "./logs:/data/run/logs"
+]
+sleep = 5
+order = 2

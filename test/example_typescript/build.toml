@@ -1,0 +1,33 @@
+max_order = 2
+
+# Remove everything from the latest build
+[[remove]]
+source = "build/*"
+ignore = "build/.gitkeep"
+order = 0
+
+# Set scripts
+[[script]]
+source = "src/bootstrap.ts"
+destination = "build/app.js"
+env = "dev"
+order = 1
+[script.options]
+target = "web"
+devtool = "source-map"
+cache = true
+debug = true
+bail = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js", ".ts"]
+[script.options.plugins]
+node_env = "development"
+webpack_fail = true
+[[script.options.module.loaders]]
+test = "regex:.ts?$"
+loader = "ts-loader"
+dependencies = [
+    "typescript@1.8.10",
+    "ts-loader@0.8.2"
+]
