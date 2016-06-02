@@ -75,8 +75,8 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 // FileCopy copies * from source to destination
 func FileCopy(file FileStruct) (log string, err error) {
 	// Remove the file if it has force
-	if !NotExist(file.Src) && file.Force {
-		FileRemove(file)
+	if !NotExist(file.Dest) && file.Force {
+		FileRemove(FileStruct{Src: file.Dest})
 	}
 
 	srcFile, srcErr := os.Stat(file.Src)

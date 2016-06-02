@@ -14,6 +14,7 @@ type ConfigStruct struct {
 	Copy     []FileStruct
 	Rename   []FileStruct
 	Remove   []FileStruct
+	Create   []CreateStruct
 	Style    []StyleStruct
 	Script   []ScriptStruct
 	Raw      []RawStruct

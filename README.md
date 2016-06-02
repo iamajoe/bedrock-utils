@@ -211,7 +211,7 @@ dedupe = false
 node_env = ""
 webpack_fail = false # https://www.npmjs.com/package/webpack-fail-plugin
 
-# Create a project
+# Create a project (can only be used under init)
 [[create]]
 destination = "" # required. it doesn't support globs
 type = "" # basic, php_jquery, redux_react, slim_twig or style

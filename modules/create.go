@@ -20,7 +20,11 @@ type CreateStruct struct {
 // Public functions
 
 // CreateTask for init
-func CreateTask(config []CreateStruct, order int, env string, sys string) {
+func CreateTask(config []CreateStruct, commandType string, order int, env string, sys string) {
+	if commandType != "init" {
+		return
+	}
+
 	for _, task := range config {
 		var shouldContinue bool
 		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
@@ -39,15 +43,21 @@ func CreateTask(config []CreateStruct, order int, env string, sys string) {
 
 // CreateProject creates a project
 func CreateProject(module CreateStruct) (log string, err error) {
-	modulesFiles, _ := GetGlob(path.Join(CmdDir, "create", module.Type, "*"))
+	modulesFiles, _ := GetGlob(path.Join(CmdDir, "external/create", module.Type, "*"))
+	Log("CREATE", "INSIDE CREATE PROJECT::::")
+	Log("CREATE", path.Join(CmdDir, "external/create", module.Type, "*"))
+	files := []FileStruct{}
 
 	// Go through each in the glob
 	for _, file := range modulesFiles {
-		dest := ConstructDest("create", module.Dest, file, file)
+		Log("CREATE FILE", file)
+		Log("CREATE DEST", module.Dest)
 
-		// Now lets copy the folder
-		FileCopy(FileStruct{Src: file, Dest: dest, Force: true})
+		files = append(files, FileStruct{Src: file, Dest: module.Dest, Force: true})
 	}
+
+	// Now lets run!
+	FileTask(files, "copy", 0, "", "")
 
 	return log, err
 }

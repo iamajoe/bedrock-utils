@@ -69,6 +69,12 @@ func runOrder(order int, commandType string, config ConfigStruct, env string, sy
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		CreateTask(config.Create, commandType, order, env, sys)
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		RawTask(config.Raw, order, env, sys)
 	}()
 

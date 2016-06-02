@@ -1,15 +1,23 @@
-max_order = 2
+max_order = 3
 
-[[create]]
-type = "none"
-destination = "project"
+# Remove everything from the latest creation
+[[remove]]
+source = "project/*"
+ignore = "project/.gitkeep"
+order = 0
 
+# Create the project
 [[create]]
-type = "style"
-destination = "project"
+type = "basic"
+destination = "project/"
 order = 1
 
 [[create]]
-type = "php_jquery"
-destination = "project"
+type = "style"
+destination = "project/"
 order = 2
+
+[[create]]
+type = "php_jquery"
+destination = "project/"
+order = 3

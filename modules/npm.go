@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"os"
 	"path"
 	"strings"
 )
@@ -36,14 +37,34 @@ func NpmInstall(deps []string) (log string, err error) {
 
 // NpmFindModules tries to find a node_modules folder
 func NpmFindModules() (vendorPath string) {
-	basePath := path.Join(CmdDir, "..")
+	basePath := CmdDir
+	dirFound := false
 
-	// Lets try and find
+	// Lets try and find related to the CmdDir
 	for i := 0; i < 5; i++ {
 		vendorPath = path.Join(basePath, "node_modules")
 
 		if NotExist(vendorPath) {
 			basePath = path.Join(basePath, "..")
+		} else {
+			dirFound = true
+			break
+		}
+	}
+
+	// Lets try and find related to the working dir
+	if !dirFound {
+		basePath, _ = os.Getwd()
+
+		for i := 0; i < 5; i++ {
+			vendorPath = path.Join(basePath, "node_modules")
+
+			if NotExist(vendorPath) {
+				basePath = path.Join(basePath, "..")
+			} else {
+				dirFound = true
+				break
+			}
 		}
 	}
 

@@ -12,6 +12,7 @@ import (
 
 var args = os.Args[1:]
 var sysOs = runtime.GOOS
+var availableCommands = []string{"init", "build", "run", "stop", "destroy"}
 
 // ---------------------------------
 // Private functions
@@ -29,7 +30,15 @@ func main() {
 	}
 
 	// None of these tasks?
-	if args[0] != "init" && args[0] != "build" && args[0] != "run" && args[0] != "stop" && args[0] != "destroy" {
+	exists := false
+	for _, val := range availableCommands {
+		if args[0] == val {
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
 		printHelp()
 		return
 	}
