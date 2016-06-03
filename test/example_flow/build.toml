@@ -1,0 +1,26 @@
+max_order = 2
+
+# Remove everything from the latest build
+[[remove]]
+source = "build/*"
+ignore = "build/.gitkeep"
+order = 0
+
+# Set scripts
+[[script]]
+source = "src/bootstrap.js"
+destination = "build/app.js"
+env = "dev"
+order = 1
+[script.options]
+target = "web"
+devtool = "source-map"
+cache = true
+debug = true
+bail = true
+[script.options.resolve]
+root = ["."]
+extensions = ["", ".js"]
+[script.options.plugins]
+node_env = "development"
+flow_check = true

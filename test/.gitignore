@@ -2,7 +2,8 @@ tmp/*
 */build
 **/build
 **/log
-**/tmp/*
+**/tmp
 **/project
 example_create/*
 !example_create/create.toml
+**/node_modules

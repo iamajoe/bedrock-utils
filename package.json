@@ -9,6 +9,7 @@
     "example-build": "npm run build; bin/bedrock-utils/bedrock build test/example_build/build.toml",
     "example-es6": "npm run build; bin/bedrock-utils/bedrock build test/example_es6/build.toml",
     "example-typescript": "npm run build; bin/bedrock-utils/bedrock run test/example_typescript/build.toml",
+    "example-flow": "npm run build; bin/bedrock-utils/bedrock run test/example_flow/build.toml",
     "example-server": "npm run build; bin/bedrock-utils/bedrock run test/example_server/server.toml",
 
     "example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",

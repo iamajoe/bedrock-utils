@@ -111,6 +111,7 @@ type scriptPluginsStruct struct {
 	Dedupe      bool
 	NodeEnv     string `toml:"node_env"`
 	WebpackFail bool   `toml:"webpack_fail"`
+	FlowCheck   bool   `toml:"flow_check"`
 }
 
 // ---------------------------------
@@ -191,7 +192,16 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	dest := file.Dest
 
 	// Install dependencies
-	NpmInstall([]string{"webpack@1.12.2", "webpack-fail-plugin@1.0.4"})
+	NpmInstall([]string{"webpack@1.12.2"})
+
+	if file.Options.Plugins.WebpackFail {
+		NpmInstall([]string{"webpack-fail-plugin@1.0.4"})
+	}
+
+	if file.Options.Plugins.FlowCheck {
+		NpmInstall([]string{"flow-bin@0.26.0", "flow-status-webpack-plugin@0.1.4"})
+	}
+
 	for _, loader := range file.Options.Module.Loaders {
 		for _, dep := range loader.Dependencies {
 			NpmInstall([]string{dep})

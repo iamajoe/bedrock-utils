@@ -95,6 +95,14 @@ var convertPlugins = function (obj) {
         arr.push(webpackFail);
     }
 
+    // Set the flow plugin
+    if (obj.flowCheck) {
+        var flowCheck = require(path.join(vendor, 'flow-status-webpack-plugin'));
+        flowCheck = new flowCheck({ binaryPath: path.join(vendor, 'flow-bin/cli.js') });
+
+        arr.push(flowCheck);
+    }
+
     return arr;
 };
 

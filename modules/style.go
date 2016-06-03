@@ -117,6 +117,8 @@ func StyleFile(file StyleStruct) (log string, err error) {
 		log = log + " " + logMin
 	}
 
+	// TODO: Implement Parker
+
 	return
 }
 

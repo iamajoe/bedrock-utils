@@ -1,9 +1,0 @@
-{
-  "name": "tmp_typescript",
-  "version": "0.0.1",
-  "scripts": {
-    "build-win": "bedrock-utils/bin/bedrock_win build build.toml",
-    "build-mac": "bedrock-utils/bin/bedrock_mac build build.toml",
-    "build-linux": "bedrock-utils/bin/bedrock_linux build build.toml"
-  }
-}
