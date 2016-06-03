@@ -47,7 +47,7 @@ type scriptOptionsStruct struct {
 	RecordsPath       string `toml:"records_path"`
 	RecordsInputPath  string `toml:"records_input_path"`
 	RecordsOutputPath string `toml:"records_output_path"`
-	Plugins           scriptPluginsStruct
+	Plugins           []scriptPluginStruct
 }
 
 type scriptOutputStruct struct {
@@ -107,11 +107,11 @@ type scriptResolveStruct struct {
 	ModuleTemplates    []string `toml:"module_templates"` // ResolveLoader only
 }
 
-type scriptPluginsStruct struct {
-	Dedupe      bool
-	NodeEnv     string `toml:"node_env"`
-	WebpackFail bool   `toml:"webpack_fail"`
-	FlowCheck   bool   `toml:"flow_check"`
+type scriptPluginStruct struct {
+	Name         string
+	Type         string
+	Args         []string
+	Dependencies []string
 }
 
 // ---------------------------------
@@ -190,23 +190,20 @@ func ScriptFile(file ScriptStruct) (log string, err error) {
 func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	src := file.Src
 	dest := file.Dest
+	deps := []string{"webpack@1.12.2"}
 
 	// Install dependencies
-	NpmInstall([]string{"webpack@1.12.2"})
-
-	if file.Options.Plugins.WebpackFail {
-		NpmInstall([]string{"webpack-fail-plugin@1.0.4"})
-	}
-
-	if file.Options.Plugins.FlowCheck {
-		NpmInstall([]string{"flow-bin@0.26.0", "flow-status-webpack-plugin@0.1.4"})
+	for _, plugin := range file.Options.Plugins {
+		deps = append(deps, plugin.Dependencies...)
 	}
 
 	for _, loader := range file.Options.Module.Loaders {
-		for _, dep := range loader.Dependencies {
-			NpmInstall([]string{dep})
-		}
+		deps = append(deps, loader.Dependencies...)
 	}
+
+	NpmInstall(deps)
+
+	// TODO: Eslint in the compile
 
 	// Set needed files
 	file.Options.Output.Filename = path.Base(dest)

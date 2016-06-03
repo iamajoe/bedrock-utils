@@ -26,81 +26,44 @@ var isArray = function (val) {
 };
 
 /**
- * Converts loaders
- * @param  {array} arr
- * @return {array}
- */
-// var convertLoaders = function (arr) {
-//     if (!arr || !arr.length) {
-//         return arr;
-//     }
-
-//     var presets;
-//     var loader;
-//     var i;
-//     var c;
-
-//     for (i = 0; i < loaders[i]; i += 1) {
-//         loader = loaders[i];
-//         presets = loader && loader.query && loader.query.presets
-
-//         if (loader && loader.test && loader.test.replace('regex:', '') != loader.test) {
-//             loaders[i].test = new RegExp(loaders[i].test.replace('regex:', ''));
-//         }
-
-//         if (!presets || !presets.length) {
-//             continue;
-//         }
-
-//         // Now lets resolve the presets
-//         for (c = 0; c < presets[c]; c += 1) {
-//             // TODO: What about vendor
-//             presets[c] = require.resolve(presets[c]);
-//         }
-//     }
-
-//     return arr;
-// };
-
-/**
  * Converts plugins
- * @param  {object} obj
+ * @param  {object} list
  * @return {array}
  */
-var convertPlugins = function (obj) {
-    if (!obj) {
-        return obj;
+var convertPlugins = function (list) {
+    if (!list) {
+        return list;
     }
 
     var arr = [];
+    var pluginReq;
+    var plugin;
+    var args;
+    var i;
 
-    // Check for dedupe
-    if (obj.dedupe) {
-        arr.push(new webpack.optimize.DedupePlugin());
-    }
+    // Set the plugin list
+    for (i = 0; i < list.length; i += 1) {
+        plugin = list[i];
+        args = plugin.args || [];
 
-    // Check for node env
-    if (obj.nodeEnv) {
-        arr.push(new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"' + obj.nodeEnv + '"',
-            'process.env': {
-                'NODE_ENV': JSON.stringify(obj.nodeEnv)
+        // Specifics
+        if (plugin.name === 'define') {
+            plugin = new webpack.DefinePlugin(args[0], args[1], args[2], args[3]);
+        } else if (plugin.name === 'dedupe') {
+            plugin = new webpack.optimize.DedupePlugin();
+        } else {
+            // Require the dependency
+            pluginReq = require(path.join(vendor, plugin.name));
+
+            if (plugin.type === 'function') {
+                plugin = pluginReq;
+            } else {
+                plugin = new pluginReq(args[0], args[1], args[2], args[3]);
             }
-        }));
-    }
+        }
 
-    // Set the fail plugin
-    if (obj.webpackFail) {
-        var webpackFail = require(path.join(vendor, 'webpack-fail-plugin'));
-        arr.push(webpackFail);
-    }
-
-    // Set the flow plugin
-    if (obj.flowCheck) {
-        var flowCheck = require(path.join(vendor, 'flow-status-webpack-plugin'));
-        flowCheck = new flowCheck({ binaryPath: path.join(vendor, 'flow-bin/cli.js') });
-
-        arr.push(flowCheck);
+        // Add to the array
+        arr.push(plugin);
     }
 
     return arr;
@@ -156,15 +119,17 @@ var convertString = function (str) {
         str = true;
     } else if (str === 'false') {
         str = false;
+    } else if (str[0] === '[' && str[str.length - 1] === ']') {
+        str = convert(JSON.parse(str));
+    } else if (str[0] === '{' && str[str.length - 1] === '}') {
+        str = convert(JSON.parse(str));
     } else if (str[0] === '/' && str[str.length - 1] === '/') {
         str = str.slice(1, str.length - 1);
         str = new RegExp(str);
     } else if (str.replace('regex:', '') !== str) {
         str = new RegExp(str.replace('regex:', ''));
-    } else if (str[0] === '[' && str[str.length - 1] === ']') {
-        str = JSON.parse(str);
-    } else if (str[0] === '{' && str[str.length - 1] === '}') {
-        str = JSON.parse(str);
+    } else if (str.replace('vendor_path:', '') !== str) {
+        str = path.join(vendor, str.replace('vendor_path:', ''));
     }
 
     return str;

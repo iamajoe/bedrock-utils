@@ -21,8 +21,9 @@ bail = true
 [script.options.resolve]
 root = ["."]
 extensions = ["", ".js"]
-[script.options.plugins]
-node_env = "development"
+[[script.options.plugins]]
+name = "define"
+args = ["{ \"process.env.NODE_ENV\": \"development\" }"]
 [[script.options.module.loaders]]
 test = "regex:.js?$"
 loader = "babel-loader"
@@ -54,9 +55,11 @@ minify = true
 [script.options.resolve]
 root = ["."]
 extensions = ["", ".js", ".jsx"]
-[script.options.plugins]
-dedupe = true
-node_env = "production"
+[[script.options.plugins]]
+name = "dedupe"
+[[script.options.plugins]]
+name = "define"
+args = ["{ \"process.env.NODE_ENV\": \"production\" }"]
 [[script.options.module.loaders]]
 test = "regex:.js?$"
 loader = "babel-loader"

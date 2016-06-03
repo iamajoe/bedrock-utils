@@ -21,6 +21,19 @@ bail = true
 [script.options.resolve]
 root = ["."]
 extensions = ["", ".js"]
-[script.options.plugins]
-node_env = "development"
-flow_check = true
+[[script.options.plugins]]
+name = "define"
+args = ["{ \"process.env.NODE_ENV\": \"development\" }"]
+[[script.options.plugins]]
+name = "flow-status-webpack-plugin"
+args = ["{ \"binaryPath\": \"vendor_path:flow-bin/cli.js\" }"]
+dependencies = ["flow-bin@0.26.0", "flow-status-webpack-plugin@0.1.4"]
+[[script.options.module.loaders]]
+test = "regex:.js?$"
+loader = "babel-loader"
+dependencies = [
+    "babel-core@6.4.5",
+    "babel-loader@6.2.1",
+    "babel-plugin-transform-flow-strip-types@6.8.0"
+]
+query = "{ \"plugins\": [\"transform-flow-strip-types\"] }"

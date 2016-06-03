@@ -1,3 +1,5 @@
+// @flow
+
 var index = require('./scripts/index.js');
 
 // Wait for the document to be ready
@@ -9,5 +11,5 @@ document.addEventListener('DOMContentLoaded', function() {
     classList.remove('no-script');
 
     // Initialize modules
-    index.init('foo');
+    index.init(true);
 });

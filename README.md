@@ -206,11 +206,10 @@ package_alias = ""
 unsafe_cache = [""]
 module_templates = [""]
 
-[script.options.plugins]
-dedupe = false
-node_env = ""
-webpack_fail = false # https://www.npmjs.com/package/webpack-fail-plugin
-flow_check = false # https://www.npmjs.com/package/flow-status-webpack-plugin
+[[script.options.plugins]]
+name = "" # dedupe and define don't need dependencies
+type = "" # sometimes the plugin is a function and not a class
+dependencies = [""]
 
 # Create a project (can only be used under init)
 [[create]]
