@@ -5,11 +5,7 @@ Install [Node.js](http://nodejs.org/) because it uses [webpack](https://webpack.
 This module is pretty complicated because it tries to proxy to [webpack](https://webpack.github.io/). For general reference, you should use [webpack](https://webpack.github.io/docs/configuration.html)<br>
 Follow the types on top, otherwise you will break the compiler. Whenever you need another type, you may try to string the json. For example `entry = "[\"hey\"]"` will convert into an array when in [webpack](https://webpack.github.io/).Whenever you need a simple regex you can use `regex:` like for example on `loader.test` you can set it as `test = "regex:.js?$"`<br>
 For now, only `dedupe` and `webpack-fail-plugin` plugins are accepted. If you need other please issue and I'll implement it asap.<br>
-`output.filename`, `output.path` and `entry` aren't supported. Use `src` and `dest` instead (although these won't work with arrays). Eventually, I'll get to this.<br>
-
-=========
-
-## Configure
+`output.filename`, `output.path` and `entry` aren't supported. Use `src` and `dest` instead (although these won't work with arrays). Eventually, I'll get to this.
 
 ### Config file parameters
 ```toml
@@ -124,4 +120,4 @@ dependencies = [""]
 ```
 
 ### Examples
-Go under the [test/example_build](test/example_build), [test/example_es6](test/example_es6), [test/example_flow](test/example_flow) or [test/example_typescript](test/example_typescript) folders and check the `*.toml`.
+Go under the [../test/example_build](../test/example_build), [../test/example_es6](../test/example_es6), [../test/example_flow](../test/example_flow) or [../test/example_typescript](../test/example_typescript) folders and check the `*.toml`.

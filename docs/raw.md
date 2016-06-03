@@ -1,10 +1,6 @@
 # Bedrock: Utils > Raw
 
-Module to perform raw commands.<br>
-
-=========
-
-## Configure
+Module to perform raw commands.
 
 ### Config file parameters
 ```toml

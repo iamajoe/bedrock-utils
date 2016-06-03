@@ -3,10 +3,6 @@
 Module to create a project. This module can only be used under `init`.<br>
 For now, the best way to understand what templates are available is for you to go to the [create folder](bin/external/create) and check each folder.
 
-=========
-
-## Configure
-
 ### Config file parameters
 ```toml
 [[create]]
@@ -18,4 +14,4 @@ env = "both"
 ```
 
 ### Examples
-Go under the [test/example_create](test/example_create) folder and check the `*.toml`.
+Go under the [../test/example_create](../test/example_create) folder and check the `*.toml`.

@@ -1,10 +1,6 @@
 # Bedrock: Utils > File: Copy
 
-Module to copy files / folder.<br>
-
-=========
-
-## Configure
+Module to copy files / folder.
 
 ### Config file parameters
 ```toml
@@ -19,4 +15,4 @@ sys = "all"
 ```
 
 ### Examples
-Go under the [test/example_build](test/example_build) folder and check the `*.toml`.
+Go under the [../test/example_build](../test/example_build) folder and check the `*.toml`.

@@ -19,4 +19,4 @@ port = 8000
 ```
 
 ### Examples
-Go under the [test/example_server](test/example_server) folder and check the `*.toml`.
+Go under the [../test/example_server](../test/example_server) folder and check the `*.toml`.

@@ -2,11 +2,7 @@
 
 Module to compile style files.<br>
 To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).<br>
-For now, this module needs to be on an order of its own or with a `script`. Trying to solve that.<br>
-
-=========
-
-## Configure
+For now, this module needs to be on an order of its own or with a `script`. Trying to solve that.
 
 ### Config file parameters
 ```toml
@@ -29,4 +25,4 @@ base_path = ""
 ```
 
 ### Examples
-Go under the [test/example_build](test/example_build) folder and check the `*.toml`.
+Go under the [../test/example_build](../test/example_build) folder and check the `*.toml`.
