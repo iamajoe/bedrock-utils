@@ -3,6 +3,7 @@ package modules
 import (
 	"encoding/json"
 	"errors"
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/js"
 	"os"
@@ -121,36 +122,36 @@ type scriptPluginStruct struct {
 func ScriptTask(config []ScriptStruct, order int, env string, sys string) {
 	for _, task := range config {
 		var shouldContinue bool
-		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
+		if task.Order, task.Env, task.Sys, shouldContinue = tools.InitDecision(
 			task.Order, task.Env, task.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Get the right paths
-		src, ignore := GetPaths(task.Src, task.Ignore)
+		src, ignore := tools.GetPaths(task.Src, task.Ignore)
 		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
 			// Check if is in the ignore
-			if ArrContainsStr(ignore, file) {
+			if tools.ArrContainsStr(ignore, file) {
 				continue
 			}
 
 			// Style file
-			Log("script", file)
+			tools.Log("script", file)
 
 			// Reset dest
 			task.Dest = originalDest
 
 			// Needs this
-			task.Dest = ConstructDest("script", task.Dest, file, task.Src)
+			task.Dest = tools.ConstructDest("script", task.Dest, file, task.Src)
 			task.Src = file
 
 			logVal, err := ScriptFile(task)
-			LogErr("script", err)
-			Log("script] [result", logVal)
+			tools.LogErr("script", err)
+			tools.Log("script] [result", logVal)
 		}
 	}
 }
@@ -159,7 +160,7 @@ func ScriptTask(config []ScriptStruct, order int, env string, sys string) {
 func ScriptFile(file ScriptStruct) (log string, err error) {
 	src := file.Src
 
-	if NotExist(src) {
+	if tools.NotExist(src) {
 		return "", errors.New("File doesn't exist")
 	}
 
@@ -201,7 +202,7 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 		deps = append(deps, loader.Dependencies...)
 	}
 
-	NpmInstall(deps)
+	tools.NpmInstall(deps, CmdDir)
 
 	// TODO: Eslint in the compile
 
@@ -215,7 +216,7 @@ func scriptWebpackFile(file ScriptStruct) (log string, err error) {
 	optionsString := string(options)
 
 	// Lets get the paths for the script
-	vendorPath := NpmFindModules()
+	vendorPath := tools.NpmFindModules(CmdDir)
 	scriptPath := path.Join(CmdDir, "external/script/webpack.js")
 
 	// Now lets run the script

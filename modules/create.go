@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"path"
 )
 
@@ -27,23 +28,23 @@ func CreateTask(config []CreateStruct, commandType string, order int, env string
 
 	for _, task := range config {
 		var shouldContinue bool
-		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
+		if task.Order, task.Env, task.Sys, shouldContinue = tools.InitDecision(
 			task.Order, task.Env, task.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
-		Log("create", task.Type)
+		tools.Log("create", task.Type)
 		_, err := CreateProject(task)
 
 		// Log whatever
-		LogErr("create", err)
+		tools.LogErr("create", err)
 	}
 }
 
 // CreateProject creates a project
 func CreateProject(module CreateStruct) (log string, err error) {
-	modulesFiles, _ := GetGlob(path.Join(CmdDir, "external/create", module.Type, "*"))
+	modulesFiles, _ := tools.GetGlob(path.Join(CmdDir, "external/create", module.Type, "*"))
 	files := []FileStruct{}
 
 	// Go through each in the glob

@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"os"
 	"path"
 	"testing"
@@ -24,13 +25,13 @@ func TestFileCopy(t *testing.T) {
 
 	// Copy a file
 	_, err := FileCopy(FileStruct{Src: srcFile, Dest: destFile})
-	if err != nil || NotExist(destFile) {
+	if err != nil || tools.NotExist(destFile) {
 		t.Error("Expected a file copy")
 	}
 
 	// Copy a folder
 	_, err = FileCopy(FileStruct{Src: srcFolder, Dest: destFolder})
-	if err != nil || NotExist(destFolder) || NotExist(destFolderFile) {
+	if err != nil || tools.NotExist(destFolder) || tools.NotExist(destFolderFile) {
 		t.Error("Expected a folder copy")
 	}
 
@@ -51,13 +52,13 @@ func TestFileRemove(t *testing.T) {
 
 	// Remove a file
 	_, err := FileRemove(FileStruct{Src: destFile})
-	if err != nil || !NotExist(destFile) {
+	if err != nil || !tools.NotExist(destFile) {
 		t.Error("Expected a file remove")
 	}
 
 	// Remove a folder
 	_, err = FileRemove(FileStruct{Src: destFolder})
-	if err != nil || !NotExist(destFolder) || !NotExist(destFolderFile) {
+	if err != nil || !tools.NotExist(destFolder) || !tools.NotExist(destFolderFile) {
 		t.Error("Expected a folder remove")
 	}
 
@@ -83,13 +84,13 @@ func TestFileRename(t *testing.T) {
 
 	// Rename a file
 	_, err := FileRename(FileStruct{Src: srcFile, Dest: destFile})
-	if err != nil || NotExist(destFile) {
+	if err != nil || tools.NotExist(destFile) {
 		t.Error("Expected a file rename")
 	}
 
 	// Rename a folder
 	_, err = FileRename(FileStruct{Src: srcFolder, Dest: destFolder})
-	if err != nil || NotExist(destFolder) || NotExist(destFolderFile) {
+	if err != nil || tools.NotExist(destFolder) || tools.NotExist(destFolderFile) {
 		t.Error("Expected a folder copy")
 	}
 

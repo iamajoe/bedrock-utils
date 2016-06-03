@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"os"
 	"os/exec"
 	"strings"
@@ -25,18 +26,18 @@ type RawStruct struct {
 func RawTask(config []RawStruct, order int, env string, sys string) {
 	for _, task := range config {
 		var shouldContinue bool
-		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
+		if task.Order, task.Env, task.Sys, shouldContinue = tools.InitDecision(
 			task.Order, task.Env, task.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Raw command
-		Log("raw", task.Command+" "+strings.Join(task.Args, " "))
+		tools.Log("raw", task.Command+" "+strings.Join(task.Args, " "))
 
 		logVal, err := RawCommand(task)
-		LogErr("raw", err)
-		Log("raw] [result", logVal)
+		tools.LogErr("raw", err)
+		tools.Log("raw] [result", logVal)
 
 		// TODO: Raw Command should log everything!
 		// Not logging a thing!

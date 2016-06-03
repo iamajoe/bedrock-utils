@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/css"
 	"github.com/wellington/go-libsass"
@@ -42,36 +43,36 @@ type styleOptionsStruct struct {
 func StyleTask(config []StyleStruct, order int, env string, sys string) {
 	for _, task := range config {
 		var shouldContinue bool
-		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
+		if task.Order, task.Env, task.Sys, shouldContinue = tools.InitDecision(
 			task.Order, task.Env, task.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Get the right paths
-		src, ignore := GetPaths(task.Src, task.Ignore)
+		src, ignore := tools.GetPaths(task.Src, task.Ignore)
 		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
 			// Check if is in the ignore
-			if ArrContainsStr(ignore, file) {
+			if tools.ArrContainsStr(ignore, file) {
 				continue
 			}
 
 			// Style file
-			Log("style", file)
+			tools.Log("style", file)
 
 			// Reset dest
 			task.Dest = originalDest
 
 			// Needs this
-			task.Dest = ConstructDest("style", task.Dest, file, task.Src)
+			task.Dest = tools.ConstructDest("style", task.Dest, file, task.Src)
 			task.Src = file
 
 			logVal, err := StyleFile(task)
-			LogErr("style", err)
-			Log("style] [result", logVal)
+			tools.LogErr("style", err)
+			tools.Log("style] [result", logVal)
 		}
 	}
 }
@@ -80,7 +81,7 @@ func StyleTask(config []StyleStruct, order int, env string, sys string) {
 func StyleFile(file StyleStruct) (log string, err error) {
 	src := file.Src
 
-	if NotExist(src) {
+	if tools.NotExist(src) {
 		return "", errors.New("File doesn't exist")
 	}
 
@@ -181,10 +182,10 @@ func styleAutoprefixCSS(file StyleStruct) (log string, err error) {
 	src := file.Dest
 
 	// Install dependencies
-	NpmInstall([]string{"postcss@5.0.21", "autoprefixer@6.3.6"})
+	tools.NpmInstall([]string{"postcss@5.0.21", "autoprefixer@6.3.6"}, CmdDir)
 
 	// Lets get the paths for the script
-	vendorPath := NpmFindModules()
+	vendorPath := tools.NpmFindModules(CmdDir)
 	scriptPath := path.Join(CmdDir, "external/style/autoprefix.js")
 
 	// Now lets run the script

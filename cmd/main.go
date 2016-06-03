@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/sendoushi/bedrock-utils/modules"
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"os"
 	"runtime"
 )
@@ -19,9 +20,9 @@ var availableCommands = []string{"init", "build", "run", "stop", "destroy"}
 
 // Main project function
 func main() {
-	modules.LogEmpty("############################################")
-	modules.Log("main", "Lets task what you need")
-	defer modules.LogEmpty("############################################")
+	tools.LogEmpty("############################################")
+	tools.Log("main", "Lets task what you need")
+	defer tools.LogEmpty("############################################")
 
 	// 2 args at least are needed
 	if len(args) < 2 {
@@ -59,13 +60,13 @@ func main() {
 
 // Prints help
 func printHelp() {
-	modules.LogErr("usage", errors.New(" "))
-	modules.LogErr("usage", errors.New("Usage: ./cmd ..."))
-	modules.LogErr("usage", errors.New(" "))
-	modules.LogErr("usage", errors.New("    init <*.toml>               # Initializes project"))
-	modules.LogErr("usage", errors.New("    build <*.toml> [env]        # Builds project"))
-	modules.LogErr("usage", errors.New("    run <*.toml>                # Run project"))
-	modules.LogErr("usage", errors.New("    stop <*.toml>               # Stop server"))
-	modules.LogErr("usage", errors.New("    destroy <*.toml>            # Destroy server related"))
-	modules.LogErr("usage", errors.New(" "))
+	tools.LogErr("usage", errors.New(" "))
+	tools.LogErr("usage", errors.New("Usage: ./cmd ..."))
+	tools.LogErr("usage", errors.New(" "))
+	tools.LogErr("usage", errors.New("    init <*.toml>               # Initializes project"))
+	tools.LogErr("usage", errors.New("    build <*.toml> [env]        # Builds project"))
+	tools.LogErr("usage", errors.New("    run <*.toml>                # Run project"))
+	tools.LogErr("usage", errors.New("    stop <*.toml>               # Stop server"))
+	tools.LogErr("usage", errors.New("    destroy <*.toml>            # Destroy server related"))
+	tools.LogErr("usage", errors.New(" "))
 }

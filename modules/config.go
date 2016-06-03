@@ -3,6 +3,7 @@ package modules
 import (
 	"errors"
 	"github.com/BurntSushi/toml"
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 )
 
 // ---------------------------------
@@ -26,8 +27,8 @@ type ConfigStruct struct {
 
 // ConfigGet copies * from source to destination
 func ConfigGet(file string) (obj ConfigStruct, err error) {
-	configPath := GetAbsolute(file)
-	if NotExist(configPath) {
+	configPath := tools.GetAbsolute(file)
+	if tools.NotExist(configPath) {
 		err = errors.New("Config file doesn't exist!")
 		return
 	}

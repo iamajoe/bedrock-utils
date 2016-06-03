@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"os"
 	"path"
 )
@@ -26,30 +27,30 @@ type FileStruct struct {
 func FileTask(config []FileStruct, taskType string, order int, env string, sys string) {
 	for _, task := range config {
 		var shouldContinue bool
-		if task.Order, task.Env, task.Sys, shouldContinue = InitDecision(
+		if task.Order, task.Env, task.Sys, shouldContinue = tools.InitDecision(
 			task.Order, task.Env, task.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Get the right paths
-		src, ignore := GetPaths(task.Src, task.Ignore)
+		src, ignore := tools.GetPaths(task.Src, task.Ignore)
 		originalDest := task.Dest
 
 		// Go through each in the glob
 		for _, file := range src {
 			// Check if is in the ignore
-			if ArrContainsStr(ignore, file) {
+			if tools.ArrContainsStr(ignore, file) {
 				continue
 			}
 
-			Log(taskType, file)
+			tools.Log(taskType, file)
 
 			// Reset dest
 			task.Dest = originalDest
 
 			// Needs this
-			task.Dest = ConstructDest(taskType, task.Dest, file, task.Src)
+			task.Dest = tools.ConstructDest(taskType, task.Dest, file, task.Src)
 			task.Src = file
 
 			// Instantiate log
@@ -66,8 +67,8 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 			}
 
 			// Log whatever
-			LogErr(taskType, err)
-			Log(taskType+"] [result", logVal)
+			tools.LogErr(taskType, err)
+			tools.Log(taskType+"] [result", logVal)
 		}
 	}
 }
@@ -75,7 +76,7 @@ func FileTask(config []FileStruct, taskType string, order int, env string, sys s
 // FileCopy copies * from source to destination
 func FileCopy(file FileStruct) (log string, err error) {
 	// Remove the file if it has force
-	if !NotExist(file.Dest) && file.Force {
+	if !tools.NotExist(file.Dest) && file.Force {
 		FileRemove(FileStruct{Src: file.Dest})
 	}
 
@@ -131,7 +132,7 @@ func fileCopy(file FileStruct) (err error) {
 	dest := file.Dest
 
 	// We need to ensure that the folder exists
-	err = EnsurePath(dest)
+	err = tools.EnsurePath(dest)
 	if err != nil {
 		return err
 	}
@@ -154,7 +155,7 @@ func folderCopy(file FileStruct) (err error) {
 	dest := file.Dest
 
 	// We need to ensure that the folder exists
-	err = EnsurePath(dest)
+	err = tools.EnsurePath(dest)
 	if err != nil {
 		return err
 	}

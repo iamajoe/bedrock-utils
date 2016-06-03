@@ -2,6 +2,7 @@ package modules
 
 import (
 	"errors"
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"path"
 	"strconv"
 	"strings"
@@ -48,14 +49,14 @@ func ServerTask(task ServerStruct, commandType string, order int, env string, sy
 	// Take care of php
 	for _, php := range task.Php {
 		var shouldContinue bool
-		if php.Order, php.Env, php.Sys, shouldContinue = InitDecision(
+		if php.Order, php.Env, php.Sys, shouldContinue = tools.InitDecision(
 			php.Order, php.Env, php.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Log the type
-		Log("server", commandType+" php")
+		tools.Log("server", commandType+" php")
 
 		// Instantiate log
 		var logVal string
@@ -71,21 +72,21 @@ func ServerTask(task ServerStruct, commandType string, order int, env string, sy
 		}
 
 		// Log whatever
-		LogErr("server", err)
-		Log("server] [result", logVal)
+		tools.LogErr("server", err)
+		tools.Log("server] [result", logVal)
 	}
 
 	// Take care of containers
 	for _, container := range task.Container {
 		var shouldContinue bool
-		if container.Order, container.Env, container.Sys, shouldContinue = InitDecision(
+		if container.Order, container.Env, container.Sys, shouldContinue = tools.InitDecision(
 			container.Order, container.Env, container.Sys, order, env, sys,
 		); shouldContinue {
 			continue
 		}
 
 		// Log the type
-		Log("server", commandType+" container "+container.Type)
+		tools.Log("server", commandType+" container "+container.Type)
 
 		// Instantiate log
 		var logVal string
@@ -105,8 +106,8 @@ func ServerTask(task ServerStruct, commandType string, order int, env string, sy
 		}
 
 		// Log whatever
-		LogErr("server", err)
-		Log("server] [result", logVal)
+		tools.LogErr("server", err)
+		tools.Log("server] [result", logVal)
 	}
 }
 
@@ -122,9 +123,9 @@ func ServerPhpUp(server ServerPhpStruct) (log string, err error) {
 		port = 8000
 	}
 
-	Log("server", "Running server...")
-	Log("server", "Folder: "+public)
-	Log("server", "   Url: "+"localhost:"+strconv.Itoa(port))
+	tools.Log("server", "Running server...")
+	tools.Log("server", "Folder: "+public)
+	tools.Log("server", "   Url: "+"localhost:"+strconv.Itoa(port))
 
 	log, err = RawCommand(RawStruct{
 		Command: "php",
@@ -163,7 +164,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 
 		// Lets check if it is a path
 		if envVarVal[0:3] == "../" || envVarVal[0:2] == "./" {
-			envVar = envVar[0:i] + "=" + GetAbsolute(envVarVal)
+			envVar = envVar[0:i] + "=" + tools.GetAbsolute(envVarVal)
 		}
 
 		cmdArg += "-e " + envVar + " "
@@ -176,7 +177,7 @@ func ServerContainerInit(container ServerContainerStruct) (log string, err error
 
 		// Lets check if it is a path
 		if volumeKey[0:3] == "../" || volumeKey[0:2] == "./" {
-			volume = GetAbsolute(volumeKey) + ":" + volume[i+1:len(volume)]
+			volume = tools.GetAbsolute(volumeKey) + ":" + volume[i+1:len(volume)]
 		}
 
 		cmdArg += "-v " + volume + " "

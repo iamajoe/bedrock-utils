@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"github.com/sendoushi/bedrock-utils/modules/tools"
 	"os"
 	"path"
 	"testing"
@@ -23,7 +24,7 @@ func TestRawCommand(t *testing.T) {
 		Command: "mkdir",
 		Args:    []string{testRawBaseTmp},
 	})
-	if err != nil || NotExist(testRawBaseTmp) {
+	if err != nil || tools.NotExist(testRawBaseTmp) {
 		t.Error("Expected a folder creation")
 	}
 
@@ -32,7 +33,7 @@ func TestRawCommand(t *testing.T) {
 		Command: "touch",
 		Args:    []string{destFile},
 	})
-	if err != nil || NotExist(destFile) {
+	if err != nil || tools.NotExist(destFile) {
 		t.Error("Expected a file creation")
 	}
 
