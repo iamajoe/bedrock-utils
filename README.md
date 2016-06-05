@@ -1,12 +1,29 @@
 # Bedrock: Utils
 
-The idea for this repository is to have a mix of utils to use when developing a project.<br>
-**Note:** Any kind of path should be absolute or relative to the `*.toml`<br>
+Task system based on config files for your project. Set a `create.toml` or a `build.toml` or a `server.toml` or even a `foo.toml` and run all the tasks you want when you pass it to `bedrock-utils`.<br>
 
-## Install
-Select the compressed file related to your platform under [bin](bin), download it and extract it under your project.
+## Installation
+You need to have [node](http://nodejs.org) so you can have the package dependency management and use the tasks:
+- Install [node](http://nodejs.org)
+
+To install you may use ```bower```:
+```
+bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.2
+```
+
+Or you may use ```npm```:
+```
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.2
+```
+
+Or why don't you just simply clone it?
+```
+git clone https://github.com/Sendoushi/bedrock-utils.git
+```
 
 ## Usage
+**Note:** Any kind of path should be absolute or relative to the `*.toml`
+
 ```
 ./bedrock-utils/bedrock ...
     init <*.toml>               # Initializes project"

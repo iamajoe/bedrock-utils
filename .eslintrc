@@ -1,0 +1,9 @@
+{
+    "root": true,
+    "extends": [
+        "sds/es5"
+    ],
+    "rules": {
+        "no-console": ["allow", { allow: ["log", "warn", "error"] }]
+    }
+}

@@ -1,25 +1,40 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "description": "Task system based on config files for your project",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:sendoushi/bedrock-utils.git"
+  },
+  "bin": "./bin/bedrock.js",
   "scripts": {
-    "go-install": "cd cmd; go get . ; cd ..",
-    "build": "rm -rf bin/bedrock-utils; mkdir bin/bedrock-utils; go build cmd/main.go ; mv main bin/bedrock-utils/bedrock; cp -rf modules/external bin/bedrock-utils/external",
-
-    "example-create": "npm run build; bin/bedrock-utils/bedrock init test/example_create/create.toml",
-    "example-build": "npm run build; bin/bedrock-utils/bedrock build test/example_build/build.toml",
-    "example-es6": "npm run build; bin/bedrock-utils/bedrock build test/example_es6/build.toml",
-    "example-typescript": "npm run build; bin/bedrock-utils/bedrock run test/example_typescript/build.toml",
-    "example-flow": "npm run build; bin/bedrock-utils/bedrock run test/example_flow/build.toml",
-    "example-server": "npm run build; bin/bedrock-utils/bedrock run test/example_server/server.toml",
-
+    "test": "npm run eslint-test",
+    "eslint": "./node_modules/eslint/bin/eslint.js",
+    "eslint-test": "npm run eslint -- ./modules/*",
+    "help": "bin/bedrock.js",
+    "example-create": "bin/bedrock.js init test/example_create/create.toml",
+    "example-build": "bin/bedrock.js build test/example_build/build.toml",
+    "example-es6": "bin/bedrock.js build test/example_es6/build.toml",
+    "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml",
+    "example-flow": "bin/bedrock.js run test/example_flow/build.toml",
+    "example-server": "bin/bedrock.js run test/example_server/server.toml",
     "example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",
-    "example-container-init": "npm run build; bin/bedrock-utils/bedrock init test/example_container/server.toml",
-    "example-container-run": "npm run build; bin/bedrock-utils/bedrock run test/example_container/server.toml",
-    "example-container-stop": "npm run build; bin/bedrock-utils/bedrock stop test/example_container/server.toml",
-    "example-container-destroy": "npm run build; bin/bedrock-utils/bedrock destroy test/example_container/server.toml",
-
-    "example-test-build-times-go": "SECONDS=0; npm run example-build prod; echo \"[example-go] $SECONDS secs\" >> log/times.log",
-    "example-test-build-times-node": "SECONDS=0; pushd test/example/node_build_comparison; npm run build prod; popd; echo \"[example-node] $SECONDS secs\" >> log/times.log",
-    "example-test-build-times": "echo \"[example] Start time test\"; for i in {1..3}; do npm run example-test-build-times-go; npm run example-test-build-times-node; done; echo \"[example] Time test ended\""
+    "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
+    "example-container-run": "bin/bedrock.js run test/example_container/server.toml",
+    "example-container-stop": "bin/bedrock.js stop test/example_container/server.toml",
+    "example-container-destroy": "bin/bedrock.js destroy test/example_container/server.toml"
+  },
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "eslint-config-defaults": "^8.0.2",
+    "eslint-config-sds": "git://github.com/sendoushi/eslint-config-sds.git"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.0",
+    "colors": "^1.1.2",
+    "glob": "^7.0.3",
+    "joi": "^8.4.1",
+    "sync-exec": "^0.6.2",
+    "toml": "^2.3.0"
   }
 }
