@@ -16,12 +16,7 @@ env = "both"
 [style.options]
 minify = false
 autoprefixer = ""
-precision = 0
-comments = true
-include_paths = [""]
-http_path = ""
-source_map = true
-base_path = ""
+source_map = false
 ```
 
 ### Examples

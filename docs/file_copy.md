@@ -8,7 +8,6 @@ Module to copy files / folder.
 source = "" # required
 destination = "" # required
 ignore = ""
-force = false # removes the older destination file 
 order = 0
 env = "dev"
 sys = "all"

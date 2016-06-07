@@ -61,7 +61,7 @@ max_order = 30 # defaults to 30. set the minimum here for better performance
 # General explanation of modules parameters:
 #    [[<name>]] or [<name>]
 #    order = 0 # order in which the module should run
-#    env = "dev|prod|both" # decide on which type of environment it should run
+#    env = "dev|prod" # decide on which type of environment it should run
 #    sys = "windows|darwin|linux|freesbd|all" # decide on which system it should run
 ```
 

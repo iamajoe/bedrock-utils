@@ -180,6 +180,8 @@ function task(config, order, env, sys) {
  * @param  {object} file
  */
 function compile(file) {
+    validate.type({ file: file }, { file: struct });
+
     if (tools.notExist(file.src)) {
         return tools.logErr('script', 'File doesn\'t exist');
     }
@@ -197,7 +199,7 @@ function compile(file) {
 
     // Now post process
     if (file.options.minify) {
-        minifyJs(file);
+        minify(file);
     }
 }
 
@@ -209,6 +211,8 @@ function compile(file) {
  * @param  {object} file
  */
 function webpackFile(file) {
+    validate.type({ file: file }, { file: struct });
+
     var deps = ['webpack@1.12.2'];
 
     file.options.plugins.forEach(function (plugin) {
@@ -245,7 +249,7 @@ function webpackFile(file) {
  * Minifies js file
  * @param  {object} file
  */
-function minifyJs(file) {
+function minify(file) {
     // TODO: ...
 }
 
