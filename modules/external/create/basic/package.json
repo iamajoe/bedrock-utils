@@ -6,7 +6,9 @@
     "eslint-config-defaults": "^8.0.2",
     "eslint-config-sds": "git://github.com/sendoushi/eslint-config-sds.git"
   },
-  "dependencies": {},
+  "dependencies": {
+    "bedrock-utils": "git://github.com/Sendoushi/bedrock-utils.git#v0.0.2"
+  },
   "scripts": {
     "test": "npm run eslint-test",
     "eslint": "./node_modules/eslint/bin/eslint.js",

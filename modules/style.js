@@ -3,19 +3,31 @@
 // -----------------------------------------
 // IMPORTS
 
-var tools = require('./tools/main');
-var Joi = tools.check.Joi;
+var Joi = require('joi');
 
 // -----------------------------------------
 // VARS
 
-// CreateStruct struct for the project
+var optionsStruct = Joi.object().keys({
+    minify: Joi.boolean(),
+    autoprefixer: Joi.string(),
+
+    precision: Joi.number(), // `toml:"precision"`
+    comments: Joi.boolean(), // `toml:"comments"`
+    includePaths: Joi.array().items(Joi.string()), // `toml:"include_paths"`
+    httpPath: Joi.string(), // `toml:"http_path"`
+    sourceMap: Joi.boolean(), // `toml:"source_map"`
+    basePath: Joi.string() // `toml:"base_path"`
+});
+
 var struct = Joi.object().keys({
-    dest: Joi.string(), // `toml:"destination"`
-    type: Joi.string(),
-    order: Joi.number(),
-    env: Joi.string(),
-    sys: Joi.string()
+    src: Joi.string().required(), // `toml:"source"`
+    dest: Joi.string().required(), // `toml:"destination"`
+    ignore: Joi.string().default(''),
+    order: Joi.number().default(0),
+    env: Joi.string().allow('').default(''),
+    sys: Joi.string().allow('').default('all'),
+    options: optionsStruct
 });
 
 // -----------------------------------------

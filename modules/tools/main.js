@@ -3,11 +3,11 @@
 // -----------------------------------------
 // IMPORTS
 
-var check = require('./check');
-var log = require('./log');
-var general = require('./general');
-var fetch = require('./fetch');
-var npm = require('./npm');
+var validate = require('./validate.js');
+var log = require('./log.js');
+var general = require('./general.js');
+var fetch = require('./fetch.js');
+var npm = require('./npm.js');
 
 // -----------------------------------------
 // VARS
@@ -22,18 +22,18 @@ var npm = require('./npm');
 // EXPORTS
 
 module.exports = {
-    check: check,
+    validate: validate,
 
     log: log.log,
     logEmpty: log.logEmpty,
     logWarn: log.logWarn,
     logErr: log.logErr,
 
-    arrContainsStr: general.arrContainsStr,
-    initDecision: general.initDecision,
-    getPaths: general.getPaths,
-    constructDest: general.constructDest,
+    isArray: general.isArray,
+    isDirectory: general.isDirectory,
     notExist: general.notExist,
+    arrContainsStr: general.arrContainsStr,
+    decide: general.decide,
     getAbsolute: general.getAbsolute,
     getGlob: general.getGlob,
     getFilename: general.getFilename,

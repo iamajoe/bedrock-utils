@@ -7,7 +7,8 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('sync-exec');
 var glob = require('glob');
-var check = require('./check');
+var Joi = require('joi');
+var validate = require('./validate.js');
 var log = require('./log');
 
 // -----------------------------------------
@@ -16,11 +17,34 @@ var log = require('./log');
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
-// ArrContainsStr checks if an array contains a string
+/**
+ * Check if is array
+ * @param  {*} val
+ * @return {boolean}
+ */
+function isArray (val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+};
+
+/**
+ * Checks if file is a directory
+ * @param  {string} src
+ * @return {boolean}
+ */
+function isDirectory(src) {
+    return fs.lstatSync(src).isDirectory();
+}
+
+/**
+ * Checks if an array contains a string
+ * @param  {array} arr
+ * @param  {string} str
+ * @return {boolean}
+ */
 function arrContainsStr(arr, str) {
-    check.validate(
+    validate.type(
         { arr: arr, str: str },
-        { arr: check.Joi.array().items(check.Joi.string()), str: check.Joi.string() }
+        { arr: Joi.array().items(Joi.string()), str: Joi.string() }
     );
 
 	return arr.filter(function (val) {
@@ -28,102 +52,62 @@ function arrContainsStr(arr, str) {
     }).length;
 }
 
-// InitDecision decides what should happen
-function initDecision(taskOrder, taskEnv, taskSys, order, env, sys) {
-    check.validate(
-        { taskOrder: taskOrder, taskEnv: taskEnv, taskSys: taskSys, order: order, env: env, sys: sys },
+/**
+ * Checks if file exists
+ * @param  {string} src
+ * @return {boolean}
+ */
+function notExist(src) {
+    validate.type(
+        { src: src },
+        { src: Joi.string() }
+    );
+
+    return src !== '' ? !fs.existsSync(src) : false;
+}
+
+/**
+ * Decides what should happen
+ * @param  {object} task
+ * @param  {number} order
+ * @param  {string} env
+ * @param  {string} sys
+ * @return {object}
+ */
+function decide(task, order, env, sys) {
+    validate.type(
+        { task: task, order: order, env: env, sys: sys },
         {
-            taskOrder: check.Joi.number(),
-            taskEnv: check.Joi.string(),
-            taskSys: check.Joi.string(),
-            order: check.Joi.number(),
-            env: check.Joi.string(),
-            sys: check.Joi.string()
+            task: Joi.object(),
+            order: Joi.number(),
+            env: Joi.string().allow(''),
+            sys: Joi.string()
         }
     );
 
-	taskEnv = taskEnv === '' ? 'both' : taskEnv;
-    taskSys = taskSys === '' ? 'all' : taskSys;
+    var taskOrder = task.order;
+    var taskEnv = task.env;
+    var taskSys = task.sys;
 
-	var mayNotOrder = order != taskOrder;
-	var mayNotEnv = taskEnv != 'both' && env != taskEnv;
-	var mayNotSys = taskSys != 'all' && sys != taskSys;
+	var mayNotOrder = order != task.order;
+	var mayNotEnv = task.env != '' && env != task.env;
+	var mayNotSys = task.sys != 'all' && sys != task.sys;
 
 	// Should it continue?
 	var shouldContinue = (mayNotOrder || mayNotEnv || mayNotSys);
 
-	return {
-        taskOrder: taskOrder,
-        taskEnv: taskEnv,
-        taskSys: taskSys,
-        shouldContinue: shouldContinue
-    };
+	return shouldContinue;
 }
 
-// GetPaths gets right paths
-function getPaths(srcToPath, ignoreToPath) {
-    check.validate(
-        { srcToPath: srcToPath, ignoreToPath: ignoreToPath },
-        { srcToPath: check.Joi.string(), ignoreToPath: check.Joi.string() }
-    );
-
-	// Initialize vars
-    var ignore;
-	var src;
-
-	if (srcToPath !== '') {
-		src = getGlob(getAbsolute(srcToPath));
-	}
-
-	if (ignoreToPath !== '') {
-		ignore = getGlob(getAbsolute(ignoreToPath));
-	}
-
-	return {
-        src: src,
-        ignore: ignore
-    };
-}
-
-// ConstructDest constructs dest path
-function constructDest(module, dest, src) {
-    check.validate(
-        { module: module, dest: dest, src: src },
-        { module: check.Joi.string(), dest: check.Joi.string(), src: check.Joi.string() }
-    );
-
-	if (dest === '') {
-		return dest;
-	}
-
-	// Check if it goes to a directory
-	if (dest[dest.length - 1] === '/') {
-		dest = dest + getFilename(src);
-	}
-
-	// Ensure directory exists
-	if (module !== 'remove') {
-		ensurePath(dest);
-	}
-
-	return getAbsolute(dest);
-}
-
-// NotExist checks if file exists
-function notExist(src) {
-    check.validate(
-        { src: src },
-        { src: check.Joi.string() }
-    );
-
-	return src !== '' ? fs.existsSync(src) : false;
-}
-
-// GetAbsolute gets absolute path
+/**
+ * Gets absolute path
+ * @param  {string} filePath
+ * @return {string}
+ */
 function getAbsolute(filePath) {
-    check.validate(
+    validate.type(
         { filePath: filePath },
-        { filePath: check.Joi.string() }
+        { filePath: Joi.string() }
     );
 
 	if (filePath[0] !== '/') {
@@ -133,34 +117,70 @@ function getAbsolute(filePath) {
 	return filePath;
 }
 
-// GetGlob gets glob of files
+/**
+ * Gets glob of files
+ * @param  {string} filePath
+ * @return {array}
+ */
 function getGlob(filePath) {
-    check.validate(
+    validate.type(
         { filePath: filePath },
-        { filePath: check.Joi.string() }
+        { filePath: Joi.string() }
     );
 
-	// Get all matching
-    var files = glob.sync(filePath);
+    var relative = filePath.replace('/**', '').replace('/*', '');
+    var files;
+
+    // TODO: Is glob working for directories??
+    if (relative === filePath && isDirectory(filePath)) {
+        filePath = path.join(filePath, '/**/*');
+    }
+
+    // Lets glob it!
+    filePath = getAbsolute(filePath);
+    files = glob.sync(filePath);
+    files = files.map(function (file) {
+        if (isDirectory(file)) {
+            return;
+        }
+
+        var fileRelative = file.replace(relative, '');
+        fileRelative = !fileRelative.length ? '.' : fileRelative;
+
+        return {
+            relative: fileRelative,
+            original: filePath,
+            absolute: file
+        };
+    }).filter(function (val) {
+        return !!val;
+    });
 
 	return files;
 }
 
-// GetFilename gets filename
+/**
+ * Gets filename
+ * @param  {string} filePath
+ * @return {string}
+ */
 function getFilename(filePath) {
-    check.validate(
+    validate.type(
         { filePath: filePath },
-        { filePath: check.Joi.string() }
+        { filePath: Joi.string() }
     );
 
 	return path.basename(filePath);
 }
 
-// EnsurePath ensures that all directories exist
+/**
+ * Ensures that all directories exist
+ * @param  {string} filePath
+ */
 function ensurePath(filePath) {
-    check.validate(
+    validate.type(
         { filePath: filePath },
-        { filePath: check.Joi.string() }
+        { filePath: Joi.string() }
     );
 
     var dirPath = path.dirname(filePath);
@@ -177,11 +197,11 @@ function ensurePath(filePath) {
 // EXPORTS
 
 module.exports = {
-    arrContainsStr: arrContainsStr,
-    initDecision: initDecision,
-    getPaths: getPaths,
-    constructDest: constructDest,
+    isArray: isArray,
+    isDirectory: isDirectory,
     notExist: notExist,
+    arrContainsStr: arrContainsStr,
+    decide: decide,
     getAbsolute: getAbsolute,
     getGlob: getGlob,
     getFilename: getFilename,

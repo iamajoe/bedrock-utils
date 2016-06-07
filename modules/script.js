@@ -3,8 +3,7 @@
 // -----------------------------------------
 // IMPORTS
 
-var tools = require('./tools/main');
-var Joi = tools.check.Joi;
+var Joi = require('joi');
 
 // -----------------------------------------
 // VARS
@@ -29,14 +28,14 @@ var resolveStruct = Joi.object().keys({
 });
 
 var loaderStruct = Joi.object().keys({
-    Test: Joi.string(),
-    Exclude: Joi.string(),
-    Include: Joi.array().items(Joi.string()),
-    Loader: Joi.string(),
-    Loaders: Joi.array().items(Joi.string()),
-    Query: Joi.string(),
+    test: Joi.string(),
+    exclude: Joi.string(),
+    include: Joi.array().items(Joi.string()),
+    loader: Joi.string(),
+    loaders: Joi.array().items(Joi.string()),
+    query: Joi.string(),
 
-    Dependencies: Joi.array().items(Joi.string())
+    dependencies: Joi.array().items(Joi.string())
 });
 
 var moduleStruct = Joi.object().keys({
@@ -101,12 +100,12 @@ var optionsStruct = Joi.object().keys({
 });
 
 var struct = Joi.object().keys({
-    src: Joi.string(), // `toml:"source"`
-    dest: Joi.string(), // `toml:"destination"`
-    ignore: Joi.string(),
-    order: Joi.number(),
-    env: Joi.string(),
-    sys: Joi.string(),
+    src: Joi.string().required(), // `toml:"source"`
+    dest: Joi.string().required(), // `toml:"destination"`
+    ignore: Joi.string().default(''),
+    order: Joi.number().default(0),
+    env: Joi.string().allow('').default(''),
+    sys: Joi.string().allow('').default('all'),
     options: optionsStruct
 });
 

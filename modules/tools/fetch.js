@@ -3,7 +3,8 @@
 // -----------------------------------------
 // IMPORTS
 
-var check = require('./check');
+var validate = require('./validate.js');
+var Joi = require('joi');
 
 // -----------------------------------------
 // VARS
@@ -11,21 +12,30 @@ var check = require('./check');
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
-// CloneURL clones a url
+/**
+ * Clones a url
+ * @param  {string} url
+ * @param  {string} path
+ */
 function cloneURL(url, path) {
-    check.validate(
+    validate.type(
         { url: url, path: path },
-        { url: check.Joi.string(), path: check.Joi.string() }
+        { url: Joi.string(), path: Joi.string() }
     );
 
 	// TODO: Clone url
 }
 
 // CloneGit clones a git
+/**
+ * Clones a git
+ * @param  {string} git
+ * @param  {string} path
+ */
 function cloneGit(git, path) {
-    check.validate(
+    validate.type(
         { git: git, path: path },
-        { git: check.Joi.string(), path: check.Joi.string() }
+        { git: Joi.string(), path: Joi.string() }
     );
 
 	// TODO: Clone git

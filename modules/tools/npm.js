@@ -5,7 +5,8 @@
 
 var path = require('path');
 var exec = require('sync-exec');
-var check = require('./check');
+var Joi = require('joi');
+var validate = require('./validate.js');
 var log = require('./log');
 var general = require('./general');
 
@@ -15,11 +16,15 @@ var general = require('./general');
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
-// NpmInstall installs node dependencies
+/**
+ * Installs node dependencies
+ * @param  {array} deps
+ * @param  {string} cmdDir
+ */
 function npmInstall(deps, cmdDir) {
-    check.validate(
+    validate.type(
         { deps: deps, cmdDir: cmdDir },
-        { deps: check.Joi.array().items(check.Joi.string()), cmdDir: check.Joi.string() }
+        { deps: Joi.array().items(Joi.string()), cmdDir: Joi.string() }
     );
 
     var vendorPath = npmFindModules(cmdDir);
@@ -43,11 +48,15 @@ function npmInstall(deps, cmdDir) {
     });
 }
 
-// NpmFindModules tries to find a node_modules folder
+/**
+ * Tries to find a node_modules folder
+ * @param  {string} cmdDir
+ * @return {string}
+ */
 function npmFindModules(cmdDir) {
-    check.validate(
+    validate.type(
         { cmdDir: cmdDir },
-        { cmdDir: check.Joi.string() }
+        { cmdDir: Joi.string() }
     );
 
     var basePath = cmdDir;
@@ -88,11 +97,15 @@ function npmFindModules(cmdDir) {
     return vendorPath;
 }
 
-// NpmGetDepName returns the dependency name
+/**
+ * Get the dependency name
+ * @param  {string} dep
+ * @return {string}
+ */
 function npmGetDepName(dep) {
-    check.validate(
+    validate.type(
         { dep: dep },
-        { dep: check.Joi.string() }
+        { dep: Joi.string() }
     );
 
     var i = dep.indexOf('@');

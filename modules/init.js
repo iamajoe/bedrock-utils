@@ -4,47 +4,88 @@
 // IMPORTS
 
 var path = require('path');
+var Joi = require('joi');
 var tools = require('./tools/main');
 var config = require('./config');
+
+var create = require('./create');
+var file = require('./file');
+var raw = require('./raw');
+var script = require('./script');
+var server = require('./server');
+var style = require('./style');
 
 // -----------------------------------------
 // VARS
 
-// CmdDir folder of the cmd
-var CmdDir = path.dirname(process.argv[1]);
+// cmdDir folder of the cmd
+var cmdDir = path.dirname(process.argv[1]);
 
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
 // Init initializes modules
+/**
+ * Initializes a module
+ * @param  {string} commandType
+ * @param  {string} configPath
+ * @param  {string} env
+ * @param  {string} sys
+ */
 function init(commandType, configPath, env, sys) {
-    check.validate(
-        { commandType: commandType, configPath: configPath, env: env, sys: sys },
+    tools.validate.type(
+        { commandType: commandType, configPath: configPath, env: env },
         {
-            commandType: check.Joi.string(),
-            configPath: check.Joi.string(),
-            env: check.Joi.string(),
-            sys: check.Joi.string()
+            commandType: Joi.string(),
+            configPath: Joi.string(),
+            env: Joi.string().allow(''),
+            sys: Joi.string()
         }
     );
 
     // Check if there is a config file and load it
-    var configObj = config(configPath);
+    config.get(configPath).then(function (configObj) {
+        var oldWd;
+        var order;
 
-    // Change working dir so that paths may be relative
-    // wd, _ := os.Getwd()
-    // os.Chdir(path.Dir(configPath))
-    // defer os.Chdir(wd)
+        // Change working dir so that paths may be relative
+        oldWd = process.cwd();
+        process.chdir(path.dirname(configPath));
 
-    // // Lets take care of modules ordering
-    // for order := 0; order <= config.MaxOrder; order++ {
-    //     tools.Log("main", "Order: "+strconv.Itoa(order))
-    //     runOrder(order, commandType, config, env, sys)
-    // }
+        // Lets take care of modules ordering
+        for (order = 0; order < configObj.maxOrder; order += 1) {
+            tools.log('main', 'Order: ' + order);
+            runOrder(order, commandType, configObj, env, sys);
+        }
+
+        // Change back the working dir
+        process.chdir(oldWd);
+    });
 }
 
-// runOrder runs each instance per order
-// func runOrder(order int, commandType string, config ConfigStruct, env string, sys string) {
+/**
+ * Runs each instance per order
+ * @param  {number} order
+ * @param  {string} commandType
+ * @param  {object} config
+ * @param  {string} env
+ * @param  {string} sys
+ */
+function runOrder(order, commandType, configObj, env, sys) {
+    tools.validate.type(
+        { order: order, commandType: commandType, config: configObj, env: env, sys: sys },
+        {
+            order: Joi.number(),
+            commandType: Joi.string(),
+            config: config.struct,
+            env: Joi.string().allow(''),
+            sys: Joi.string()
+        }
+    );
+
+    // Lets run the tasks
+    create.task(configObj.create, commandType, order, env, sys);
+
 //     var wg sync.WaitGroup
 
 //     // Now the routines
@@ -99,7 +140,7 @@ function init(commandType, configPath, env, sys) {
 
 //     // Lets wait now
 //     wg.Wait()
-// }
+}
 
 // -----------------------------------------
 // PRIVATE FUNCTIONS

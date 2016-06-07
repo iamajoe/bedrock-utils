@@ -3,19 +3,35 @@
 // -----------------------------------------
 // IMPORTS
 
-var tools = require('./tools/main');
-var Joi = tools.check.Joi;
+var Joi = require('joi');
 
 // -----------------------------------------
 // VARS
 
-// CreateStruct struct for the project
-var struct = Joi.object().keys({
-    dest: Joi.string(), // `toml:"destination"`
+var phpStruct = Joi.object().keys({
+    public: Joi.string(),
+    port: Joi.number(),
+    order: Joi.number().default(0),
+    env: Joi.string().allow('').default(''),
+    sys: Joi.string().allow('').default('all')
+});
+
+var containerStruct = Joi.object().keys({
+    name: Joi.string(),
     type: Joi.string(),
-    order: Joi.number(),
-    env: Joi.string(),
-    sys: Joi.string()
+    port: Joi.string(),
+    link: Joi.array().items(Joi.string()),
+    envVar: Joi.array().items(Joi.string()), // `toml:"env_var"`
+    volume: Joi.array().items(Joi.string()),
+    sleep: Joi.number(),
+    order: Joi.number().default(0),
+    env: Joi.string().allow('').default(''),
+    sys: Joi.string().allow('').default('all')
+});
+
+var struct = Joi.object().keys({
+    php: Joi.array().items(phpStruct).default([]),
+    container: Joi.array().items(containerStruct).default([])
 });
 
 // -----------------------------------------

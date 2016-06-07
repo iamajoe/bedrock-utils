@@ -4,7 +4,6 @@
 // IMPORTS
 
 var colors = require('colors/safe');
-var check = require('./check');
 
 // -----------------------------------------
 // VARS
@@ -14,14 +13,13 @@ var projectName = 'project';
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
-// Log a string
+/**
+ * Log a string
+ * @param  {string} module
+ * @param  {string} str
+ */
 function log(module, str) {
-    check.validate(
-        { module: module, str: str },
-        { module: check.Joi.string(), str: check.Joi.string() }
-    );
-
-    if (str.replace(/ /g, '') === '') {
+    if (typeof str === 'string' && str.replace(/ /g, '') === '') {
         return;
     }
 
@@ -31,31 +29,28 @@ function log(module, str) {
     console.log(project + module + str);
 }
 
-// LogEmpty logs without module
+/**
+ * Logs without module
+ * @param  {string} str
+ */
 function logEmpty(str) {
-    check.validate(
-        { str: str },
-        { str: check.Joi.string() }
-    );
-
-    if (str.replace(/ /g, '') === '') {
+    if (typeof str === 'string' && str.replace(/ /g, '') === '') {
         return;
     }
 
     var project = colors.bgBlack.white('[' + projectName + '] ');
-    var module = colors.bgBlack.cyan('[' + module + '] ');
+    //var module = colors.bgBlack.cyan('[' + module + '] ');
 
-    console.log(project + module + str);
+    console.log(project + colors.bgBlack.cyan(str));
 }
 
-// LogWarn logs a warn
+/**
+ * Logs a warn
+ * @param  {string} module
+ * @param  {string} str
+ */
 function logWarn(module, str) {
-    check.validate(
-        { module: module, str: str },
-        { module: check.Joi.string(), str: check.Joi.string() }
-    );
-
-    if (str.replace(/ /g, '') === '') {
+    if (typeof str === 'string' && str.replace(/ /g, '') === '') {
         return;
     }
 
@@ -66,14 +61,13 @@ function logWarn(module, str) {
     console.warn(project + type + module + str);
 }
 
-// LogErr logs an error
+/**
+ * Logs an error
+ * @param  {string} module
+ * @param  {string} err
+ */
 function logErr(module, err) {
-    check.validate(
-        { module: module, err: err },
-        { module: check.Joi.string(), err: check.Joi.string() }
-    );
-
-    if (err.replace(/ /g, '') === '') {
+    if (typeof err === 'string' && err.replace(/ /g, '') === '') {
         return;
     }
 

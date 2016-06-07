@@ -5,7 +5,6 @@
 // -----------------------------------------
 // IMPORTS
 
-var check = require('check-types');
 var tools = require('../modules/tools/main.js');
 var init = require('../modules/init.js');
 
@@ -50,7 +49,7 @@ function main() {
 // Prints help
 function printHelp() {
     tools.logErr("usage", " ");
-    tools.logErr("usage", "Usage: ./cmd ...");
+    tools.logErr("usage", "Usage: ./bedrock.js ...");
     tools.logErr("usage", " ");
     tools.logErr("usage", "    init <*.toml>               # Initializes project");
     tools.logErr("usage", "    build <*.toml> [env]        # Builds project");
