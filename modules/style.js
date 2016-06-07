@@ -213,7 +213,18 @@ function autoprefix(file) {
 function minify(file) {
     validate.type({ file: file }, { file: struct });
 
-    // TODO: ...
+    // Install dependencies
+    tools.npmInstall(['postcss@5.0.21', 'cssnano^3.5.2']);
+
+    // Lets get the paths for the script
+    var vendorPath = tools.npmFindModules();
+    var scriptPath = path.join(__dirname, 'external/style/minify.js');
+
+    // Now lets run the script
+    raw.command({
+        command: 'node',
+        args: [scriptPath, vendorPath, file.dest],
+    });
 }
 
 // -----------------------------------------
