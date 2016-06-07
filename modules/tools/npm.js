@@ -19,15 +19,14 @@ var general = require('./general');
 /**
  * Installs node dependencies
  * @param  {array} deps
- * @param  {string} cmdDir
  */
-function npmInstall(deps, cmdDir) {
+function npmInstall(deps) {
     validate.type(
-        { deps: deps, cmdDir: cmdDir },
-        { deps: Joi.array().items(Joi.string()), cmdDir: Joi.string() }
+        { deps: deps },
+        { deps: Joi.array().items(Joi.string()) }
     );
 
-    var vendorPath = npmFindModules(cmdDir);
+    var vendorPath = npmFindModules();
 
     deps.forEach(function (dep) {
         var realDep = npmGetDepName(dep);
@@ -50,46 +49,21 @@ function npmInstall(deps, cmdDir) {
 
 /**
  * Tries to find a node_modules folder
- * @param  {string} cmdDir
  * @return {string}
  */
-function npmFindModules(cmdDir) {
-    validate.type(
-        { cmdDir: cmdDir },
-        { cmdDir: Joi.string() }
-    );
-
-    var basePath = cmdDir;
+function npmFindModules() {
+    var basePath = process.cwd();
     var vendorPath;
-    var dirFound;
     var i;
 
-    // Lets try and find related to the CmdDir
+    // Lets try and find the node_modules
     for (i = 0; i < 5; i += 1) {
         vendorPath = path.join(basePath, 'node_modules');
 
         if (general.notExist(vendorPath)) {
             basePath = path.join(basePath, '..');
         } else {
-            dirFound = true;
-            break
-        }
-    }
-
-    if (dirFound) {
-        return vendorPath;
-    }
-
-    // Lets try and find related to the working dir
-    basePath = process.cwd();
-
-    for (i = 0; i < 5; i += 1) {
-        vendorPath = path.join(basePath, 'node_modules');
-
-        if (general.notExist(vendorPath)) {
-            basePath = path.join(basePath, '..');
-        } else {
-            dirFound = true;
+            // Found the dir!
             break
         }
     }

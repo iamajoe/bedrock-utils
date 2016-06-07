@@ -3,6 +3,9 @@
 // -----------------------------------------
 // IMPORTS
 
+var fs = require('fs');
+var path = require('path');
+var exec = require('sync-exec');
 var Joi = require('joi');
 
 var tools = require('./tools/main');
@@ -26,7 +29,7 @@ var struct = Joi.object().keys({
 /**
  * Create task for init
  * @param  {object} config
- * @param  {string} commandType
+ * @param  {string} taskType
  * @param  {number} order
  * @param  {string} env
  * @param  {string} sys
@@ -57,7 +60,7 @@ function task(config, taskType, order, env, sys) {
         }
 
         // Get the right paths
-        var src = tools.getGlob(task.src);
+        var src = tools.getGlob(task.src, taskType === 'remove');
         var ignore = task.ignore ? tools.getGlob(task.ignore) : [];
 
         // Lets filter files
@@ -70,23 +73,24 @@ function task(config, taskType, order, env, sys) {
 
         // Go through each in the glob
         src.forEach(function (file) {
-            tools.log(taskType, file);
+            tools.log(taskType, file.relative);
 
             // Create task
-            var dest = path.join(task.dest, file.relative);
-            var newTask = {
-                src: file.absolute,
-                dest: tools.getAbsolute(dest),
-                order: module.order,
-                env: module.env,
-                sys: module.sys
-            };
+            var newTask = { src: file.absolute };
+            var dest;
+
+            if (taskType !== 'remove') {
+                dest = path.join(task.dest, file.relative);
+                newTask['dest'] = tools.getAbsolute(dest);
+            }
 
             switch (taskType) {
-            case "rename":
+            case 'rename':
                 rename(newTask);
-            case "remove":
+                break;
+            case 'remove':
                 remove(newTask);
+                break;
             default:
                 copy(newTask);
             }
@@ -120,16 +124,17 @@ function copy(file) {
 
         // Remove file if exists
         if (!tools.notExist(file.dest)) {
-            remove({
-                src: file.dest,
-                order: module.order,
-                env: module.env,
-                sys: module.sys
-            });
+            remove({ src: file.dest });
         }
 
         // Now copy the file
-        // TODO: ...
+        var data = exec('cp ' + file.src + ' ' + file.dest);
+
+        if (data.stderr && data.stderr.length) {
+            tools.logErr('copy', data.stderr);
+        } else if (data.stdout && data.stdout.length) {
+            tools.log('copy', data.stdout);
+        }
     }
 }
 
@@ -140,101 +145,39 @@ function copy(file) {
 function remove(file) {
     validate.type({ file: file }, { file: struct });
 
-    if (tools.notExist(file.src)) {
+    var src = file.src.replace(/ /g, '');
+
+    if (src === '.' || src === '' || src === '/') {
+        return tools.logErr('remove', 'Trying to remove a global directory!')
+    } else if (tools.notExist(src)) {
         return;
     }
 
-    if (tools.isDirectory(file.src)) {
-        // We should recursive in case of directory
-        task([{
-            src: file.src + '/**/*',
-            order: module.order,
-            env: module.env,
-            sys: module.sys
-        }], 'remove', module.order, module.env, module.sys);
-    } else {
-        // Now remove the file
-        // TODO: ...
+    var data = exec('rm -rf ' + src);
+
+    if (data.stderr && data.stderr.length) {
+        tools.logErr('remove', data.stderr);
+    } else if (data.stdout && data.stdout.length) {
+        tools.log('remove', data.stdout);
     }
 }
 
-// FileRename renames * from source to destination
-// func FileRename(file FileStruct) (log string, err error) {
-//     src := file.Src
-//     dest := file.Dest
+/**
+ * Renames * from source to destination
+ * @param  {object} file
+ */
+function rename(file) {
+    validate.type({ file: file }, { file: struct });
 
-//     err = os.Rename(src, dest)
-//     if err != nil {
-//         return "", err
-//     }
+    if (tools.notExist(src)) {
+        return;
+    }
 
-//     return
-// }
+    fs.renameSync(file.src, file.dest);
+}
 
 // -----------------------------------------
 // PRIVATE FUNCTIONS
-
-// Copy file from source to destination
-// func fileCopy(file FileStruct) (err error) {
-//     src := file.Src
-//     dest := file.Dest
-
-//     // We need to ensure that the folder exists
-//     err = tools.EnsurePath(dest)
-//     if err != nil {
-//         return err
-//     }
-
-//     // Remove old destination file if exists
-//     FileRemove(FileStruct{Src: dest})
-
-//     // Copy the file
-//     err = os.Link(src, dest)
-//     if err != nil {
-//         return err
-//     }
-
-//     return
-// }
-
-// // Copy folder from source to destination
-// func folderCopy(file FileStruct) (err error) {
-//     src := file.Src
-//     dest := file.Dest
-
-//     // We need to ensure that the folder exists
-//     err = tools.EnsurePath(dest)
-//     if err != nil {
-//         return err
-//     }
-
-//     // Remove old destination file if exists
-//     FileRemove(FileStruct{Src: dest})
-
-//     // Make folder
-//     mode := os.FileMode(int(0777))
-//     if err := os.MkdirAll(dest, mode); err != nil {
-//         return err
-//     }
-
-//     // Read the files inside
-//     dir, _ := os.Open(src)
-//     files, _ := dir.Readdir(-1)
-
-//     // Loop each file
-//     for _, file := range files {
-//         srcPath := path.Join(src, file.Name())
-//         destPath := path.Join(dest, file.Name())
-
-//         // Copy new file
-//         _, err = FileCopy(FileStruct{Src: srcPath, Dest: destPath})
-//         if err != nil {
-//             return err
-//         }
-//     }
-
-//     return
-// }
 
 // -----------------------------------------
 // EXPORTS
@@ -242,5 +185,7 @@ function remove(file) {
 module.exports = {
     struct: struct,
     task: task,
-    copy: copy
+    copy: copy,
+    remove: remove,
+    rename: rename
 };

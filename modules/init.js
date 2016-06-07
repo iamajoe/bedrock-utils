@@ -18,13 +18,9 @@ var style = require('./style');
 // -----------------------------------------
 // VARS
 
-// cmdDir folder of the cmd
-var cmdDir = path.dirname(process.argv[1]);
-
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
-// Init initializes modules
 /**
  * Initializes a module
  * @param  {string} commandType
@@ -50,7 +46,7 @@ function init(commandType, configPath, env, sys) {
 
         // Change working dir so that paths may be relative
         oldWd = process.cwd();
-        process.chdir(path.dirname(configPath));
+        process.chdir(tools.getDir(configPath));
 
         // Lets take care of modules ordering
         for (order = 0; order < configObj.maxOrder; order += 1) {
@@ -62,6 +58,9 @@ function init(commandType, configPath, env, sys) {
         process.chdir(oldWd);
     });
 }
+
+// -----------------------------------------
+// PRIVATE FUNCTIONS
 
 /**
  * Runs each instance per order
@@ -84,40 +83,11 @@ function runOrder(order, commandType, configObj, env, sys) {
     );
 
     // Lets run the tasks
+    file.task(configObj.copy, "copy", order, env, sys);
+    file.task(configObj.rename, "rename", order, env, sys);
+    file.task(configObj.remove, "remove", order, env, sys);
     create.task(configObj.create, commandType, order, env, sys);
-
-//     var wg sync.WaitGroup
-
-//     // Now the routines
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         FileTask(config.Copy, "copy", order, env, sys)
-//     }()
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         FileTask(config.Rename, "rename", order, env, sys)
-//     }()
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         FileTask(config.Remove, "remove", order, env, sys)
-//     }()
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         CreateTask(config.Create, commandType, order, env, sys)
-//     }()
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         RawTask(config.Raw, order, env, sys)
-//     }()
+    raw.task(configObj.raw, order, env, sys);
 
 //     wg.Add(1)
 //     go func() {
@@ -141,9 +111,6 @@ function runOrder(order, commandType, configObj, env, sys) {
 //     // Lets wait now
 //     wg.Wait()
 }
-
-// -----------------------------------------
-// PRIVATE FUNCTIONS
 
 // -----------------------------------------
 // EXPORTS

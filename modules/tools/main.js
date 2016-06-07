@@ -37,6 +37,7 @@ module.exports = {
     getAbsolute: general.getAbsolute,
     getGlob: general.getGlob,
     getFilename: general.getFilename,
+    getDir: general.getDir,
     ensurePath: general.ensurePath,
 
     npmInstall: npm.npmInstall,

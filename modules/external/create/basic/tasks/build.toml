@@ -9,28 +9,38 @@ order = 0
 # TODO: Need to improve the copy glob
 # Copy others
 [[copy]]
-source = "src/components"
-destination = "build/"
+source = "src/**/*.php"
+destination = "build"
 order = 1
 
 [[copy]]
-source = "src/containers"
-destination = "build/"
+source = "src/**/*.svg"
+destination = "build"
 order = 1
 
 [[copy]]
-source = "src/inc"
-destination = "build/"
+source = "src/**/*.png"
+destination = "build"
 order = 1
 
 [[copy]]
-source = "src/*.php"
-destination = "build/"
+source = "src/**/*.jpg"
+destination = "build"
+order = 1
+
+[[copy]]
+source = "src/**/*.jpeg"
+destination = "build"
+order = 1
+
+[[copy]]
+source = "src/**/*.gif"
+destination = "build"
 order = 1
 
 [[copy]]
 source = "src/.htaccess"
-destination = "build/"
+destination = "build"
 order = 1
 
 # Remove stuff not needed for the copy

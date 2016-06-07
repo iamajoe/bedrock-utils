@@ -13,9 +13,6 @@ var file = require('./file');
 // -----------------------------------------
 // VARS
 
-// cmdDir folder of the cmd
-var cmdDir = path.dirname(process.argv[1]);
-
 var struct = Joi.object().keys({
     dest: Joi.string().required(), // `toml:"destination"`
     type: Joi.string().required(),
@@ -80,10 +77,7 @@ function project(module) {
         // Lets copy
         file.copy({
             src: fileObj.absolute,
-            dest: tools.getAbsolute(dest),
-            order: module.order,
-            env: module.env,
-            sys: module.sys
+            dest: tools.getAbsolute(dest)
         });
     });
 }

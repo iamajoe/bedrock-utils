@@ -32,6 +32,10 @@ function isArray (val) {
  * @return {boolean}
  */
 function isDirectory(src) {
+    if (notExist(src)) {
+        return;
+    }
+
     return fs.lstatSync(src).isDirectory();
 }
 
@@ -120,18 +124,19 @@ function getAbsolute(filePath) {
 /**
  * Gets glob of files
  * @param  {string} filePath
+ * @param  {boolean} alsoDir
  * @return {array}
  */
-function getGlob(filePath) {
+function getGlob(filePath, alsoDir) {
     validate.type(
-        { filePath: filePath },
-        { filePath: Joi.string() }
+        { filePath: filePath, alsoDir: alsoDir },
+        { filePath: Joi.string(), alsoDir: Joi.boolean().optional() }
     );
 
     var relative = filePath.replace('/**', '').replace('/*', '');
     var files;
 
-    // TODO: Is glob working for directories??
+    // Directory globbing
     if (relative === filePath && isDirectory(filePath)) {
         filePath = path.join(filePath, '/**/*');
     }
@@ -140,7 +145,7 @@ function getGlob(filePath) {
     filePath = getAbsolute(filePath);
     files = glob.sync(filePath);
     files = files.map(function (file) {
-        if (isDirectory(file)) {
+        if (!alsoDir && isDirectory(file)) {
             return;
         }
 
@@ -174,6 +179,20 @@ function getFilename(filePath) {
 }
 
 /**
+ * Gets directory
+ * @param  {string} filePath
+ * @return {string}
+ */
+function getDir(filePath) {
+    validate.type(
+        { filePath: filePath },
+        { filePath: Joi.string() }
+    );
+
+    return path.dirname(filePath);
+}
+
+/**
  * Ensures that all directories exist
  * @param  {string} filePath
  */
@@ -183,7 +202,7 @@ function ensurePath(filePath) {
         { filePath: Joi.string() }
     );
 
-    var dirPath = path.dirname(filePath);
+    var dirPath = getDir(filePath);
     var data = exec('mkdir -p ' + dirPath);
 
     if (data.stderr && data.stderr.length) {
@@ -205,5 +224,6 @@ module.exports = {
     getAbsolute: getAbsolute,
     getGlob: getGlob,
     getFilename: getFilename,
+    getDir: getDir,
     ensurePath: ensurePath
 };
