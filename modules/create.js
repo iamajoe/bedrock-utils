@@ -34,8 +34,13 @@ var struct = Joi.object().keys({
  */
 function task(config, commandType, order, env, sys) {
     validate.type(
-        { config: config, commandType: commandType, order: order, env: env, sys: sys },
         {
+            config: config,
+            commandType: commandType,
+            order: order,
+            env: env,
+            sys: sys
+        }, {
             config: Joi.array().items(struct),
             commandType: Joi.string(),
             order: Joi.number(),

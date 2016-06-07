@@ -5,6 +5,9 @@
 
 var Joi = require('joi');
 
+var tools = require('./tools/main');
+var validate = tools.validate;
+
 // -----------------------------------------
 // VARS
 
@@ -116,7 +119,7 @@ function compile(file) {
     }
 
     // Now post process
-    if file.options.autoprefixer != '' {
+    if (file.options.autoprefixer != '') {
         autoprefix(file);
     }
 
@@ -218,6 +221,6 @@ function minify(file) {
 
 module.exports = {
     struct: struct,
+    task: task,
     compile: compile
 };
-

@@ -87,29 +87,10 @@ function runOrder(order, commandType, configObj, env, sys) {
     file.task(configObj.rename, "rename", order, env, sys);
     file.task(configObj.remove, "remove", order, env, sys);
     create.task(configObj.create, commandType, order, env, sys);
+    style.task(configObj.style, order, env, sys);
+    script.task(configObj.script, order, env, sys);
     raw.task(configObj.raw, order, env, sys);
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         ServerTask(config.Server, commandType, order, env, sys)
-//     }()
-
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         ScriptTask(config.Script, order, env, sys)
-//     }()
-
-//     // TODO: Style has problems with concurrency because of libsass
-//     wg.Add(1)
-//     go func() {
-//         defer wg.Done()
-//         StyleTask(config.Style, order, env, sys)
-//     }()
-
-//     // Lets wait now
-//     wg.Wait()
+    server.task(configObj.server, commandType, order, env, sys);
 }
 
 // -----------------------------------------

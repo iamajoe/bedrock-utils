@@ -241,7 +241,7 @@ function webpackFile(file) {
     // Now lets run the script
     raw.command({
         command: 'node',
-        args: [scriptPath, vendorPath, options],
+        args: [scriptPath, vendorPath, options]
     });
 }
 
@@ -258,5 +258,6 @@ function minify(file) {
 
 module.exports = {
     struct: struct,
+    task: task,
     compile: compile
 };
