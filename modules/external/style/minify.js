@@ -23,10 +23,12 @@ var cssnano = require(path.join(vendor, 'cssnano'));
  */
 var task = function (fileSrc) {
     var src = fs.readFileSync(fileSrc, 'utf-8');
-    var result = postcss([cssnano]).process(src);
+    var result = postcss([cssnano()]).process(src);
 
-    // Write the file now
-    fs.writeFileSync(fileSrc, result.css);
+    result.then(function (res) {
+        // Write the file now
+        fs.writeFileSync(fileSrc, res.css);
+    });
 };
 
 // ---------------------------------------------

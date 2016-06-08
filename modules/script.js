@@ -8,6 +8,7 @@ var Joi = require('joi');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
+var file = require('./file');
 var raw = require('./raw');
 
 // -----------------------------------------
@@ -119,21 +120,21 @@ var struct = Joi.object().keys({
 
 /**
  * Bundles the file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function webpackFile(file) {
+function webpackFile(fileObj) {
     var vendorPath;
     var scriptPath;
     var options;
     var deps;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     deps = ['webpack@1.12.2'];
-    file.options.plugins.forEach(function (plugin) {
+    fileObj.options.plugins.forEach(function (plugin) {
         deps = deps.concat(plugin.dependencies);
     });
-    file.options.module.loaders.forEach(function (loader) {
+    fileObj.options.module.loaders.forEach(function (loader) {
         deps = deps.concat(loader.dependencies);
     });
 
@@ -143,12 +144,12 @@ function webpackFile(file) {
     // TODO: Eslint in the compile
 
     // Set needed files
-    file.options.output.filename = tools.getFilename(file.dest);
-    file.options.output.path = tools.getDir(file.dest);
-    file.options.entry = file.src;
+    fileObj.options.output.filename = tools.getFilename(fileObj.dest);
+    fileObj.options.output.path = tools.getDir(fileObj.dest);
+    fileObj.options.entry = fileObj.src;
 
     // Now for the command
-    options = JSON.stringify(file.options);
+    options = JSON.stringify(JSON.stringify(fileObj.options));
     vendorPath = tools.npmFindModules();
     scriptPath = path.join(__dirname, 'external/script/webpack.js');
 
@@ -161,7 +162,7 @@ function webpackFile(file) {
 
 /**
  * Minifies js file
- * @param  {object} file
+ * @param  {object} fileObj
  */
 function minify() {
     // TODO: ...
@@ -172,29 +173,29 @@ function minify() {
 
 /**
  * Compiles file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function compile(file) {
-    validate.type({ file: file }, { file: struct });
+function compile(fileObj) {
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
-    if (tools.notExist(file.src)) {
+    if (tools.notExist(fileObj.src)) {
         return tools.logErr('File doesn\'t exist');
     }
 
     // First ensure the path
-    tools.ensurePath(file.dest);
+    tools.ensurePath(fileObj.dest);
 
     // Remove file if exists
-    if (!tools.notExist(file.dest)) {
-        file.remove({ src: file.dest });
+    if (!tools.notExist(fileObj.dest)) {
+        file.remove({ src: fileObj.dest });
     }
 
     // Now we need to go through the compiler
-    webpackFile(file);
+    webpackFile(fileObj);
 
     // Now post process
-    if (file.options.minify) {
-        minify(file);
+    if (fileObj.options.minify) {
+        minify(fileObj);
     }
 }
 
@@ -235,24 +236,24 @@ function task(config, order, env, sys) {
         ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
 
         // Lets filter files
-        ignore = ignore.map(function (file) {
-            return file.relative;
+        ignore = ignore.map(function (fileObj) {
+            return fileObj.relative;
         });
-        src = src.filter(function (file) {
-            return !tools.arrContainsStr(ignore, file.relative);
+        src = src.filter(function (fileObj) {
+            return !tools.arrContainsStr(ignore, fileObj.relative);
         });
 
         // Go through each in the glob
-        src.forEach(function (file) {
+        src.forEach(function (fileObj) {
             // Create task
-            var dest = path.join(configTask.dest, file.relative);
+            var dest = path.join(configTask.dest, fileObj.relative);
             var newTask = {
-                src: file.absolute,
+                src: fileObj.absolute,
                 dest: tools.getAbsolute(dest),
                 options: configTask.options
             };
 
-            tools.log(file);
+            tools.log(fileObj);
 
             compile(newTask);
         });

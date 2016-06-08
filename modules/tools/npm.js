@@ -84,7 +84,7 @@ function npmInstall(deps) {
         var realDep = npmGetDepName(dep);
         var data;
 
-        if (general.notExist(path.join(vendorPath, realDep))) {
+        if (!general.notExist(path.join(vendorPath, realDep))) {
             return;
         }
 

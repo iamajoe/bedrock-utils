@@ -8,16 +8,17 @@ var Joi = require('joi');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
+var file = require('./file');
 var raw = require('./raw');
 
 // -----------------------------------------
 // VARS
 
 var optionsStruct = Joi.object().keys({
-    minify: Joi.boolean(),
-    autoprefixer: Joi.string(),
-    sourceMap: Joi.boolean() // `toml:"source_map"`
-});
+    minify: Joi.boolean().default(false),
+    autoprefixer: Joi.string().default('').allow(''),
+    sourceMap: Joi.boolean().default(false) // `toml:"source_map"`
+}).default({ minify: false, autoprefixer: '', sourceMap: false });
 
 var struct = Joi.object().keys({
     src: Joi.string().required(), // `toml:"source"`
@@ -34,53 +35,53 @@ var struct = Joi.object().keys({
 
 /**
  * Bundles the scss file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function scssFile(file) {
+function scssFile(fileObj) {
     var vendorPath;
     var scriptPath;
     var options;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     // Install dependencies
-    tools.npmInstall(['node-sass^3.4.2']);
+    tools.npmInstall(['node-sass@3.4.2']);
 
     // Lets get the paths for the script
-    options = JSON.stringify(file.options);
+    options = JSON.stringify(JSON.stringify(fileObj.options));
     vendorPath = tools.npmFindModules();
     scriptPath = path.join(__dirname, 'external/style/sass.js');
 
     // Now lets run the script
     raw.command({
         command: 'node',
-        args: [scriptPath, vendorPath, file.src, file.dest, options]
+        args: [scriptPath, vendorPath, fileObj.src, fileObj.dest, options]
     });
 }
 
 /**
  * Bundles the less file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function lessFile(file) {
+function lessFile(fileObj) {
     var vendorPath;
     var scriptPath;
     var options;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     // Install dependencies
-    tools.npmInstall(['less^2.6.1']);
+    tools.npmInstall(['less@2.6.1']);
 
     // Lets get the paths for the script
-    options = JSON.stringify(file.options);
+    options = JSON.stringify(JSON.stringify(fileObj.options));
     vendorPath = tools.npmFindModules();
     scriptPath = path.join(__dirname, 'external/style/less.js');
 
     // Now lets run the script
     raw.command({
         command: 'node',
-        args: [scriptPath, vendorPath, file.src, file.dest, options]
+        args: [scriptPath, vendorPath, fileObj.src, fileObj.dest, options]
     });
 }
 
@@ -88,8 +89,8 @@ function lessFile(file) {
  * Bundles the css file
  * @param  {object} file
  */
-function cssFile(file) {
-    validate.type({ file: file }, { file: struct });
+function cssFile(fileObj) {
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     tools.logErr('CSS module isn\'t implemented yet');
 }
@@ -98,38 +99,40 @@ function cssFile(file) {
  * Autoprefixes css file
  * @param  {object} file
  */
-function autoprefix(file) {
+function autoprefix(fileObj) {
     var vendorPath;
     var scriptPath;
+    var options;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     // Install dependencies
     tools.npmInstall(['postcss@5.0.21', 'autoprefixer@6.3.6']);
 
     // Lets get the paths for the script
+    options = JSON.stringify(fileObj.options.autoprefixer);
     vendorPath = tools.npmFindModules();
     scriptPath = path.join(__dirname, 'external/style/autoprefix.js');
 
     // Now lets run the script
     raw.command({
         command: 'node',
-        args: [scriptPath, vendorPath, file.dest, file.options.autoprefixer]
+        args: [scriptPath, vendorPath, fileObj.dest, options]
     });
 }
 
 /**
  * Minifies css file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function minify(file) {
+function minify(fileObj) {
     var vendorPath;
     var scriptPath;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
     // Install dependencies
-    tools.npmInstall(['postcss@5.0.21', 'cssnano^3.5.2']);
+    tools.npmInstall(['postcss@5.0.21', 'cssnano@3.5.2']);
 
     // Lets get the paths for the script
     vendorPath = tools.npmFindModules();
@@ -138,7 +141,7 @@ function minify(file) {
     // Now lets run the script
     raw.command({
         command: 'node',
-        args: [scriptPath, vendorPath, file.dest]
+        args: [scriptPath, vendorPath, fileObj.dest]
     });
 }
 
@@ -147,42 +150,42 @@ function minify(file) {
 
 /**
  * Compiles file
- * @param  {object} file
+ * @param  {object} fileObj
  */
-function compile(file) {
+function compile(fileObj) {
     var extension;
 
-    validate.type({ file: file }, { file: struct });
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
 
-    if (tools.notExist(file.src)) {
+    if (tools.notExist(fileObj.src)) {
         return tools.logErr('File doesn\'t exist');
     }
 
     // First ensure the path
-    tools.ensurePath(file.dest);
+    tools.ensurePath(fileObj.dest);
 
     // Remove file if exists
-    if (!tools.notExist(file.dest)) {
-        file.remove({ src: file.dest });
+    if (!tools.notExist(fileObj.dest)) {
+        file.remove({ src: fileObj.dest });
     }
 
     // Now we need to go through the compiler
-    extension = path.extname(file.src);
+    extension = path.extname(fileObj.src);
     if (extension === '.sass' || extension === '.scss') {
-        scssFile(file);
+        scssFile(fileObj);
     } else if (extension === '.less') {
-        lessFile(file);
+        lessFile(fileObj);
     } else {
-        cssFile(file);
+        cssFile(fileObj);
     }
 
     // Now post process
-    if (file.options.autoprefixer !== '') {
-        autoprefix(file);
+    if (fileObj.options.autoprefixer.length) {
+        autoprefix(fileObj);
     }
 
-    if (file.options.minify) {
-        minify(file);
+    if (fileObj.options.minify) {
+        minify(fileObj);
     }
 }
 
@@ -223,24 +226,24 @@ function task(config, order, env, sys) {
         ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
 
         // Lets filter files
-        ignore = ignore.map(function (file) {
-            return file.relative;
+        ignore = ignore.map(function (fileObj) {
+            return fileObj.relative;
         });
-        src = src.filter(function (file) {
-            return !tools.arrContainsStr(ignore, file.relative);
+        src = src.filter(function (fileObj) {
+            return !tools.arrContainsStr(ignore, fileObj.relative);
         });
 
         // Go through each in the glob
-        src.forEach(function (file) {
+        src.forEach(function (fileObj) {
             // Create task
-            var dest = path.join(task.dest, file.relative);
+            var dest = path.join(configTask.dest, fileObj.relative);
             var newTask = {
-                src: file.absolute,
+                src: fileObj.absolute,
                 dest: tools.getAbsolute(dest),
-                options: task.options
+                options: configTask.options
             };
 
-            tools.log(file);
+            tools.log(fileObj.absolute);
             compile(newTask);
         });
     });

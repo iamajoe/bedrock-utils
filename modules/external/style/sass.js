@@ -27,7 +27,9 @@ var task = function (options) {
         file: src,
         // Needed for source map
         outFile: dest,
-        sourceMap: options.sourceMap
+        sourceMap: options.sourceMap,
+        sourceMapEmbed: options.sourceMap,
+        sourceMapContents: options.sourceMap
     }, function (err, result) {
         if (err) {
             throw err;
