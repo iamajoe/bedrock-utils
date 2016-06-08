@@ -14,8 +14,18 @@ var log = require('./log');
 // -----------------------------------------
 // VARS
 
+var basePath = '.';
+
 // -----------------------------------------
 // PUBLIC FUNCTIONS
+
+/**
+ * Sets base path to be used
+ * @param {string} str
+ */
+function setBasePath(str) {
+    basePath = str;
+}
 
 /**
  * Checks if file exists
@@ -116,7 +126,7 @@ function getAbsolute(filePath) {
     );
 
     if (filePath[0] !== '/') {
-        filePath = path.join(process.cwd(), filePath);
+        filePath = path.join(basePath, filePath);
     }
 
     return filePath;
@@ -233,5 +243,6 @@ module.exports = {
     getGlob: getGlob,
     getFilename: getFilename,
     getDir: getDir,
-    ensurePath: ensurePath
+    ensurePath: ensurePath,
+    setBasePath: setBasePath
 };

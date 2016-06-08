@@ -21,6 +21,7 @@ var server = require('./server');
 // VARS
 
 var struct = Joi.object().keys({
+    baseDir: Joi.string(),
     maxOrder: Joi.number().default(30),
     copy: Joi.array().items(file.struct).default([]),
     rename: Joi.array().items(file.struct).default([]),
@@ -130,6 +131,10 @@ function get(fileObj) {
     // Read the config file
     fileRead = fs.readFileSync(configPath);
     obj = normalize(toml.parse(fileRead));
+
+    // Set the base dir
+    obj.baseDir = tools.getDir(configPath);
+    tools.setBasePath(obj.baseDir);
 
     // Check the final object
     promise = validate.type(
