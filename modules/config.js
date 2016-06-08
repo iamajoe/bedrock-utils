@@ -21,6 +21,7 @@ var server = require('./server');
 // VARS
 
 var struct = Joi.object().keys({
+    initialWd: Joi.string(),
     baseDir: Joi.string(),
     maxOrder: Joi.number().default(30),
     copy: Joi.array().items(file.struct).default([]),
@@ -133,8 +134,12 @@ function get(fileObj) {
     obj = normalize(toml.parse(fileRead));
 
     // Set the base dir
+    obj.initialWd = process.cwd();
     obj.baseDir = tools.getDir(configPath);
+    tools.setWd(obj.initialWd);
     tools.setBasePath(obj.baseDir);
+
+    console.log("BASE DIR", obj.baseDir, obj.initialWd);
 
     // Check the final object
     promise = validate.type(

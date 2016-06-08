@@ -10,70 +10,70 @@ order = 0
 # Copy others
 [[copy]]
 source = "src/components"
-destination = "build/"
+destination = "build/components"
 order = 1
 
 [[copy]]
 source = "src/inc/*.php"
-destination = "build/inc/"
+destination = "build/inc"
 order = 1
 
 [[copy]]
 source = "src/*.php"
-destination = "build/"
+destination = "build"
 order = 1
 
-# Set styles
-[[style]]
-source = "src/style.scss"
-destination = "build/app.css"
-env = "dev"
-order = 2
-[style.options]
-source_map = true
+# # Set styles
+# [[style]]
+# source = "src/style.scss"
+# destination = "build/app.css"
+# env = "dev"
+# order = 2
+# [style.options]
+# source_map = true
 
-[[style]]
-source = "src/style.scss"
-destination = "build/app.css"
-env = "prod"
-order = 2
-[style.options]
-autoprefixer = "last 2 versions, IE 11"
-minify = true
+# [[style]]
+# source = "src/style.scss"
+# destination = "build/app.css"
+# env = "prod"
+# order = 2
+# [style.options]
+# autoprefixer = "last 2 versions, IE 11"
+# minify = true
 
-# Set scripts
-[[script]]
-source = "src/bootstrap.js"
-destination = "build/app.js"
-env = "dev"
-order = 2
-[script.options]
-target = "web"
-devtool = "source-map"
-cache = true
-debug = true
-bail = true
-[script.options.resolve]
-root = ["."]
-extensions = ["", ".js"]
-[[script.options.plugins]]
-name = "define"
-args = ["{ \"process.env.NODE_ENV\": \"development\" }"]
+# # Set scripts
+# [[script]]
+# source = "src/bootstrap.js"
+# destination = "build/app.js"
+# env = "dev"
+# order = 2
+# [script.options]
+# target = "web"
+# devtool = "source-map"
+# cache = true
+# debug = true
+# bail = true
+# [script.options.resolve]
+# root = ["."]
+# extensions = ["", ".js"]
+# [[script.options.plugins]]
+# name = "define"
+# args = ["{ \"process.env.NODE_ENV\": \"development\" }"]
 
-[[script]]
-source = "src/bootstrap.js"
-destination = "build/app.js"
-env = "prod"
-order = 2
-[script.options]
-target = "web"
-bail = true
-minify = true
-[script.options.resolve]
-root = ["."]
-extensions = ["", ".js", ".jsx"]
-[[script.options.plugins]]
-name = "dedupe"
-[[script.options.plugins]]
-name = "define"
-args = ["{ \"process.env.NODE_ENV\": \"production\" }"]
+# [[script]]
+# source = "src/bootstrap.js"
+# destination = "build/app.js"
+# env = "prod"
+# order = 2
+# [script.options]
+# target = "web"
+# bail = true
+# minify = true
+# [script.options.resolve]
+# root = ["."]
+# extensions = ["", ".js", ".jsx"]
+# [[script.options.plugins]]
+# name = "dedupe"
+# [[script.options.plugins]]
+# name = "define"
+# args = ["{ \"process.env.NODE_ENV\": \"production\" }"]

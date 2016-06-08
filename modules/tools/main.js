@@ -31,6 +31,7 @@ module.exports = {
     logWarn: log.logWarn,
     logErr: log.logErr,
 
+    setWd: general.setWd,
     setBasePath: general.setBasePath,
     isArray: general.isArray,
     isDirectory: general.isDirectory,

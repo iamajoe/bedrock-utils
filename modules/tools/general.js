@@ -14,10 +14,19 @@ var log = require('./log');
 // -----------------------------------------
 // VARS
 
+var wd = '.';
 var basePath = '.';
 
 // -----------------------------------------
 // PUBLIC FUNCTIONS
+
+/**
+ * Sets base path to be used
+ * @param {string} str
+ */
+function setWd(str) {
+    wd = str;
+}
 
 /**
  * Sets base path to be used
@@ -126,7 +135,7 @@ function getAbsolute(filePath) {
     );
 
     if (filePath[0] !== '/') {
-        filePath = path.join(basePath, filePath);
+        filePath = path.join(wd, basePath, filePath);
     }
 
     return filePath;
@@ -141,13 +150,28 @@ function getAbsolute(filePath) {
 function getGlob(filePath, alsoDir) {
     var relative;
     var files;
+    var relI;
 
     validate.type(
         { filePath: filePath, alsoDir: alsoDir },
         { filePath: Joi.string(), alsoDir: Joi.boolean().optional() }
     );
 
-    relative = filePath.replace('/**', '').replace('/*', '');
+    filePath = filePath.replace(/ /g, '');
+
+    // Lets take care of the relative
+    relative = filePath;
+    relI = relative.indexOf('**');
+    while (relI !== -1) {
+        relative = relative.slice(0, relI);
+        relI = relative.indexOf('**');
+    }
+
+    relI = relative.indexOf('*');
+    while (relI !== -1) {
+        relative = relative.slice(0, relI);
+        relI = relative.indexOf('*');
+    }
 
     // Directory globbing
     if (relative === filePath && isDirectory(filePath)) {
@@ -158,13 +182,20 @@ function getGlob(filePath, alsoDir) {
     filePath = getAbsolute(filePath);
     files = glob.sync(filePath);
     files = files.map(function (file) {
-        var fileRelative;
+        var fileRelative = '';
+        var index;
 
         if (!alsoDir && isDirectory(file)) {
             return;
         }
 
-        fileRelative = file.replace(relative, '');
+        // Try to find the right relative
+        fileRelative = file;
+        index = fileRelative.indexOf(relative);
+        while (index !== -1 && relative.length) {
+            fileRelative = fileRelative.slice(index + relative.length, file.length);
+            index = fileRelative.indexOf(relative);
+        }
         fileRelative = !fileRelative.length ? '.' : fileRelative;
 
         return {
@@ -244,5 +275,6 @@ module.exports = {
     getFilename: getFilename,
     getDir: getDir,
     ensurePath: ensurePath,
-    setBasePath: setBasePath
+    setBasePath: setBasePath,
+    setWd: setWd
 };

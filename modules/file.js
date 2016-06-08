@@ -117,11 +117,11 @@ function copy(file) {
         // We should recursive in case of directory
         task([{
             src: file.src + '/**/*',
-            dest: module.dest,
-            order: module.order,
-            env: module.env,
-            sys: module.sys
-        }], 'copy', module.order, module.env, module.sys);
+            dest: file.dest,
+            order: file.order,
+            env: file.env,
+            sys: file.sys
+        }], 'copy', file.order, file.env, file.sys);
     } else {
         // First ensure the path
         tools.ensurePath(file.dest);
