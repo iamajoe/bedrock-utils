@@ -17,44 +17,52 @@ var raw = require('./raw');
 var pluginStruct = Joi.object().keys({
     name: Joi.string(),
     type: Joi.string(),
-    args: Joi.array().items(Joi.string()),
-    dependencies: Joi.array().items(Joi.string())
+    args: Joi.array().items(Joi.string()).default([]),
+    dependencies: Joi.array().items(Joi.string()).default([])
+}).default({
+    args: [], dependencies: []
 });
 
 var resolveStruct = Joi.object().keys({
-    alias: Joi.array().items(Joi.string()),
-    root: Joi.array().items(Joi.string()),
-    modulesDirectories: Joi.array().items(Joi.string()), // `toml:"modules_directories"`
-    fallback: Joi.array().items(Joi.string()),
-    extensions: Joi.array().items(Joi.string().allow('')),
-    packageMains: Joi.array().items(Joi.string()), // `toml:"package_mains"`
+    alias: Joi.array().items(Joi.string()).default([]),
+    root: Joi.array().items(Joi.string()).default([]),
+    modulesDirectories: Joi.array().items(Joi.string()).default([]), // `toml:"modules_directories"`
+    fallback: Joi.array().items(Joi.string()).default([]),
+    extensions: Joi.array().items(Joi.string().allow('')).default([]),
+    packageMains: Joi.array().items(Joi.string()).default([]), // `toml:"package_mains"`
     packageAlias: Joi.string(), // `toml:"package_alias"`
-    unsafeCache: Joi.array().items(Joi.string()), // `toml:"unsafe_cache"`
-    moduleTemplates: Joi.array().items(Joi.string()) // `toml:"module_templates"` // ResolveLoader only
+    unsafeCache: Joi.array().items(Joi.string()).default([]), // `toml:"unsafe_cache"`
+    moduleTemplates: Joi.array().items(Joi.string()).default([]) // `toml:"module_templates"` // ResolveLoader only
+}).default({
+    alias: [], root: [], modulesDirectories: [], fallback: [],
+    extensions: [], packageMains: [], unsafeCache: [], moduleTemplates: []
 });
 
 var loaderStruct = Joi.object().keys({
     test: Joi.string(),
     exclude: Joi.string(),
-    include: Joi.array().items(Joi.string()),
+    include: Joi.array().items(Joi.string()).default([]),
     loader: Joi.string(),
-    loaders: Joi.array().items(Joi.string()),
+    loaders: Joi.array().items(Joi.string()).default([]),
     query: Joi.string(),
-
-    dependencies: Joi.array().items(Joi.string())
+    dependencies: Joi.array().items(Joi.string()).default([])
+}).default({
+    include: [], loaders: [], dependencies: []
 });
 
 var moduleStruct = Joi.object().keys({
     preLoaders: Joi.array().items(loaderStruct), // `toml:"pre_loaders"`
-    loaders: Joi.array().items(loaderStruct),
-    postLoaders: Joi.array().items(loaderStruct), // `toml:"post_loaders"`
-    noParse: Joi.array().items(Joi.string()), // `toml:"no_parse"`
+    loaders: Joi.array().items(loaderStruct).default([]),
+    postLoaders: Joi.array().items(loaderStruct).default([]), // `toml:"post_loaders"`
+    noParse: Joi.array().items(Joi.string()).default([]), // `toml:"no_parse"`
     unknownContextRegExp: Joi.string(), // `toml:"unknown_context_reg_exp"`
     unknownContextCritical: Joi.boolean(), // `toml:"unknown_context_critical"`
     exprContextRegExp: Joi.string(), // `toml:"expr_context_reg_exp"`
     exprContextCritical: Joi.boolean(), // `toml:"expr_context_critical"`
     wrappedContextRegExp: Joi.string(), // `toml:"wrapper_context_reg_exp"`
     wrappedContextCritical: Joi.boolean() // `toml:"wrapped_context_critical"`
+}).default({
+    preLoaders: [], loaders: [], postLoaders: [], noParse: []
 });
 
 var outputStruct = Joi.object().keys({
@@ -76,7 +84,7 @@ var outputStruct = Joi.object().keys({
     umdNamedDefine: Joi.boolean(), // `toml:"umd_named_define"`
     sourcePrefix: Joi.string(), // `toml:"source_prefix"`
     crossOriginLoading: Joi.string() // `toml:"cross_origin_loading"`
-});
+}).default({});
 
 var optionsStruct = Joi.object().keys({
     minify: Joi.boolean(),
@@ -88,7 +96,7 @@ var optionsStruct = Joi.object().keys({
     module: moduleStruct,
     resolve: resolveStruct,
     resolveLoader: resolveStruct, // `toml:"resolve_loader"`
-    externals: Joi.array().items(Joi.string()),
+    externals: Joi.array().items(Joi.string()).default([]),
     target: Joi.string(),
     bail: Joi.boolean(),
     profile: Joi.boolean(),
@@ -102,7 +110,9 @@ var optionsStruct = Joi.object().keys({
     recordsPath: Joi.string(), // `toml:"records_path"`
     recordsInputPath: Joi.string(), // `toml:"records_input_path"`
     recordsOutputPath: Joi.string(), // `toml:"records_output_path"`
-    plugins: Joi.array().items(pluginStruct)
+    plugins: Joi.array().items(pluginStruct).default([])
+}).default({
+    externals: [], plugins: []
 });
 
 var struct = Joi.object().keys({
@@ -134,7 +144,13 @@ function webpackFile(fileObj) {
     fileObj.options.plugins.forEach(function (plugin) {
         deps = deps.concat(plugin.dependencies);
     });
+    fileObj.options.module.preLoaders.forEach(function (loader) {
+        deps = deps.concat(loader.dependencies);
+    });
     fileObj.options.module.loaders.forEach(function (loader) {
+        deps = deps.concat(loader.dependencies);
+    });
+    fileObj.options.module.postLoaders.forEach(function (loader) {
         deps = deps.concat(loader.dependencies);
     });
 
@@ -253,7 +269,7 @@ function task(config, order, env, sys) {
                 options: configTask.options
             };
 
-            tools.log(fileObj);
+            tools.log(fileObj.absolute);
 
             compile(newTask);
         });
