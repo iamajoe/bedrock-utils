@@ -139,8 +139,6 @@ function get(fileObj) {
     tools.setWd(obj.initialWd);
     tools.setBasePath(obj.baseDir);
 
-    console.log("BASE DIR", obj.baseDir, obj.initialWd);
-
     // Check the final object
     promise = validate.type(
         { config: obj },

@@ -180,8 +180,24 @@ function webpackFile(fileObj) {
  * Minifies js file
  * @param  {object} fileObj
  */
-function minify() {
-    // TODO: ...
+function minify(fileObj) {
+    var vendorPath;
+    var scriptPath;
+
+    validate.type({ fileObj: fileObj }, { fileObj: struct });
+
+    // Install dependencies
+    tools.npmInstall(['uglify-js@2.6.1']);
+
+    // Lets get the paths for the script
+    vendorPath = tools.npmFindModules();
+    scriptPath = path.join(__dirname, 'external/script/minify.js');
+
+    // Now lets run the script
+    raw.command({
+        command: 'node',
+        args: [scriptPath, vendorPath, fileObj.dest]
+    });
 }
 
 // -----------------------------------------

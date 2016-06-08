@@ -2,6 +2,7 @@
 
 // Imports
 var index = require('./scripts/index.js');
+var foo = require('./foo.js');
 
 /* eslint-disable no-undef */
 var $ = jQuery;
@@ -13,6 +14,8 @@ $(document).ready(function () {
 
     // Remove class no-script
     classList.remove('no-script');
+
+    console.log(foo.bar);
 
     // Initialize all containers
     index.init();

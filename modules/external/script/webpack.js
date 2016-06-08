@@ -13,6 +13,8 @@ var webpack = require(path.join(vendor, 'webpack'));
 // ---------------------------------------------
 // Vars
 
+var entryDir;
+
 // ---------------------------------------------
 // Functions
 
@@ -113,9 +115,7 @@ var convertEntry = function (value) {
  * @return {*}
  */
 var convertString = function (str) {
-    if (str.replace(/ /g, '') === '') {
-        str = null;
-    } else if (str === 'true') {
+    if (str === 'true') {
         str = true;
     } else if (str === 'false') {
         str = false;
@@ -130,6 +130,8 @@ var convertString = function (str) {
         str = new RegExp(str.replace('regex:', ''));
     } else if (str.replace('vendor_path:', '') !== str) {
         str = path.join(vendor, str.replace('vendor_path:', ''));
+    } else if (str.replace('working_dir:', '') !== str) {
+        str = path.join(path.resolve(process.cwd()), str.replace('working_dir:', ''));
     }
 
     return str;
@@ -143,6 +145,7 @@ var convertString = function (str) {
 var convertArray = function (arr) {
     var i;
 
+
     if (arr.length === 0) {
         arr = null;
     } else {
@@ -150,7 +153,9 @@ var convertArray = function (arr) {
             arr[i] = convert(arr[i]);
         }
 
-        arr = arr.filter(function (val) { return !!val; });
+        arr = arr.filter(function (val) {
+            return typeof val === 'string' || !!val;
+        });
     }
 
     // Now lets return it
@@ -211,7 +216,7 @@ var convert = function (value) {
     }
 
     // No need to set string if empty
-    if (value && typeof value === 'string') {
+    if (typeof value === 'string') {
         value = convertString(value);
     }
 
@@ -224,10 +229,14 @@ var convert = function (value) {
  * @param  {object} options
  */
 var task = function (options) {
-    // Lets take care of the options for webpack
-    var optionsWP = convert(options);
+    var optionsWP;
     var compiler;
 
+    // Set a base
+    entryDir = path.dirname(options.entry);
+
+    // Lets take care of the options for webpack
+    optionsWP = convert(options);
     optionsWP.entry = convertEntry(optionsWP.entry);
     optionsWP.plugins = convertPlugins(optionsWP.plugins);
 

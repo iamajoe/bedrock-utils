@@ -43,24 +43,6 @@ source = "src/.htaccess"
 destination = "build"
 order = 1
 
-# Remove stuff not needed for the copy
-# TODO: This should be the ignore under copy
-[[remove]]
-source = "build/*.scss"
-order = 2
-
-[[remove]]
-source = "build/**/*.scss"
-order = 2
-
-[[remove]]
-source = "build/*.js"
-order = 2
-
-[[remove]]
-source = "build/**/*.js"
-order = 2
-
 # Set styles
 [[style]]
 source = "src/style.scss"
@@ -92,7 +74,7 @@ cache = true
 debug = true
 bail = true
 [script.options.resolve]
-root = ["."]
+root = ["working_dir:."]
 extensions = ["", ".js"]
 [script.options.plugins]
 node_env = "development"
@@ -107,7 +89,7 @@ target = "web"
 bail = true
 minify = true
 [script.options.resolve]
-root = ["."]
+root = ["working_dir:."]
 extensions = ["", ".js", ".jsx"]
 [script.options.plugins]
 dedupe = true
