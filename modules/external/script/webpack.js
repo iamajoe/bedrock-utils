@@ -13,8 +13,6 @@ var webpack = require(path.join(vendor, 'webpack'));
 // ---------------------------------------------
 // Vars
 
-var entryDir;
-
 // ---------------------------------------------
 // Functions
 
@@ -231,9 +229,6 @@ var convert = function (value) {
 var task = function (options) {
     var optionsWP;
     var compiler;
-
-    // Set a base
-    entryDir = path.dirname(options.entry);
 
     // Lets take care of the options for webpack
     optionsWP = convert(options);
