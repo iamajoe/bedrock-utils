@@ -24,6 +24,8 @@ var npm = require('./npm.js');
 module.exports = {
     validate: validate,
 
+    setProject: log.setProject,
+    setModule: log.setModule,
     log: log.log,
     logEmpty: log.logEmpty,
     logWarn: log.logWarn,

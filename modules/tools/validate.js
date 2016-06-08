@@ -3,7 +3,7 @@
 // -----------------------------------------
 // IMPORTS
 
-var Promise = require("bluebird");
+var Promise = require('bluebird');
 var Joi = require('joi');
 
 // -----------------------------------------

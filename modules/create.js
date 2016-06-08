@@ -22,7 +22,32 @@ var struct = Joi.object().keys({
 });
 
 // -----------------------------------------
+// PRIVATE FUNCTIONS
+
+// -----------------------------------------
 // PUBLIC FUNCTIONS
+
+/**
+ * Creates a project
+ * @param  {object} module
+ */
+function project(module) {
+    var modules;
+
+    validate.type({ module: module }, { module: struct });
+
+    // Now lets run!
+    modules = tools.getGlob(path.join(__dirname, 'external/create', module.type, '**/*'));
+    modules.forEach(function (fileObj) {
+        var dest = path.join(module.dest, fileObj.relative);
+
+        // Lets copy
+        file.copy({
+            src: fileObj.absolute,
+            dest: tools.getAbsolute(dest)
+        });
+    });
+}
 
 /**
  * Create task for init
@@ -54,41 +79,17 @@ function task(config, commandType, order, env, sys) {
     }
 
     // Go through each task
-    config.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
+    config.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
 
         if (shouldContinue) {
             return;
         }
 
-        tools.log('create', task.type);
-        project(task);
+        tools.log(configTask.type);
+        project(configTask);
     });
 }
-
-/**
- * Creates a project
- * @param  {object} module
- */
-function project(module) {
-    validate.type({ module: module }, { module: struct });
-
-    var modules = tools.getGlob(path.join(__dirname, 'external/create', module.type, '**/*'));
-
-    // Now lets run!
-    modules.forEach(function (fileObj) {
-        var dest = path.join(module.dest, fileObj.relative);
-
-        // Lets copy
-        file.copy({
-            src: fileObj.absolute,
-            dest: tools.getAbsolute(dest)
-        });
-    });
-}
-
-// -----------------------------------------
-// PRIVATE FUNCTIONS
 
 // -----------------------------------------
 // EXPORTS

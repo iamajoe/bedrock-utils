@@ -10,6 +10,9 @@ var Joi = require('joi');
 // VARS
 
 // -----------------------------------------
+// PRIVATE FUNCTIONS
+
+// -----------------------------------------
 // PUBLIC FUNCTIONS
 
 /**
@@ -26,7 +29,6 @@ function cloneURL(url, path) {
 	// TODO: Clone url
 }
 
-// CloneGit clones a git
 /**
  * Clones a git
  * @param  {string} git
@@ -40,9 +42,6 @@ function cloneGit(git, path) {
 
 	// TODO: Clone git
 }
-
-// -----------------------------------------
-// PRIVATE FUNCTIONS
 
 // -----------------------------------------
 // EXPORTS

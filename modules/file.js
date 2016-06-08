@@ -52,16 +52,18 @@ function task(config, taskType, order, env, sys) {
     );
 
     // Go through each task
-    config.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
+    config.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
+        var ignore;
+        var src;
 
         if (shouldContinue) {
             return;
         }
 
         // Get the right paths
-        var src = tools.getGlob(task.src, taskType === 'remove');
-        var ignore = task.ignore ? tools.getGlob(task.ignore) : [];
+        src = tools.getGlob(configTask.src, taskType === 'remove');
+        ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
 
         // Lets filter files
         ignore = ignore.map(function (file) {
@@ -73,15 +75,15 @@ function task(config, taskType, order, env, sys) {
 
         // Go through each in the glob
         src.forEach(function (file) {
-            tools.log(taskType, file.relative);
-
             // Create task
             var newTask = { src: file.absolute };
             var dest;
 
+            tools.log(file.relative);
+
             if (taskType !== 'remove') {
-                dest = path.join(task.dest, file.relative);
-                newTask['dest'] = tools.getAbsolute(dest);
+                dest = path.join(configTask.dest, file.relative);
+                newTask.dest = tools.getAbsolute(dest);
             }
 
             switch (taskType) {
@@ -103,10 +105,12 @@ function task(config, taskType, order, env, sys) {
  * @param  {object} file
  */
 function copy(file) {
+    var data;
+
     validate.type({ file: file }, { file: struct });
 
     if (tools.notExist(file.src)) {
-        return tools.logErr('copy', 'File doesn\'t exist');
+        return tools.logErr('File doesn\'t exist');
     }
 
     if (tools.isDirectory(file.src)) {
@@ -128,12 +132,12 @@ function copy(file) {
         }
 
         // Now copy the file
-        var data = exec('cp ' + file.src + ' ' + file.dest);
+        data = exec('cp ' + file.src + ' ' + file.dest);
 
         if (data.stderr && data.stderr.length) {
-            tools.logErr('copy', data.stderr);
+            tools.logErr(data.stderr);
         } else if (data.stdout && data.stdout.length) {
-            tools.log('copy', data.stdout);
+            tools.log(data.stdout);
         }
     }
 }
@@ -143,22 +147,23 @@ function copy(file) {
  * @param  {object} file
  */
 function remove(file) {
+    var data;
+    var src;
+
     validate.type({ file: file }, { file: struct });
 
-    var src = file.src.replace(/ /g, '');
-
+    src = file.src.replace(/ /g, '');
     if (src === '.' || src === '' || src === '/') {
-        return tools.logErr('remove', 'Trying to remove a global directory!')
+        return tools.logErr('Trying to remove a global directory!');
     } else if (tools.notExist(src)) {
         return;
     }
 
-    var data = exec('rm -rf ' + src);
-
+    data = exec('rm -rf ' + src);
     if (data.stderr && data.stderr.length) {
-        tools.logErr('remove', data.stderr);
+        tools.logErr(data.stderr);
     } else if (data.stdout && data.stdout.length) {
-        tools.log('remove', data.stdout);
+        tools.log(data.stdout);
     }
 }
 
@@ -169,7 +174,7 @@ function remove(file) {
 function rename(file) {
     validate.type({ file: file }, { file: struct });
 
-    if (tools.notExist(src)) {
+    if (tools.notExist(file.src)) {
         return;
     }
 

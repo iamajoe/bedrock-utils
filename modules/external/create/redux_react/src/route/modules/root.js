@@ -1,4 +1,4 @@
-import appActions from '../../modules/actions.js';
+import actions from '../../modules/actions.js';
 
 // -----------------------------------------
 // FUNCTIONS

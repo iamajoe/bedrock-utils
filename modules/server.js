@@ -3,6 +3,7 @@
 // -----------------------------------------
 // IMPORTS
 
+var path = require('path');
 var Joi = require('joi');
 
 var tools = require('./tools/main');
@@ -38,81 +39,6 @@ var struct = Joi.object().keys({
     container: Joi.array().items(containerStruct).default([])
 }).default({ php: [], container: [] });
 
-// -----------------------------------------
-// PUBLIC FUNCTIONS
-
-/**
- * Create task for init
- * @param  {object} config
- * @param  {string} commandType
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
- */
-function task(config, commandType, order, env, sys) {
-    validate.type(
-        {
-            config: config,
-            commandType: commandType,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: struct,
-            commandType: Joi.string(),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
-    );
-
-    // Take care of php
-    config.php.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
-
-        if (shouldContinue) {
-            return;
-        }
-
-        tools.Log('server', commandType + ' php');
-
-        switch (commandType) {
-        case 'run':
-            phpUp(php);
-            break;
-        case 'stop':
-            phpStop(php);
-            break;
-        }
-    });
-
-    // Take care of containers
-    config.container.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
-
-        if (shouldContinue) {
-            return;
-        }
-
-        tools.Log('server', commandType + ' container ' + container.type);
-
-        switch (commandType) {
-        case 'init':
-            containerInit(container);
-            break;
-        case 'run':
-            containerUp(container);
-            break;
-        case 'stop':
-            containerStop(container);
-            break;
-        case 'destroy':
-            containerDestroy(container);
-            break;
-        }
-    });
-}
-
 // ---------------------------------
 // PHP FUNCTIONS
 
@@ -121,29 +47,26 @@ function task(config, commandType, order, env, sys) {
  * @param  {object} server
  */
 function phpUp(server) {
+    var publicPath;
+    var port;
+
     validate.type({ server: server }, { server: phpStruct });
 
-    var publicPath = server.public;
-    var port = server.port;
+    publicPath = server.public;
+    port = server.port || 8000;
 
-    if (port === 0) {
-        port = 8000
-    }
-
-    tools.log('server', 'Running server...');
-    tools.log('server', 'Folder: ' + publicPath);
-    tools.log('server', '   Url: localhost:' + port);
+    tools.log('Running server...');
+    tools.log('Folder: ' + publicPath);
+    tools.log('   Url: localhost:' + port);
 
     raw.command({
         command: 'php',
-        args: ['-S', 'localhost:' + port, '-t', publicPath],
+        args: ['-S', 'localhost:' + port, '-t', publicPath]
     });
 
     // TODO: The php server should create a process number,
     // use & to create running on the background script
     // and on stop, stop it
-
-    return log, err
 }
 
 /**
@@ -153,7 +76,7 @@ function phpUp(server) {
 function phpStop(server) {
     validate.type({ server: server }, { server: phpStruct });
 
-    tools.logErr('server', 'Sorry. This feature isn\'t available yet');
+    tools.logErr('Sorry. This feature isn\'t available yet');
 }
 
 // ---------------------------------
@@ -164,10 +87,14 @@ function phpStop(server) {
  * @param  {object} container
  */
 function containerInit(container) {
+    var scriptPath;
+    var cmdString;
+    var cmdArg;
+
     validate.type({ container: container }, { container: containerStruct });
 
-    var cmdString = container.name + ' ' + container.type + ' ' + container.port;
-    var cmdArg = '';
+    cmdString = container.name + ' ' + container.type + ' ' + container.port;
+    cmdArg = '';
 
     // Take care of links
     cmdArg += container.link.reduce(function (val1, val2) {
@@ -181,7 +108,7 @@ function containerInit(container) {
 
         // Lets check if it is a path
         if (envVarVal.slice(0, 3) === '../' || envVarVal.slice(0, 2) === './') {
-            val2 = val2.slice(0, i) + '=' + tools.getAbsolute(envVarVal)
+            val2 = val2.slice(0, i) + '=' + tools.getAbsolute(envVarVal);
         }
 
         val1 += '-e ' + val2 + ' ';
@@ -194,14 +121,14 @@ function containerInit(container) {
 
         // Lets check if it is a path
         if (volumeKey.slice(0, 3) === '../' || volumeKey.slice(0, 2) === './') {
-            val2 = tools.getAbsolute(volumeKey) + ':' + volume.slice(i + 1, volume.length);
+            val2 = tools.getAbsolute(volumeKey) + ':' + val2.slice(i + 1, val2.length);
         }
 
         val1 += '-e ' + val2 + ' ';
     });
 
     // Now lets get the script path...
-    var scriptPath = path.join(__dirname, 'external/server/do.sh');
+    scriptPath = path.join(__dirname, 'external/server/do.sh');
 
     // ...and run the script
     raw.command({
@@ -249,6 +176,83 @@ function containerDestroy(container) {
     raw.command({
         command: scriptPath,
         args: ['destroy', container.name]
+    });
+}
+
+// -----------------------------------------
+// PUBLIC FUNCTIONS
+
+/**
+ * Create task for init
+ * @param  {object} config
+ * @param  {string} commandType
+ * @param  {number} order
+ * @param  {string} env
+ * @param  {string} sys
+ */
+function task(config, commandType, order, env, sys) {
+    validate.type(
+        {
+            config: config,
+            commandType: commandType,
+            order: order,
+            env: env,
+            sys: sys
+        }, {
+            config: struct,
+            commandType: Joi.string(),
+            order: Joi.number(),
+            env: Joi.string().allow(''),
+            sys: Joi.string()
+        }
+    );
+
+    // Take care of php
+    config.php.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
+
+        if (shouldContinue) {
+            return;
+        }
+
+        tools.log(commandType + ' php');
+
+        switch (commandType) {
+        case 'run':
+            phpUp(configTask);
+            break;
+        case 'stop':
+            phpStop(configTask);
+            break;
+        default:
+        }
+    });
+
+    // Take care of containers
+    config.container.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
+
+        if (shouldContinue) {
+            return;
+        }
+
+        tools.log(commandType + ' container ' + configTask.type);
+
+        switch (commandType) {
+        case 'init':
+            containerInit(configTask);
+            break;
+        case 'run':
+            containerUp(configTask);
+            break;
+        case 'stop':
+            containerStop(configTask);
+            break;
+        case 'destroy':
+            containerDestroy(configTask);
+            break;
+        default:
+        }
     });
 }
 

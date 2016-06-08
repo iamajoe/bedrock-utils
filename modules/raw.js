@@ -21,7 +21,28 @@ var struct = Joi.object().keys({
 });
 
 // -----------------------------------------
+// PRIVATE FUNCTIONS
+
+// -----------------------------------------
 // PUBLIC FUNCTIONS
+
+/**
+ * Performs a raw command
+ * @param  {object} task
+ */
+function command(obj) {
+    var data;
+
+    validate.type({ obj: obj }, { obj: struct });
+
+    data = exec(obj.command + ' ' + obj.args.join(' '));
+
+    if (data.stderr && data.stderr.length) {
+        tools.logErr(data.stderr);
+    } else if (data.stdout && data.stdout.length) {
+        tools.log(data.stdout);
+    }
+}
 
 /**
  * Create task for init
@@ -47,36 +68,17 @@ function task(config, order, env, sys) {
     );
 
     // Go through each task
-    config.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
+    config.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
 
         if (shouldContinue) {
             return;
         }
 
         // Raw command
-        tools.log('raw', task.command + ' ' + task.args.join(' '));
-        command(task);
+        tools.log(configTask.command + ' ' + configTask.args.join(' '));
+        command(configTask);
     });
-}
-
-// -----------------------------------------
-// PRIVATE FUNCTIONS
-
-/**
- * Performs a raw command
- * @param  {object} task
- */
-function command(task) {
-    validate.type({ task: task }, { task: struct });
-
-    var data = exec(task.command + ' ' + task.args.join(' '));
-
-    if (data.stderr && data.stderr.length) {
-        tools.logErr('raw', data.stderr);
-    } else if (data.stdout && data.stdout.length) {
-        tools.log('raw', data.stdout);
-    }
 }
 
 // -----------------------------------------

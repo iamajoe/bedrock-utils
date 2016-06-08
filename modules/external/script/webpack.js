@@ -31,15 +31,15 @@ var isArray = function (val) {
  * @return {array}
  */
 var convertPlugins = function (list) {
-    if (!list) {
-        return list;
-    }
-
     var arr = [];
-    var pluginReq;
+    var PluginReq;
     var plugin;
     var args;
     var i;
+
+    if (!list) {
+        return list;
+    }
 
     // Set the plugin list
     for (i = 0; i < list.length; i += 1) {
@@ -53,12 +53,12 @@ var convertPlugins = function (list) {
             plugin = new webpack.optimize.DedupePlugin();
         } else {
             // Require the dependency
-            pluginReq = require(path.join(vendor, plugin.name));
+            PluginReq = require(path.join(vendor, plugin.name));
 
             if (plugin.type === 'function') {
-                plugin = pluginReq;
+                plugin = PluginReq;
             } else {
-                plugin = new pluginReq(args[0], args[1], args[2], args[3]);
+                plugin = new PluginReq(args[0], args[1], args[2], args[3]);
             }
         }
 
@@ -173,7 +173,7 @@ var convertObj = function (obj) {
         key = keys[i];
 
         // Some keys can't be converted because it needs the empty string ""
-        if (key === 'Extensions' ) {
+        if (key === 'Extensions') {
             value = obj[key];
         } else {
             // Lets convert
@@ -226,14 +226,16 @@ var convert = function (value) {
 var task = function (options) {
     // Lets take care of the options for webpack
     var optionsWP = convert(options);
+    var compiler;
+
     optionsWP.entry = convertEntry(optionsWP.entry);
     optionsWP.plugins = convertPlugins(optionsWP.plugins);
 
     // Bundle!
-    var compiler = webpack(optionsWP);
+    compiler = webpack(optionsWP);
 
     // Run now
-    compiler.run(function (err, stats) {
+    compiler.run(function (err) {
         if (err) {
             throw err;
         }
@@ -252,7 +254,7 @@ if (fs.existsSync(errFile)) {
 }
 
 // Catch the uncaught errors
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     var data = '';
     data += '///////////////////////////////\nWEBPACK ERROR:\n\n';
     data += err;
@@ -268,7 +270,7 @@ process.on('uncaughtException', function(err) {
 
     // Now lets error!
     throw err;
-})
+});
 
 // Set the task
 task(JSON.parse(opts));

@@ -3,7 +3,6 @@
 // -----------------------------------------
 // IMPORTS
 
-var path = require('path');
 var Joi = require('joi');
 var tools = require('./tools/main');
 var config = require('./config');
@@ -29,6 +28,9 @@ var style = require('./style');
  * @param  {string} sys
  */
 function init(commandType, configPath, env, sys) {
+    tools.setProject('project');
+    tools.setModule('main');
+
     tools.validate.type(
         { commandType: commandType, configPath: configPath, env: env },
         {
@@ -40,6 +42,7 @@ function init(commandType, configPath, env, sys) {
     );
 
     // Check if there is a config file and load it
+    tools.setModule('config');
     config.get(configPath).then(function (configObj) {
         var oldWd;
         var order;
@@ -50,7 +53,8 @@ function init(commandType, configPath, env, sys) {
 
         // Lets take care of modules ordering
         for (order = 0; order < configObj.maxOrder; order += 1) {
-            tools.log('main', 'Order: ' + order);
+            tools.setModule('main');
+            tools.log('Order: ' + order);
             runOrder(order, commandType, configObj, env, sys);
         }
 
@@ -83,13 +87,28 @@ function runOrder(order, commandType, configObj, env, sys) {
     );
 
     // Lets run the tasks
-    file.task(configObj.copy, "copy", order, env, sys);
-    file.task(configObj.rename, "rename", order, env, sys);
-    file.task(configObj.remove, "remove", order, env, sys);
+    tools.setModule('copy');
+    file.task(configObj.copy, 'copy', order, env, sys);
+
+    tools.setModule('rename');
+    file.task(configObj.rename, 'rename', order, env, sys);
+
+    tools.setModule('remove');
+    file.task(configObj.remove, 'remove', order, env, sys);
+
+    tools.setModule('create');
     create.task(configObj.create, commandType, order, env, sys);
+
+    tools.setModule('style');
     style.task(configObj.style, order, env, sys);
+
+    tools.setModule('script');
     script.task(configObj.script, order, env, sys);
+
+    tools.setModule('raw');
     raw.task(configObj.raw, order, env, sys);
+
+    tools.setModule('server');
     server.task(configObj.server, commandType, order, env, sys);
 }
 

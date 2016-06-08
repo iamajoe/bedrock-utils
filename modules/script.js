@@ -3,11 +3,12 @@
 // -----------------------------------------
 // IMPORTS
 
+var path = require('path');
 var Joi = require('joi');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
-var file = require('./file');
+var raw = require('./raw');
 
 // -----------------------------------------
 // VARS
@@ -73,7 +74,7 @@ var outputStruct = Joi.object().keys({
     libraryTarget: Joi.string(), // `toml:"library_target"`
     umdNamedDefine: Joi.boolean(), // `toml:"umd_named_define"`
     sourcePrefix: Joi.string(), // `toml:"source_prefix"`
-    crossOriginLoading: Joi.string(), // `toml:"cross_origin_loading"`
+    crossOriginLoading: Joi.string() // `toml:"cross_origin_loading"`
 });
 
 var optionsStruct = Joi.object().keys({
@@ -114,7 +115,88 @@ var struct = Joi.object().keys({
 });
 
 // -----------------------------------------
+// PRIVATE FUNCTIONS
+
+/**
+ * Bundles the file
+ * @param  {object} file
+ */
+function webpackFile(file) {
+    var vendorPath;
+    var scriptPath;
+    var options;
+    var deps;
+
+    validate.type({ file: file }, { file: struct });
+
+    deps = ['webpack@1.12.2'];
+    file.options.plugins.forEach(function (plugin) {
+        deps = deps.concat(plugin.dependencies);
+    });
+    file.options.module.loaders.forEach(function (loader) {
+        deps = deps.concat(loader.dependencies);
+    });
+
+    // Install dependencies
+    tools.npmInstall(deps);
+
+    // TODO: Eslint in the compile
+
+    // Set needed files
+    file.options.output.filename = tools.getFilename(file.dest);
+    file.options.output.path = tools.getDir(file.dest);
+    file.options.entry = file.src;
+
+    // Now for the command
+    options = JSON.stringify(file.options);
+    vendorPath = tools.npmFindModules();
+    scriptPath = path.join(__dirname, 'external/script/webpack.js');
+
+    // Now lets run the script
+    raw.command({
+        command: 'node',
+        args: [scriptPath, vendorPath, options]
+    });
+}
+
+/**
+ * Minifies js file
+ * @param  {object} file
+ */
+function minify() {
+    // TODO: ...
+}
+
+// -----------------------------------------
 // PUBLIC FUNCTIONS
+
+/**
+ * Compiles file
+ * @param  {object} file
+ */
+function compile(file) {
+    validate.type({ file: file }, { file: struct });
+
+    if (tools.notExist(file.src)) {
+        return tools.logErr('File doesn\'t exist');
+    }
+
+    // First ensure the path
+    tools.ensurePath(file.dest);
+
+    // Remove file if exists
+    if (!tools.notExist(file.dest)) {
+        file.remove({ src: file.dest });
+    }
+
+    // Now we need to go through the compiler
+    webpackFile(file);
+
+    // Now post process
+    if (file.options.minify) {
+        minify(file);
+    }
+}
 
 /**
  * Create task for init
@@ -139,16 +221,18 @@ function task(config, order, env, sys) {
     );
 
     // Go through each task
-    config.forEach(function (task) {
-        var shouldContinue = tools.decide(task, order, env, sys);
+    config.forEach(function (configTask) {
+        var shouldContinue = tools.decide(configTask, order, env, sys);
+        var ignore;
+        var src;
 
         if (shouldContinue) {
             return;
         }
 
         // Get the right paths
-        var src = tools.getGlob(task.src);
-        var ignore = task.ignore ? tools.getGlob(task.ignore) : [];
+        src = tools.getGlob(configTask.src);
+        ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
 
         // Lets filter files
         ignore = ignore.map(function (file) {
@@ -160,97 +244,19 @@ function task(config, order, env, sys) {
 
         // Go through each in the glob
         src.forEach(function (file) {
-            tools.log('script', file);
-
             // Create task
-            var dest = path.join(task.dest, file.relative);
+            var dest = path.join(configTask.dest, file.relative);
             var newTask = {
                 src: file.absolute,
                 dest: tools.getAbsolute(dest),
-                options: task.options
+                options: configTask.options
             };
+
+            tools.log(file);
 
             compile(newTask);
         });
     });
-}
-
-/**
- * Compiles file
- * @param  {object} file
- */
-function compile(file) {
-    validate.type({ file: file }, { file: struct });
-
-    if (tools.notExist(file.src)) {
-        return tools.logErr('script', 'File doesn\'t exist');
-    }
-
-    // First ensure the path
-    tools.ensurePath(file.dest);
-
-    // Remove file if exists
-    if (!tools.notExist(file.dest)) {
-        file.remove({ src: file.dest });
-    }
-
-    // Now we need to go through the compiler
-    webpackFile(file);
-
-    // Now post process
-    if (file.options.minify) {
-        minify(file);
-    }
-}
-
-// -----------------------------------------
-// PRIVATE FUNCTIONS
-
-/**
- * Bundles the file
- * @param  {object} file
- */
-function webpackFile(file) {
-    validate.type({ file: file }, { file: struct });
-
-    var deps = ['webpack@1.12.2'];
-
-    file.options.plugins.forEach(function (plugin) {
-        deps = deps.concat(plugin.dependencies);
-    });
-
-    file.options.module.loaders.forEach(function (loader) {
-        deps = deps.concat(loader.dependencies);
-    });
-
-    // Install dependencies
-    tools.npmInstall(deps);
-
-    // TODO: Eslint in the compile
-
-    // Set needed files
-    file.options.output.filename = tools.getFilename(dest);
-    file.options.output.path = tools.getDir(dest)
-    file.options.entry = file.src;
-
-    // Now for the command
-    var options = JSON.stringify(file.options);
-    var vendorPath = tools.npmFindModules();
-    var scriptPath = path.join(__dirname, 'external/script/webpack.js');
-
-    // Now lets run the script
-    raw.command({
-        command: 'node',
-        args: [scriptPath, vendorPath, options]
-    });
-}
-
-/**
- * Minifies js file
- * @param  {object} file
- */
-function minify(file) {
-    // TODO: ...
 }
 
 // -----------------------------------------

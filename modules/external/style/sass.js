@@ -50,7 +50,7 @@ if (fs.existsSync(errFile)) {
 }
 
 // Catch the uncaught errors
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     var data = '';
     data += '///////////////////////////////\nSASS ERROR:\n\n';
     data += err;
@@ -64,7 +64,7 @@ process.on('uncaughtException', function(err) {
 
     // Now lets error!
     throw err;
-})
+});
 
 // Set the task
 task(JSON.parse(opts));

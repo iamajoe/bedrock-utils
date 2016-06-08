@@ -33,47 +33,56 @@ var struct = Joi.object().keys({
 });
 
 // -----------------------------------------
-// PUBLIC FUNCTIONS
+// PRIVATE FUNCTIONS
 
 /**
- * Copies * from source to destination
- * @param  {string} file
- * @return {object}
+ * Normalizes key name
+ * @param  {string} key
+ * @return {string}
  */
-function get(file) {
+function normalizeKeyName(key) {
     validate.type(
-        { file: file },
-        { file: Joi.string() }
+        { key: key },
+        { key: Joi.string() }
     );
 
-    var configPath = tools.getAbsolute(file);
-
-    if (tools.notExist(configPath)) {
-        return tools.logErr('config', 'Config file doesn\'t exist!');
+    switch (key) {
+    case 'source':
+        key = 'src';
+        break;
+    case 'destination':
+        key = 'dest';
+        break;
+    default:
+        key = key;
     }
 
-    // Read the config file
-    var file = fs.readFileSync(configPath);
-    var obj = normalize(toml.parse(file));
-
-    // Check the final object
-    var promise = validate.type(
-        { config: obj },
-        { config: struct },
-    true)
-    .then(function (val) {
-        return val.config;
-    })
-    .catch(function (err) {
-        tools.logErr('config', err);
-    });
-
-    // Now lets return the promise
-    return promise;
+    return key;
 }
 
-// -----------------------------------------
-// PRIVATE FUNCTIONS
+/**
+ * Normalizes object to be as expected
+ * @param  {obj} val
+ * @return {obj}
+ */
+function normalizeObject(val) {
+    var keys = Object.keys(val);
+    var obj = {};
+    var key;
+    var i;
+
+    // Now set all the keys in the new obj
+    for (i = 0; i < keys.length; i += 1) {
+        key = keys[i].toLowerCase().split('_').reduce(function (val1, val2) {
+            return val1 + val2.slice(0, 1).toUpperCase() + val2.slice(1, val2.length);
+        });
+
+        key = normalizeKeyName(key);
+        obj[key] = normalize(val[keys[i]]);
+    }
+
+    return obj;
+}
 
 /**
  * Normalizes * to be as expected
@@ -94,56 +103,54 @@ function normalize(val) {
     return normalizeObject(val);
 }
 
-/**
- * Normalizes object to be as expected
- * @param  {obj} val
- * @return {obj}
- */
-function normalizeObject(val) {
-    var keys = Object.keys(val);
-    var obj = {};
-    var key;
-    var i;
-
-    // Now set all the keys in the new obj
-    for (i = 0; i < keys.length; i += 1) {
-        key = keys[i].toLowerCase().split('_').reduce(function (val1, val2, i) {
-            return val1 + val2.slice(0, 1).toUpperCase() + val2.slice(1, val2.length);
-        });
-
-        key = normalizeKeyName(key);
-        obj[key] = normalize(val[keys[i]]);
-    }
-
-    return obj;
-}
+// -----------------------------------------
+// PUBLIC FUNCTIONS
 
 /**
- * Normalizes key name
- * @param  {string} key
- * @return {string}
+ * Copies * from source to destination
+ * @param  {string} file
+ * @return {object}
  */
-function normalizeKeyName(key) {
+function get(fileObj) {
+    var configPath;
+    var fileRead;
+    var promise;
+    var obj;
+
     validate.type(
-        { key: key },
-        { key: Joi.string() }
+        { fileObj: fileObj },
+        { fileObj: Joi.string() }
     );
 
-    switch (key) {
-        case 'source':
-            key = 'src';
-            break;
-        case 'destination':
-            key = 'dest';
-            break;
-        default:
-            key = key;
+    configPath = tools.getAbsolute(fileObj);
+    if (tools.notExist(configPath)) {
+        return tools.logErr('Config file doesn\'t exist!');
     }
 
-    return key;
+    // Read the config file
+    fileRead = fs.readFileSync(configPath);
+    obj = normalize(toml.parse(fileRead));
+
+    // Check the final object
+    promise = validate.type(
+        { config: obj },
+        { config: struct },
+    true)
+    .then(function (val) {
+        return val.config;
+    })
+    .catch(function (err) {
+        tools.logErr(err);
+    });
+
+    // Now lets return the promise
+    return promise;
 }
 
 // -----------------------------------------
 // EXPORTS
 
-module.exports = { struct: struct, get: get };
+module.exports = {
+    struct: struct,
+    get: get
+};

@@ -18,13 +18,27 @@ var log = require('./log');
 // PUBLIC FUNCTIONS
 
 /**
+ * Checks if file exists
+ * @param  {string} src
+ * @return {boolean}
+ */
+function notExist(src) {
+    validate.type(
+        { src: src },
+        { src: Joi.string() }
+    );
+
+    return src !== '' ? !fs.existsSync(src) : false;
+}
+
+/**
  * Check if is array
  * @param  {*} val
  * @return {boolean}
  */
-function isArray (val) {
+function isArray(val) {
     return Object.prototype.toString.call(val) === '[object Array]';
-};
+}
 
 /**
  * Checks if file is a directory
@@ -51,23 +65,9 @@ function arrContainsStr(arr, str) {
         { arr: Joi.array().items(Joi.string()), str: Joi.string() }
     );
 
-	return arr.filter(function (val) {
+    return arr.filter(function (val) {
         return val === str;
     }).length;
-}
-
-/**
- * Checks if file exists
- * @param  {string} src
- * @return {boolean}
- */
-function notExist(src) {
-    validate.type(
-        { src: src },
-        { src: Joi.string() }
-    );
-
-    return src !== '' ? !fs.existsSync(src) : false;
 }
 
 /**
@@ -79,6 +79,11 @@ function notExist(src) {
  * @return {object}
  */
 function decide(task, order, env, sys) {
+    var shouldContinue;
+    var mayNotOrder;
+    var mayNotEnv;
+    var mayNotSys;
+
     validate.type(
         { task: task, order: order, env: env, sys: sys },
         {
@@ -89,18 +94,14 @@ function decide(task, order, env, sys) {
         }
     );
 
-    var taskOrder = task.order;
-    var taskEnv = task.env;
-    var taskSys = task.sys;
-
-	var mayNotOrder = order != task.order;
-	var mayNotEnv = task.env != '' && env != task.env;
-	var mayNotSys = task.sys != 'all' && sys != task.sys;
+    mayNotOrder = order !== task.order;
+    mayNotEnv = task.env !== '' && env !== task.env;
+    mayNotSys = task.sys !== 'all' && sys !== task.sys;
 
 	// Should it continue?
-	var shouldContinue = (mayNotOrder || mayNotEnv || mayNotSys);
+    shouldContinue = (mayNotOrder || mayNotEnv || mayNotSys);
 
-	return shouldContinue;
+    return shouldContinue;
 }
 
 /**
@@ -114,11 +115,11 @@ function getAbsolute(filePath) {
         { filePath: Joi.string() }
     );
 
-	if (filePath[0] !== '/') {
+    if (filePath[0] !== '/') {
         filePath = path.join(process.cwd(), filePath);
-	}
+    }
 
-	return filePath;
+    return filePath;
 }
 
 /**
@@ -128,13 +129,15 @@ function getAbsolute(filePath) {
  * @return {array}
  */
 function getGlob(filePath, alsoDir) {
+    var relative;
+    var files;
+
     validate.type(
         { filePath: filePath, alsoDir: alsoDir },
         { filePath: Joi.string(), alsoDir: Joi.boolean().optional() }
     );
 
-    var relative = filePath.replace('/**', '').replace('/*', '');
-    var files;
+    relative = filePath.replace('/**', '').replace('/*', '');
 
     // Directory globbing
     if (relative === filePath && isDirectory(filePath)) {
@@ -145,11 +148,13 @@ function getGlob(filePath, alsoDir) {
     filePath = getAbsolute(filePath);
     files = glob.sync(filePath);
     files = files.map(function (file) {
+        var fileRelative;
+
         if (!alsoDir && isDirectory(file)) {
             return;
         }
 
-        var fileRelative = file.replace(relative, '');
+        fileRelative = file.replace(relative, '');
         fileRelative = !fileRelative.length ? '.' : fileRelative;
 
         return {
@@ -161,7 +166,7 @@ function getGlob(filePath, alsoDir) {
         return !!val;
     });
 
-	return files;
+    return files;
 }
 
 /**
@@ -175,7 +180,7 @@ function getFilename(filePath) {
         { filePath: Joi.string() }
     );
 
-	return path.basename(filePath);
+    return path.basename(filePath);
 }
 
 /**
@@ -197,18 +202,21 @@ function getDir(filePath) {
  * @param  {string} filePath
  */
 function ensurePath(filePath) {
+    var dirPath;
+    var data;
+
     validate.type(
         { filePath: filePath },
         { filePath: Joi.string() }
     );
 
-    var dirPath = getDir(filePath);
-    var data = exec('mkdir -p ' + dirPath);
+    dirPath = getDir(filePath);
+    data = exec('mkdir -p ' + dirPath);
 
     if (data.stderr && data.stderr.length) {
-        log.logErr('general', data.stderr);
+        log.logErr(data.stderr);
     } else if (data.stdout && data.stdout.length) {
-        log.log('general', data.stdout);
+        log.log(data.stdout);
     }
 }
 

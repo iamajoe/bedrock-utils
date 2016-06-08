@@ -25,15 +25,15 @@ var less = require(path.join(vendor, 'less'));
 var task = function (options) {
     fs.readFile(src, (err, data) => {
         if (err) {
-            return cb(err);
+            throw err;
         }
 
         // Compile the less files
         less.render(data.toString(), {
             sourceMap: options.sourceMap ? { sourceMapFileInline: true } : null
-        }, function (err, result) {
-            if (err) {
-                throw err;
+        }, function (lessErr, result) {
+            if (lessErr) {
+                throw lessErr;
             }
 
             // Write the file now
@@ -54,7 +54,7 @@ if (fs.existsSync(errFile)) {
 }
 
 // Catch the uncaught errors
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     var data = '';
     data += '///////////////////////////////\nLESS ERROR:\n\n';
     data += err;
@@ -68,7 +68,7 @@ process.on('uncaughtException', function(err) {
 
     // Now lets error!
     throw err;
-})
+});
 
 // Set the task
 task(JSON.parse(opts));

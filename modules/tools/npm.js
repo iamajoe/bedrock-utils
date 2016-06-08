@@ -17,37 +17,6 @@ var general = require('./general');
 // PUBLIC FUNCTIONS
 
 /**
- * Installs node dependencies
- * @param  {array} deps
- */
-function npmInstall(deps) {
-    validate.type(
-        { deps: deps },
-        { deps: Joi.array().items(Joi.string()) }
-    );
-
-    var vendorPath = npmFindModules();
-
-    deps.forEach(function (dep) {
-        var realDep = npmGetDepName(dep);
-        var data;
-
-        if (general.notExist(path.join(vendorPath, realDep))) {
-            return;
-        }
-
-        // Install
-        data = exec('npm install ' + dep);
-
-        if (data.stderr && data.stderr.length) {
-            log.logErr('npm', data.stderr);
-        } else if (data.stdout && data.stdout.length) {
-            log.log('npm', data.stdout);
-        }
-    });
-}
-
-/**
  * Tries to find a node_modules folder
  * @return {string}
  */
@@ -64,7 +33,7 @@ function npmFindModules() {
             basePath = path.join(basePath, '..');
         } else {
             // Found the dir!
-            break
+            break;
         }
     }
 
@@ -77,12 +46,14 @@ function npmFindModules() {
  * @return {string}
  */
 function npmGetDepName(dep) {
+    var i;
+
     validate.type(
         { dep: dep },
         { dep: Joi.string() }
     );
 
-    var i = dep.indexOf('@');
+    i = dep.indexOf('@');
     if (i === -1) {
         i = dep.indexOf('~');
     }
@@ -94,6 +65,38 @@ function npmGetDepName(dep) {
     }
 
     return dep.slice(0, i);
+}
+
+/**
+ * Installs node dependencies
+ * @param  {array} deps
+ */
+function npmInstall(deps) {
+    var vendorPath;
+
+    validate.type(
+        { deps: deps },
+        { deps: Joi.array().items(Joi.string()) }
+    );
+
+    vendorPath = npmFindModules();
+    deps.forEach(function (dep) {
+        var realDep = npmGetDepName(dep);
+        var data;
+
+        if (general.notExist(path.join(vendorPath, realDep))) {
+            return;
+        }
+
+        // Install
+        data = exec('npm install ' + dep);
+
+        if (data.stderr && data.stderr.length) {
+            log.logErr(data.stderr);
+        } else if (data.stdout && data.stdout.length) {
+            log.log(data.stdout);
+        }
+    });
 }
 
 // -----------------------------------------

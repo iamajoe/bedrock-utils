@@ -4,6 +4,6 @@
         "sds/es5"
     ],
     "rules": {
-        "no-console": ["allow", { allow: ["log", "warn", "error"] }]
+        "no-console": 0
     }
 }
