@@ -21,15 +21,15 @@ var pluginStruct = Joi.object().keys({
 });
 
 var resolveStruct = Joi.object().keys({
-    Alias: Joi.array().items(Joi.string()),
-    Root: Joi.array().items(Joi.string()),
-    ModulesDirectories: Joi.array().items(Joi.string()), // `toml:"modules_directories"`
-    Fallback: Joi.array().items(Joi.string()),
-    Extensions: Joi.array().items(Joi.string()),
-    PackageMains: Joi.array().items(Joi.string()), // `toml:"package_mains"`
-    PackageAlias: Joi.string(), // `toml:"package_alias"`
-    UnsafeCache: Joi.array().items(Joi.string()), // `toml:"unsafe_cache"`
-    ModuleTemplates: Joi.array().items(Joi.string()) // `toml:"module_templates"` // ResolveLoader only
+    alias: Joi.array().items(Joi.string()),
+    root: Joi.array().items(Joi.string()),
+    modulesDirectories: Joi.array().items(Joi.string()), // `toml:"modules_directories"`
+    fallback: Joi.array().items(Joi.string()),
+    extensions: Joi.array().items(Joi.string().allow('')),
+    packageMains: Joi.array().items(Joi.string()), // `toml:"package_mains"`
+    packageAlias: Joi.string(), // `toml:"package_alias"`
+    unsafeCache: Joi.array().items(Joi.string()), // `toml:"unsafe_cache"`
+    moduleTemplates: Joi.array().items(Joi.string()) // `toml:"module_templates"` // ResolveLoader only
 });
 
 var loaderStruct = Joi.object().keys({
@@ -107,7 +107,7 @@ var optionsStruct = Joi.object().keys({
 var struct = Joi.object().keys({
     src: Joi.string().required(), // `toml:"source"`
     dest: Joi.string().required(), // `toml:"destination"`
-    ignore: Joi.string().default(''),
+    ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all'),

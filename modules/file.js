@@ -17,7 +17,7 @@ var validate = tools.validate;
 var struct = Joi.object().keys({
     src: Joi.string().required(), // `toml:"source"`
     dest: Joi.string().optional(), // `toml:"destination"`
-    ignore: Joi.string().default(''),
+    ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')

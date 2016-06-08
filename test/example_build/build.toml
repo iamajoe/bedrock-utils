@@ -30,7 +30,6 @@ destination = "build/app.css"
 env = "dev"
 order = 2
 [style.options]
-comments = true
 source_map = true
 
 [[style]]
