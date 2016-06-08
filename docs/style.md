@@ -1,8 +1,7 @@
 # Bedrock: Utils > Style
 
 Module to compile style files.<br>
-To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).<br>
-For now, this module needs to be on an order of its own or with a `script`. Trying to solve that.
+To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).
 
 ### Config file parameters
 ```toml

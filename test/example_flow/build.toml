@@ -10,7 +10,6 @@ order = 0
 [[script]]
 source = "src/bootstrap.js"
 destination = "build/app.js"
-env = "dev"
 order = 1
 [script.options]
 target = "web"
@@ -19,8 +18,9 @@ cache = true
 debug = true
 bail = true
 [script.options.resolve]
-root = ["."]
+root = ["working_dir:."]
 extensions = ["", ".js"]
+modules_directories = ["src"]
 [[script.options.plugins]]
 name = "define"
 args = ["{ \"process.env.NODE_ENV\": \"development\" }"]
