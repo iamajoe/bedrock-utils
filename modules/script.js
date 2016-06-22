@@ -51,7 +51,7 @@ var loaderStruct = Joi.object().keys({
 });
 
 var moduleStruct = Joi.object().keys({
-    preLoaders: Joi.array().items(loaderStruct), // `toml:"pre_loaders"`
+    preLoaders: Joi.array().items(loaderStruct).default([]), // `toml:"pre_loaders"`
     loaders: Joi.array().items(loaderStruct).default([]),
     postLoaders: Joi.array().items(loaderStruct).default([]), // `toml:"post_loaders"`
     noParse: Joi.array().items(Joi.string()).default([]), // `toml:"no_parse"`

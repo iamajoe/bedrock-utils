@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Task system based on config files for your project",
   "repository": {
     "type": "git",

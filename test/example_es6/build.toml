@@ -39,6 +39,7 @@ query = "{ \"cacheDirectory\": true, \"presets\": [\"babel-preset-stage-2\", \"b
 [[script.options.module.loaders]]
 test = "regex:.json?$"
 loader = "json-loader"
+dependencies = ["json-loader@0.5.4"]
 [[script.options.module.loaders]]
 test = "regex:.html?$"
 loader = "babel-raw"
