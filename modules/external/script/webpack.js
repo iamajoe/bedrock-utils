@@ -51,6 +51,8 @@ var convertPlugins = function (list) {
             plugin = new webpack.DefinePlugin(args[0], args[1], args[2], args[3]);
         } else if (plugin.name === 'dedupe') {
             plugin = new webpack.optimize.DedupePlugin();
+        } else if (plugin.name === 'provide') {
+            plugin = new webpack.ProvidePlugin(args[0], args[1], args[2], args[3]);
         } else {
             // Require the dependency
             PluginReq = require(path.join(vendor, plugin.name));
