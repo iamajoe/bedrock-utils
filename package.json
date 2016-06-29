@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Task system based on config files for your project",
   "repository": {
     "type": "git",
@@ -18,7 +18,6 @@
     "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml",
     "example-flow": "bin/bedrock.js run test/example_flow/build.toml",
     "example-server": "bin/bedrock.js run test/example_server/server.toml",
-    "example-container-vagrant-vars": "export BEDROCK_VAGRANT_IP=192.168.33.11; export BEDROCK_VAGRANT_PUBLIC_IP=192.168.2.100; export BEDROCK_VAGRANT_PROJECT_PATH=$(pwd)/test/example_container; export BEDROCK_VAGRANT_BEDROCK_PATH=$(pwd)",
     "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
     "example-container-run": "bin/bedrock.js run test/example_container/server.toml",
     "example-container-stop": "bin/bedrock.js stop test/example_container/server.toml",

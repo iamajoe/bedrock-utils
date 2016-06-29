@@ -19,16 +19,16 @@ var phpStruct = Joi.object().keys({
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
-});
+}).default({});
 
 var containerStruct = Joi.object().keys({
     name: Joi.string(),
     type: Joi.string(),
     port: Joi.string(),
-    link: Joi.array().items(Joi.string()),
-    envVar: Joi.array().items(Joi.string()), // `toml:"env_var"`
-    volume: Joi.array().items(Joi.string()),
-    sleep: Joi.number(),
+    link: Joi.array().items(Joi.string()).default([]),
+    envVar: Joi.array().items(Joi.string()).default([]), // `toml:"env_var"`
+    volume: Joi.array().items(Joi.string()).default([]),
+    sleep: Joi.number().default(1),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
@@ -92,6 +92,10 @@ function containerInit(container) {
     var scriptPath;
     var cmdString;
     var cmdArg;
+    var valMod;
+    var val;
+    var i;
+    var c;
 
     validate.type({ container: container }, { container: containerStruct });
 
@@ -99,35 +103,42 @@ function containerInit(container) {
     cmdArg = '';
 
     // Take care of links
-    cmdArg += container.link.reduce(function (val1, val2) {
-        val1 += '--link ' + val2 + ' ';
-    });
+    for (i = 0; i < container.link.length; i += 1) {
+        cmdArg += '--link ' + container.link[i] + ' ';
+    }
 
     // Take care of envVar
-    cmdArg += container.envVar.reduce(function (val1, val2) {
-        var i = val2.indexOf('=');
-        var envVarVal = val2.slice(i + 1, val2.length);
+    for (i = 0; i < container.envVar.length; i += 1) {
+        val = container.envVar[i];
+        c = val.indexOf('=');
+        valMod = val.slice(i + 1, val.length);
 
         // Lets check if it is a path
-        if (envVarVal.slice(0, 3) === '../' || envVarVal.slice(0, 2) === './') {
-            val2 = val2.slice(0, i) + '=' + tools.getAbsolute(envVarVal);
+        if (valMod.slice(0, 3) === '../' || valMod.slice(0, 2) === './') {
+            val = val.slice(0, c) + '=' + tools.getAbsolute(valMod);
         }
 
-        val1 += '-e ' + val2 + ' ';
-    });
+        cmdArg += '-e ' + val + ' ';
+    }
 
     // Take care of volume
-    cmdArg += container.volume.reduce(function (val1, val2) {
-        var i = val2.indexOf('=');
-        var volumeKey = val2.slice(0, i);
-
-        // Lets check if it is a path
-        if (volumeKey.slice(0, 3) === '../' || volumeKey.slice(0, 2) === './') {
-            val2 = tools.getAbsolute(volumeKey) + ':' + val2.slice(i + 1, val2.length);
+    for (i = 0; i < container.volume.length; i += 1) {
+        val = container.volume[i];
+        c = val.indexOf('=');
+        if (c === -1) {
+            c = val.indexOf(':');
         }
 
-        val1 += '-e ' + val2 + ' ';
-    });
+        valMod = val.slice(0, c);
+
+        // Lets check if it is a path
+        if (valMod.slice(0, 3) === '../' || valMod.slice(0, 2) === './') {
+            val = tools.getAbsolute(valMod) + ':' + val.slice(c + 1, val.length);
+        }
+
+
+        cmdArg += '-v ' + val + ' ';
+    }
 
     // Now lets get the script path...
     scriptPath = path.join(__dirname, 'external/server/do.sh');

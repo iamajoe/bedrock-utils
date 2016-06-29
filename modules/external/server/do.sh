@@ -132,19 +132,12 @@ echo "#####################################"
 echo "# Project"
 echo " "
 
-if [[ `uname` != 'Linux' ]]; then
-    echo "Running Vagrant: $@"
+if [[ $(__DOCKER_exist) == "true" ]]; then
+    echo "Running: $@"
 
-    # Non-linux needs vagrant to run docker
-    ./vagrant/vagrant.sh $1 $2 $3 $4 "${@:5}"
+    __PROJECT $1 $2 $3 $4 "${@:5}"
 else
-    if [[ $(__DOCKER_exist) == "true" ]]; then
-        echo "Running: $@"
-
-        __PROJECT $1 $2 $3 $4 "${@:5}"
-    else
-        __console_err "You need to install Docker!"
-    fi
+    __console_err "You need to install Docker!"
 fi
 
 popd
