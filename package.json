@@ -18,6 +18,12 @@
     "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml dev",
     "example-flow": "bin/bedrock.js run test/example_flow/build.toml dev",
     "example-server": "bin/bedrock.js run test/example_server/server.toml",
+
+    "example-wordpress-init": "bin/bedrock.js init test/example_wordpress/server.toml",
+    "example-wordpress-run": "bin/bedrock.js run test/example_wordpress/server.toml",
+    "example-wordpress-stop": "bin/bedrock.js stop test/example_wordpress/server.toml",
+    "example-wordpress-destroy": "bin/bedrock.js destroy test/example_wordpress/server.toml",
+
     "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
     "example-container-run": "bin/bedrock.js run test/example_container/server.toml",
     "example-container-stop": "bin/bedrock.js stop test/example_container/server.toml",
