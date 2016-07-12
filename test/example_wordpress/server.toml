@@ -21,19 +21,6 @@ destination = ".run/public/wordpress/wp-config.php"
 cmd = "init"
 order = 3
 
-# Remove old folders for linkage
-[[remove]]
-source = ".run/public/wordpress/wp-content"
-cmd = "init"
-order = 3
-
-# Set linkage for the themes / uploads / plugins
-[[raw]]
-command = "ln"
-args = ["-s", "$(pwd)/src", ".run/public/wordpress/wp-content"]
-cmd = "init"
-order = 4
-
 [server]
 
 [[server.container]]
@@ -47,7 +34,7 @@ env_var = [
     "MYSQL_PASSWORD=p3QxMMBmYrn43pHU",
     "STARTUP_SQL=/docker-entrypoint-initdb.d/initial.sql"
 ]
-volume = ["./db/initial.sql:/docker-entrypoint-initdb.d/initial.sql"]
+volume = ["./.run/db/initial.sql:/docker-entrypoint-initdb.d/initial.sql"]
 sleep = 30
 order = 4
 
@@ -64,8 +51,9 @@ volume = [
     "./.run/nginx.conf:/etc/nginx/conf.d/default.conf:ro",
     "./.run/nginx.conf:/etc/nginx/sites-enabled/default.conf:ro",
     "./.run/nginx.conf:/etc/nginx/sites-available/default.conf:ro",
-    "./.run/public:/var/www/examplewp/www:ro",
-    "./log/nginx:/var/log/nginx"
+    "./.run/public/wordpress:/var/www/examplewp/www:ro",
+    "./src:/var/www/examplewp/www/wp-content:ro",
+    "./.run/log/nginx:/var/log/nginx"
 ]
 sleep = 5
 order = 5
