@@ -50,7 +50,7 @@ function task(bedrockObj, config, taskType) {
         }
 
         // Get the right paths
-        src = tools.getGlob(configTask.src, taskType === 'remove');
+        src = tools.getGlob(configTask.src, taskType === 'remove', taskType === 'remove');
         ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
 
         // Lets filter files

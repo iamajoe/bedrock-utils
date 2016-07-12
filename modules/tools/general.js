@@ -135,9 +135,10 @@ function getAbsolute(filePath) {
  * Gets glob of files
  * @param  {string} filePath
  * @param  {boolean} alsoDir
+ * @param  {boolean} dontGlobDir
  * @return {array}
  */
-function getGlob(filePath, alsoDir) {
+function getGlob(filePath, alsoDir, dontGlobDir) {
     var relative;
     var files;
     var relI;
@@ -164,7 +165,7 @@ function getGlob(filePath, alsoDir) {
     }
 
     // Directory globbing
-    if (relative === filePath && isDirectory(filePath)) {
+    if (relative === filePath && isDirectory(filePath) && !dontGlobDir) {
         filePath = path.join(filePath, '/**/*');
     }
 
