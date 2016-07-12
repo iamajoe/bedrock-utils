@@ -17,24 +17,31 @@ var style = require('./style');
 // -----------------------------------------
 // VARS
 
+var struct = Joi.object().keys({
+    cmd: Joi.string().default('all'),
+    order: Joi.number().default(0),
+    env: Joi.string().allow('').default(''),
+    sys: Joi.string().default('all')
+});
+
 // -----------------------------------------
 // PUBLIC FUNCTIONS
 
 /**
  * Initializes a module
- * @param  {string} commandType
+ * @param  {string} cmd
  * @param  {string} configPath
  * @param  {string} env
  * @param  {string} sys
  */
-function init(commandType, configPath, env, sys) {
+function init(cmd, configPath, env, sys) {
     tools.setProject('project');
     tools.setModule('main');
 
     tools.validate.type(
-        { commandType: commandType, configPath: configPath, env: env },
+        { cmd: cmd, configPath: configPath, env: env, sys: sys },
         {
-            commandType: Joi.string(),
+            cmd: Joi.string(),
             configPath: Joi.string(),
             env: Joi.string().allow(''),
             sys: Joi.string()
@@ -44,6 +51,7 @@ function init(commandType, configPath, env, sys) {
     // Check if there is a config file and load it
     tools.setModule('config');
     config.get(configPath).then(function (configObj) {
+        var bedrockObj;
         var oldWd;
         var order;
 
@@ -55,7 +63,11 @@ function init(commandType, configPath, env, sys) {
         for (order = 0; order < configObj.maxOrder; order += 1) {
             tools.setModule('main');
             tools.log('Order: ' + order);
-            runOrder(order, commandType, configObj, env, sys);
+
+            // Lets create the bedrock object
+            bedrockObj = { order: order, env: env, sys: sys, cmd: cmd };
+
+            runOrder(bedrockObj, configObj);
         }
 
         // Change back the working dir
@@ -68,48 +80,39 @@ function init(commandType, configPath, env, sys) {
 
 /**
  * Runs each instance per order
- * @param  {number} order
- * @param  {string} commandType
- * @param  {object} config
- * @param  {string} env
- * @param  {string} sys
+ * @param  {object} bedrockObj
+ * @param  {object} configObj
  */
-function runOrder(order, commandType, configObj, env, sys) {
+function runOrder(bedrockObj, configObj) {
     tools.validate.type(
-        { order: order, commandType: commandType, config: configObj, env: env, sys: sys },
-        {
-            order: Joi.number(),
-            commandType: Joi.string(),
-            config: config.struct,
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
+        { bedrockObj: bedrockObj, config: configObj },
+        { bedrockObj: struct, config: config.struct }
     );
 
     // Lets run the tasks
     tools.setModule('copy');
-    file.task(configObj.copy, 'copy', order, env, sys);
+    file.task(bedrockObj, configObj.copy, 'copy');
 
     tools.setModule('rename');
-    file.task(configObj.rename, 'rename', order, env, sys);
+    file.task(bedrockObj, configObj.rename, 'rename');
 
     tools.setModule('remove');
-    file.task(configObj.remove, 'remove', order, env, sys);
+    file.task(bedrockObj, configObj.remove, 'remove');
 
     tools.setModule('create');
-    create.task(configObj.create, commandType, order, env, sys);
+    create.task(bedrockObj, configObj.create);
 
     tools.setModule('style');
-    style.task(configObj.style, order, env, sys);
+    style.task(bedrockObj, configObj.style);
 
     tools.setModule('script');
-    script.task(configObj.script, order, env, sys);
+    script.task(bedrockObj, configObj.script);
 
     tools.setModule('raw');
-    raw.task(configObj.raw, order, env, sys);
+    raw.task(bedrockObj, configObj.raw);
 
     tools.setModule('server');
-    server.task(configObj.server, commandType, order, env, sys);
+    server.task(bedrockObj, configObj.server);
 }
 
 // -----------------------------------------

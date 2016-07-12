@@ -10,7 +10,9 @@ source = "" # required
 destination = "" # required
 ignore = ""
 order = 0
-env = "both"
+env = ""
+cmd = ""
+sys = "all"
 
 [style.options]
 minify = false

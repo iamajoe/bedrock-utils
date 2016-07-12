@@ -8,12 +8,12 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 
 To install you may use ```bower```:
 ```
-bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.5
+bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.6
 ```
 
 Or you may use ```npm```:
 ```
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.5
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.6
 ```
 
 Or why don't you just simply clone it?
@@ -61,7 +61,8 @@ max_order = 30 # defaults to 30. set the minimum here for better performance
 # General explanation of modules parameters:
 #    [[<name>]] or [<name>]
 #    order = 0 # order in which the module should run
-#    env = "dev|prod" # decide on which type of environment it should run
+#    env = "dev|prod" # decide on which type of environment it should run, allows empty
+#    cmd = "init|build|start|destroy" # decide on which bin command it should run, allows empty
 #    sys = "windows|darwin|linux|freesbd|all" # decide on which system it should run
 ```
 

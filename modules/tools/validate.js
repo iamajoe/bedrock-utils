@@ -16,16 +16,16 @@ var Joi = require('joi');
  * Check types
  * @param  {*} val
  * @param  {*} schema
- * @param  {bool} returnData
+ * @param  {bool} returnErr
  * @return {promise}
  */
-function type(val, schema, returnData) {
+function type(val, schema, returnErr) {
     var promise = new Promise(function (resolve, reject) {
         Joi.validate(val, schema, function (err, value) {
             if (err !== null) {
                 reject(err);
 
-                if (!returnData) {
+                if (!returnErr) {
                     throw new Error(err);
                 }
             }

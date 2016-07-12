@@ -14,7 +14,9 @@ source = "" # required
 destination = "" # required
 ignore = ""
 order = 0
-env = "both"
+env = ""
+cmd = ""
+sys = "all"
 
 [script.options]
 minify = false

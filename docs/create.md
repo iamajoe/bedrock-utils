@@ -10,7 +10,9 @@ destination = "" # required. it doesn't support globs
 type = "" # basic, php_jquery, redux_react, slim_twig or style
 ignore = ""
 order = 0
-env = "both"
+env = ""
+cmd = ""
+sys = "all"
 ```
 
 ### Examples

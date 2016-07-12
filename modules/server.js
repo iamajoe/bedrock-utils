@@ -3,6 +3,7 @@
 // -----------------------------------------
 // IMPORTS
 
+var fs = require('fs');
 var path = require('path');
 var Joi = require('joi');
 
@@ -18,6 +19,7 @@ var phpStruct = Joi.object().keys({
     port: Joi.number(),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
 }).default({});
 
@@ -31,6 +33,7 @@ var containerStruct = Joi.object().keys({
     sleep: Joi.number().default(1),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
 }).default({
     link: [], envVar: [], volume: []
@@ -50,21 +53,30 @@ var struct = Joi.object().keys({
  */
 function phpUp(server) {
     var publicPath;
+    var isFolder;
     var port;
+    var args;
 
     validate.type({ server: server }, { server: phpStruct });
 
     publicPath = server.public;
     port = server.port || 8000;
 
+    // We need to find if it is a file or a folder
+    isFolder = fs.lstatSync(publicPath).isDirectory();
+
     tools.log('Running server...');
-    tools.log('Folder: ' + publicPath);
+    args = ['-S', 'localhost:' + port];
+    if (isFolder) {
+        tools.log('Folder: ' + publicPath);
+        args.push('-t');
+    } else {
+        tools.log('File: ' + publicPath);
+    }
+    args.push(publicPath);
     tools.log('   Url: localhost:' + port);
 
-    raw.command({
-        command: 'php',
-        args: ['-S', 'localhost:' + port, '-t', publicPath]
-    });
+    raw.command({ command: 'php', args: args });
 
     // TODO: The php server should create a process number,
     // use & to create running on the background script
@@ -197,40 +209,22 @@ function containerDestroy(container) {
 
 /**
  * Create task for init
+ * @param  {object} bedrockObj
  * @param  {object} config
- * @param  {string} commandType
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  */
-function task(config, commandType, order, env, sys) {
-    validate.type(
-        {
-            config: config,
-            commandType: commandType,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: struct,
-            commandType: Joi.string(),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
-    );
+function task(bedrockObj, config) {
+    validate.type({ config: config }, { config: struct });
 
     // Take care of php
     config.php.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
-
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         if (shouldContinue) {
             return;
         }
 
-        tools.log(commandType + ' php');
+        tools.log(bedrockObj.cmd + ' php');
 
-        switch (commandType) {
+        switch (bedrockObj.cmd) {
         case 'run':
             phpUp(configTask);
             break;
@@ -243,15 +237,14 @@ function task(config, commandType, order, env, sys) {
 
     // Take care of containers
     config.container.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
-
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         if (shouldContinue) {
             return;
         }
 
-        tools.log(commandType + ' container ' + configTask.type);
+        tools.log(bedrockObj.cmd + ' container ' + configTask.type);
 
-        switch (commandType) {
+        switch (bedrockObj.cmd) {
         case 'init':
             containerInit(configTask);
             break;

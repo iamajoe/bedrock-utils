@@ -61,6 +61,9 @@ function npmGetDepName(dep) {
         i = dep.indexOf('^');
     }
     if (i === -1) {
+        i = dep.indexOf('#');
+    }
+    if (i === -1) {
         i = dep.length;
     }
 

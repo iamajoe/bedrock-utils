@@ -91,34 +91,24 @@ function arrContainsStr(arr, str) {
 
 /**
  * Decides what should happen
+ * @param  {object} bedrockObj
  * @param  {object} task
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  * @return {object}
  */
-function decide(task, order, env, sys) {
+function decide(bedrockObj, task) {
     var shouldContinue;
     var mayNotOrder;
     var mayNotEnv;
+    var mayNotCmd;
     var mayNotSys;
 
-    validate.type(
-        { task: task, order: order, env: env, sys: sys },
-        {
-            task: Joi.object(),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
-    );
-
-    mayNotOrder = order !== task.order;
-    mayNotEnv = task.env !== '' && env !== task.env;
-    mayNotSys = task.sys !== 'all' && sys !== task.sys;
+    mayNotOrder = bedrockObj.order !== task.order;
+    mayNotEnv = task.env !== '' && bedrockObj.env !== task.env;
+    mayNotCmd = task.cmd !== '' && bedrockObj.cmd !== task.cmd;
+    mayNotSys = task.sys !== 'all' && bedrockObj.sys !== task.sys;
 
 	// Should it continue?
-    shouldContinue = (mayNotOrder || mayNotEnv || mayNotSys);
+    shouldContinue = (mayNotOrder || mayNotEnv || mayNotCmd || mayNotSys);
 
     return shouldContinue;
 }

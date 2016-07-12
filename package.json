@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Task system based on config files for your project",
   "repository": {
     "type": "git",
@@ -13,10 +13,10 @@
     "eslint-test": "npm run eslint -- ./modules/*",
     "help": "bin/bedrock.js",
     "example-create": "bin/bedrock.js init test/example_create/create.toml",
-    "example-build": "bin/bedrock.js build test/example_build/build.toml",
-    "example-es6": "bin/bedrock.js build test/example_es6/build.toml",
-    "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml",
-    "example-flow": "bin/bedrock.js run test/example_flow/build.toml",
+    "example-build": "bin/bedrock.js build test/example_build/build.toml dev",
+    "example-es6": "bin/bedrock.js build test/example_es6/build.toml dev",
+    "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml dev",
+    "example-flow": "bin/bedrock.js run test/example_flow/build.toml dev",
     "example-server": "bin/bedrock.js run test/example_server/server.toml",
     "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
     "example-container-run": "bin/bedrock.js run test/example_container/server.toml",

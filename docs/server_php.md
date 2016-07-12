@@ -16,6 +16,9 @@ Install [PHP](http://php.net/)
 [[server.php]]
 public = "" # folder path
 port = 8000
+env = ""
+cmd = ""
+sys = "all"
 ```
 
 ### Examples

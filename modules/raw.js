@@ -17,6 +17,7 @@ var struct = Joi.object().keys({
     args: Joi.array().items(Joi.string()).default([]),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
 });
 
@@ -46,31 +47,18 @@ function command(obj) {
 
 /**
  * Create task for init
+ * @param  {object} bedrockObj
  * @param  {object} config
- * @param  {string} commandType
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  */
-function task(config, order, env, sys) {
+function task(bedrockObj, config) {
     validate.type(
-        {
-            config: config,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: Joi.array().items(struct),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
+        { config: config },
+        { config: Joi.array().items(struct) }
     );
 
     // Go through each task
     config.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
-
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         if (shouldContinue) {
             return;
         }

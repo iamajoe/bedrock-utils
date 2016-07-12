@@ -18,6 +18,7 @@ var struct = Joi.object().keys({
     type: Joi.string().required(),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().default('all')
 });
 
@@ -42,46 +43,24 @@ function project(module) {
         var dest = path.join(module.dest, fileObj.relative);
 
         // Lets copy
-        file.copy({
-            src: fileObj.absolute,
-            dest: tools.getAbsolute(dest)
-        });
+        file.copy({ src: fileObj.absolute, dest: tools.getAbsolute(dest) });
     });
 }
 
 /**
  * Create task for init
+ * @param  {object} bedrockObj
  * @param  {object} config
- * @param  {string} commandType
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  */
-function task(config, commandType, order, env, sys) {
+function task(bedrockObj, config) {
     validate.type(
-        {
-            config: config,
-            commandType: commandType,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: Joi.array().items(struct),
-            commandType: Joi.string(),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
+        { config: config },
+        { config: Joi.array().items(struct) }
     );
-
-    if (commandType !== 'init') {
-        return;
-    }
 
     // Go through each task
     config.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
-
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         if (shouldContinue) {
             return;
         }

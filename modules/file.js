@@ -20,6 +20,7 @@ var struct = Joi.object().keys({
     ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all')
 });
 
@@ -28,32 +29,19 @@ var struct = Joi.object().keys({
 
 /**
  * Create task for init
+ * @param  {object} bedrockObj
  * @param  {object} config
  * @param  {string} taskType
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  */
-function task(config, taskType, order, env, sys) {
+function task(bedrockObj, config, taskType) {
     validate.type(
-        {
-            config: config,
-            taskType: taskType,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: Joi.array().items(struct),
-            taskType: Joi.string(),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
+        { config: config, taskType: taskType },
+        { config: Joi.array().items(struct), taskType: Joi.string() }
     );
 
     // Go through each task
     config.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         var ignore;
         var src;
 
@@ -115,13 +103,19 @@ function copy(file) {
 
     if (tools.isDirectory(file.src)) {
         // We should recursive in case of directory
-        task([{
+        task({
+            order: file.order,
+            env: file.env,
+            cmd: file.cmd,
+            sys: file.sys
+        }, [{
             src: file.src + '/**/*',
             dest: file.dest,
             order: file.order,
             env: file.env,
+            cmd: file.cmd,
             sys: file.sys
-        }], 'copy', file.order, file.env, file.sys);
+        }], 'copy');
     } else {
         // First ensure the path
         tools.ensurePath(file.dest);

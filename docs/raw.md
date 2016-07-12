@@ -8,6 +8,7 @@ Module to perform raw commands.
 command = "" # required
 args = [""]
 order = 0
-env = "both"
+env = ""
+cmd = ""
 sys = "all"
 ```

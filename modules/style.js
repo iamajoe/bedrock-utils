@@ -26,6 +26,7 @@ var struct = Joi.object().keys({
     ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
+    cmd: Joi.string().allow('').default(''),
     sys: Joi.string().allow('').default('all'),
     options: optionsStruct
 });
@@ -191,29 +192,15 @@ function compile(fileObj) {
 
 /**
  * Create task for init
+ * @param  {object} bedrockObj
  * @param  {object} config
- * @param  {number} order
- * @param  {string} env
- * @param  {string} sys
  */
-function task(config, order, env, sys) {
-    validate.type(
-        {
-            config: config,
-            order: order,
-            env: env,
-            sys: sys
-        }, {
-            config: Joi.array().items(struct),
-            order: Joi.number(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
-    );
+function task(bedrockObj, configObj) {
+    validate.type({ config: configObj }, { config: Joi.array().items(struct) });
 
     // Go through each task
-    config.forEach(function (configTask) {
-        var shouldContinue = tools.decide(configTask, order, env, sys);
+    configObj.forEach(function (configTask) {
+        var shouldContinue = tools.decide(bedrockObj, configTask);
         var ignore;
         var src;
 

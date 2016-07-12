@@ -9,7 +9,8 @@ source = "" # required
 destination = "" # required
 ignore = ""
 order = 0
-env = "dev"
+env = ""
+cmd = ""
 sys = "all"
 ```
 

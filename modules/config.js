@@ -140,10 +140,7 @@ function get(fileObj) {
     tools.setBasePath(obj.baseDir);
 
     // Check the final object
-    promise = validate.type(
-        { config: obj },
-        { config: struct },
-    true)
+    promise = validate.type({ config: obj }, { config: struct }, true)
     .then(function (val) {
         return val.config;
     })

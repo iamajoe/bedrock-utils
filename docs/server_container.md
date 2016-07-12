@@ -17,6 +17,9 @@ link = [""]
 env_var = [""]
 volume = [""]
 sleep = 0 # seconds to wait on run
+env = ""
+cmd = ""
+sys = "all"
 ```
 
 ### Examples
