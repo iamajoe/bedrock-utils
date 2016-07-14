@@ -4,5 +4,6 @@ max_order = 2
 source = "src"
 destination = "build/sprite.png"
 style = "build/sprite.scss"
+style_name = "foo"
 style_rel_dest = "build"
 order = 1

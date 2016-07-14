@@ -18,6 +18,7 @@ var struct = Joi.object().keys({
     src: Joi.string().required(), // `toml:"source"`
     dest: Joi.string().required(), // `toml:"destination"`
     style: Joi.string().required(),
+    styleName: Joi.string().allow('').default(''),
     styleRelDest: Joi.string().allow('').default(''),
     ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
@@ -53,6 +54,7 @@ function compileList(filesToSprite, fileObj) {
         algorithm: 'binary-tree'
     }, function (spriteErr, result) {
         var dest = fileObj.dest;
+        var spriteName = fileObj.styleName.length && fileObj.styleName || 'sprite';
         var styleRelDest = fileObj.styleRelDest;
         var styleDest = dest.replace(styleRelDest + '/', '').replace(styleRelDest, '');
         var coordinates;
@@ -66,7 +68,7 @@ function compileList(filesToSprite, fileObj) {
 
         // Set the basis for the sprite icon
         tmpl = '';
-        tmpl += '.sprite {\n';
+        tmpl += '.' + spriteName + ' {\n';
         tmpl += '    display: inline-block;\n';
         tmpl += '    max-width: 100%;\n';
         tmpl += '    max-height: 100%;\n';
@@ -80,7 +82,7 @@ function compileList(filesToSprite, fileObj) {
             fileData = filesData[i];
             coordinates = result.coordinates[fileData.src];
 
-            tmpl += '.sprite-' + fileData.name + ' {\n';
+            tmpl += '.' + spriteName + '-' + fileData.name + ' {\n';
             tmpl += '    width: ' + coordinates.width + 'px; height: ' + coordinates.height + 'px; ';
             tmpl += 'background-position: -' + coordinates.x + 'px -' + coordinates.y + 'px;\n';
             tmpl += '}\n\n';

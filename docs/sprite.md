@@ -8,6 +8,7 @@ Module to spritesheet files.<br>
 source = "" # required
 destination = "" # required
 style = "" # required. location of the style file (extension required)
+style_name = "" # name for the css rules
 style_rel_dest = "" # path relative to destination for the css rules
 ignore = ""
 order = 0
