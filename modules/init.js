@@ -28,70 +28,6 @@ var struct = Joi.object().keys({
 });
 
 // -----------------------------------------
-// PUBLIC FUNCTIONS
-
-/**
- * Initializes a module
- * @param  {string} cmd
- * @param  {string} configPath
- * @param  {string} env
- * @param  {string} sys
- */
-function init(cmd, configPath, env, sys) {
-    tools.setProject('project');
-    tools.setModule('main');
-
-    tools.validate.type(
-        { cmd: cmd, configPath: configPath, env: env, sys: sys },
-        {
-            cmd: Joi.string(),
-            configPath: Joi.string(),
-            env: Joi.string().allow(''),
-            sys: Joi.string()
-        }
-    );
-
-    // Check if there is a config file and load it
-    tools.setModule('config');
-    config.get(configPath)
-    .then(function (configObj) {
-        var promises = [];
-        var bedrockObj;
-        var oldWd;
-        var order;
-
-        // Change working dir so that paths may be relative
-        oldWd = process.cwd();
-        process.chdir(tools.getDir(configPath));
-
-        // Lets take care of modules ordering
-        for (order = 0; order < configObj.maxOrder; order += 1) {
-            tools.setModule('main');
-            tools.log('Order: ' + order);
-
-            // Lets create the bedrock object
-            bedrockObj = { order: order, env: env, sys: sys, cmd: cmd };
-
-            promises.push(runOrder(bedrockObj, configObj));
-        }
-
-        // Change back the working dir
-        process.chdir(oldWd);
-
-        // Set all promises
-        return Promise.all(promises);
-    })
-    .then(function () {
-        tools.setModule('main');
-        tools.log('All done!');
-    })
-    .catch(function (err) {
-        tools.setModule('main');
-        tools.logErr(err);
-    });
-}
-
-// -----------------------------------------
 // PRIVATE FUNCTIONS
 
 /**
@@ -121,6 +57,83 @@ function runOrder(bedrockObj, configObj) {
     ];
 
     return Promise.all(promises);
+}
+
+// -----------------------------------------
+// PUBLIC FUNCTIONS
+
+/**
+ * Initializes a module
+ * @param  {string} cmd
+ * @param  {string} configPath
+ * @param  {string} env
+ * @param  {string} sys
+ */
+function init(cmd, configPath, env, sys) {
+    tools.setProject('project');
+    tools.setModule('main');
+
+    tools.validate.type(
+        { cmd: cmd, configPath: configPath, env: env, sys: sys },
+        {
+            cmd: Joi.string(),
+            configPath: Joi.string(),
+            env: Joi.string().allow(''),
+            sys: Joi.string()
+        }
+    );
+
+    // Check if there is a config file and load it
+    tools.setModule('config');
+    config.get(configPath)
+    .then(function (configObj) {
+        var createOrderFn;
+        var bedrockObj;
+        var promise;
+        var oldWd;
+
+        // Change working dir so that paths may be relative
+        oldWd = process.cwd();
+        process.chdir(tools.getDir(configPath));
+
+        // Set the order function
+        createOrderFn = function (order) {
+            tools.setModule('main');
+            tools.log('Order: ' + order);
+
+            // Lets create the bedrock object
+            bedrockObj = { order: order, env: env, sys: sys, cmd: cmd };
+
+            // Run the order
+            return runOrder(bedrockObj, configObj)
+            .then(function () {
+                if (order < configObj.maxOrder) {
+                    return createOrderFn(order += 1);
+                }
+            });
+        };
+
+        // Create a new promise
+        promise = new Promise(function (resolve) {
+            resolve();
+        })
+        .then(createOrderFn.bind(null, 0));
+
+        // Change back the working dir
+        process.chdir(oldWd);
+
+        // Set all promises
+        return promise;
+        // return Promise.all(promises);
+    })
+    .then(function () {
+        tools.setModule('main');
+        tools.log('All done!');
+    })
+    .catch(function (err) {
+        tools.setModule('main');
+        tools.logErr(err);
+    });
 }
 
 // -----------------------------------------
