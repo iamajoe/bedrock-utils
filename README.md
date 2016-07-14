@@ -8,12 +8,12 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 
 To install you may use ```bower```:
 ```
-bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.7
+bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.8
 ```
 
 Or you may use ```npm```:
 ```
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.7
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.8
 ```
 
 Or why don't you just simply clone it?
@@ -72,6 +72,7 @@ max_order = 30 # defaults to 30. set the minimum here for better performance
 - [rename](docs/file_rename.md)
 - [remove](docs/file_remove.md)
 - [raw](docs/raw.md)
+- [sprite](docs/sprite.md)
 - [script](docs/script.md)
 - [style](docs/style.md)
 - [server.container](docs/server_container.md)

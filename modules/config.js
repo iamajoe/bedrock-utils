@@ -16,6 +16,7 @@ var style = require('./style');
 var script = require('./script');
 var raw = require('./raw');
 var server = require('./server');
+var sprite = require('./sprite');
 
 // -----------------------------------------
 // VARS
@@ -30,6 +31,7 @@ var struct = Joi.object().keys({
     create: Joi.array().items(create.struct).default([]),
     style: Joi.array().items(style.struct).default([]),
     script: Joi.array().items(script.struct).default([]),
+    sprite: Joi.array().items(sprite.struct).default([]),
     raw: Joi.array().items(raw.struct).default([]),
     server: server.struct
 });

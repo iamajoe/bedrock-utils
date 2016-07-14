@@ -1,0 +1,8 @@
+max_order = 2
+
+[[sprite]]
+source = "src"
+destination = "build/sprite.png"
+style = "build/sprite.scss"
+style_rel_dest = "build"
+order = 1

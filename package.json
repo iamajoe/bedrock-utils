@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Task system based on config files for your project",
   "repository": {
     "type": "git",
@@ -14,6 +14,7 @@
     "help": "bin/bedrock.js",
     "example-create": "bin/bedrock.js init test/example_create/create.toml",
     "example-build": "bin/bedrock.js build test/example_build/build.toml dev",
+    "example-sprite": "bin/bedrock.js build test/example_sprite/build.toml dev",
     "example-es6": "bin/bedrock.js build test/example_es6/build.toml dev",
     "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml dev",
     "example-flow": "bin/bedrock.js run test/example_flow/build.toml dev",

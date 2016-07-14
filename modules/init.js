@@ -13,6 +13,7 @@ var raw = require('./raw');
 var script = require('./script');
 var server = require('./server');
 var style = require('./style');
+var sprite = require('./sprite');
 
 // -----------------------------------------
 // VARS
@@ -101,6 +102,9 @@ function runOrder(bedrockObj, configObj) {
 
     tools.setModule('create');
     create.task(bedrockObj, configObj.create);
+
+    tools.setModule('sprite');
+    sprite.task(bedrockObj, configObj.sprite);
 
     tools.setModule('style');
     style.task(bedrockObj, configObj.style);
