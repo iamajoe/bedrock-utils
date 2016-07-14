@@ -19,7 +19,7 @@ var struct = Joi.object().keys({
     dest: Joi.string().required(), // `toml:"destination"`
     style: Joi.string().required(),
     styleName: Joi.string().allow('').default(''),
-    styleRelDest: Joi.string().allow('').default(''),
+    styleRel: Joi.string().allow('').default(''),
     ignore: Joi.string().default('').allow(''),
     order: Joi.number().default(0),
     env: Joi.string().allow('').default(''),
@@ -53,10 +53,8 @@ function compileList(filesToSprite, fileObj) {
         src: filesData.map(function (val) { return val.src; }),
         algorithm: 'binary-tree'
     }, function (spriteErr, result) {
-        var dest = fileObj.dest;
         var spriteName = fileObj.styleName.length && fileObj.styleName || 'sprite';
-        var styleRelDest = fileObj.styleRelDest;
-        var styleDest = dest.replace(styleRelDest + '/', '').replace(styleRelDest, '');
+        var styleDest = path.join(fileObj.styleRel, path.basename(fileObj.dest));
         var coordinates;
         var fileData;
         var tmpl;
@@ -89,7 +87,7 @@ function compileList(filesToSprite, fileObj) {
         }
 
         // Output the image
-        fs.writeFileSync(tools.getAbsolute(dest), result.image);
+        fs.writeFileSync(tools.getAbsolute(fileObj.dest), result.image);
         fs.writeFileSync(tools.getAbsolute(fileObj.style), tmpl, 'utf8');
     });
 }
