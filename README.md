@@ -8,12 +8,12 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 
 To install you may use ```bower```:
 ```
-bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.8
+bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.9
 ```
 
 Or you may use ```npm```:
 ```
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.8
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.9
 ```
 
 Or why don't you just simply clone it?

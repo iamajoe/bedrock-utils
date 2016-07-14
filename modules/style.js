@@ -5,6 +5,7 @@
 
 var path = require('path');
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
@@ -196,6 +197,9 @@ function compile(fileObj) {
  * @param  {object} config
  */
 function task(bedrockObj, configObj) {
+    var promises = [];
+
+    tools.setModule('style');
     validate.type({ config: configObj }, { config: Joi.array().items(struct) });
 
     // Go through each task
@@ -234,6 +238,13 @@ function task(bedrockObj, configObj) {
             compile(newTask);
         });
     });
+
+    // TODO: Set promises right
+    promises.push(new Promise(function (resolve) {
+        resolve();
+    }));
+
+    return Promise.all(promises);
 }
 
 // -----------------------------------------

@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Task system based on config files for your project",
   "repository": {
     "type": "git",
@@ -19,12 +19,10 @@
     "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml dev",
     "example-flow": "bin/bedrock.js run test/example_flow/build.toml dev",
     "example-server": "bin/bedrock.js run test/example_server/server.toml",
-
     "example-wordpress-init": "bin/bedrock.js init test/example_wordpress/server.toml",
     "example-wordpress-run": "bin/bedrock.js run test/example_wordpress/server.toml",
     "example-wordpress-stop": "bin/bedrock.js stop test/example_wordpress/server.toml",
     "example-wordpress-destroy": "bin/bedrock.js destroy test/example_wordpress/server.toml",
-
     "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
     "example-container-run": "bin/bedrock.js run test/example_container/server.toml",
     "example-container-stop": "bin/bedrock.js stop test/example_container/server.toml",
@@ -36,7 +34,7 @@
     "eslint-config-sds": "git://github.com/sendoushi/eslint-config-sds.git"
   },
   "dependencies": {
-    "bluebird": "^3.4.0",
+    "bluebird": "^3.4.1",
     "colors": "^1.1.2",
     "glob": "^7.0.3",
     "joi": "^8.4.1",

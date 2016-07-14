@@ -7,6 +7,7 @@ var fs = require('fs');
 var path = require('path');
 var exec = require('sync-exec');
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
@@ -26,67 +27,6 @@ var struct = Joi.object().keys({
 
 // -----------------------------------------
 // PUBLIC FUNCTIONS
-
-/**
- * Create task for init
- * @param  {object} bedrockObj
- * @param  {object} config
- * @param  {string} taskType
- */
-function task(bedrockObj, config, taskType) {
-    validate.type(
-        { config: config, taskType: taskType },
-        { config: Joi.array().items(struct), taskType: Joi.string() }
-    );
-
-    // Go through each task
-    config.forEach(function (configTask) {
-        var shouldContinue = tools.decide(bedrockObj, configTask);
-        var ignore;
-        var src;
-
-        if (shouldContinue) {
-            return;
-        }
-
-        // Get the right paths
-        src = tools.getGlob(configTask.src, taskType === 'remove', taskType === 'remove');
-        ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
-
-        // Lets filter files
-        ignore = ignore.map(function (file) {
-            return file.relative;
-        });
-        src = src.filter(function (file) {
-            return !tools.arrContainsStr(ignore, file.relative);
-        });
-
-        // Go through each in the glob
-        src.forEach(function (file) {
-            // Create task
-            var newTask = { src: file.absolute };
-            var dest;
-
-            tools.log(file.relative);
-
-            if (taskType !== 'remove') {
-                dest = path.join(configTask.dest, file.relative);
-                newTask.dest = tools.getAbsolute(dest);
-            }
-
-            switch (taskType) {
-            case 'rename':
-                rename(newTask);
-                break;
-            case 'remove':
-                remove(newTask);
-                break;
-            default:
-                copy(newTask);
-            }
-        });
-    });
-}
 
 /**
  * Copies * from source to destination
@@ -173,6 +113,77 @@ function rename(file) {
     }
 
     fs.renameSync(file.src, file.dest);
+}
+
+/**
+ * Create task for init
+ * @param  {object} bedrockObj
+ * @param  {object} config
+ * @param  {string} taskType
+ */
+function task(bedrockObj, config, taskType) {
+    var promises = [];
+
+    tools.setModule(taskType);
+    validate.type(
+        { config: config, taskType: taskType },
+        { config: Joi.array().items(struct), taskType: Joi.string() }
+    );
+
+    // Go through each task
+    config.forEach(function (configTask) {
+        var shouldContinue = tools.decide(bedrockObj, configTask);
+        var ignore;
+        var src;
+
+        if (shouldContinue) {
+            return;
+        }
+
+        // Get the right paths
+        src = tools.getGlob(configTask.src, taskType === 'remove', taskType === 'remove');
+        ignore = configTask.ignore ? tools.getGlob(configTask.ignore) : [];
+
+        // Lets filter files
+        ignore = ignore.map(function (file) {
+            return file.relative;
+        });
+        src = src.filter(function (file) {
+            return !tools.arrContainsStr(ignore, file.relative);
+        });
+
+        // Go through each in the glob
+        src.forEach(function (file) {
+            // Create task
+            var newTask = { src: file.absolute };
+            var dest;
+
+            tools.log(file.relative);
+
+            if (taskType !== 'remove') {
+                dest = path.join(configTask.dest, file.relative);
+                newTask.dest = tools.getAbsolute(dest);
+            }
+
+            switch (taskType) {
+            case 'rename':
+                rename(newTask);
+                break;
+            case 'remove':
+                remove(newTask);
+                break;
+            default:
+                copy(newTask);
+            }
+        });
+    });
+
+    // TODO: Set promises right
+    promises.push(new Promise(function (resolve) {
+        resolve();
+    }));
+
+    return Promise.all(promises);
 }
 
 // -----------------------------------------

@@ -6,6 +6,7 @@
 var fs = require('fs');
 var path = require('path');
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
@@ -48,48 +49,55 @@ function compileList(filesToSprite, fileObj) {
         return { name: name, src: val.absolute };
     }).filter(function (val) { return !!val; });
 
-    // Generate our spritesheet
-    Spritesmith.run({
-        src: filesData.map(function (val) { return val.src; }),
-        algorithm: 'binary-tree'
-    }, function (spriteErr, result) {
-        var spriteName = fileObj.styleName.length && fileObj.styleName || 'sprite';
-        var styleDest = path.join(fileObj.styleRel, path.basename(fileObj.dest));
-        var coordinates;
-        var fileData;
-        var tmpl;
-        var i;
+    // Set the promise
+    var promise = new Promise(function (resolve, reject) {
+        // Generate our spritesheet
+        Spritesmith.run({
+            src: filesData.map(function (val) { return val.src; }),
+            algorithm: 'binary-tree'
+        }, function (spriteErr, result) {
+            var spriteName = fileObj.styleName.length && fileObj.styleName || 'sprite';
+            var styleDest = path.join(fileObj.styleRel, path.basename(fileObj.dest));
+            var coordinates;
+            var fileData;
+            var tmpl;
+            var i;
 
-        if (spriteErr) {
-            return tools.logErr(spriteErr);
-        }
+            if (spriteErr) {
+                return reject(spriteErr);
+            }
 
-        // Set the basis for the sprite icon
-        tmpl = '';
-        tmpl += '.' + spriteName + ' {\n';
-        tmpl += '    display: inline-block;\n';
-        tmpl += '    max-width: 100%;\n';
-        tmpl += '    max-height: 100%;\n';
-        tmpl += '    vertical-align: middle;\n';
-        // TODO: Should it be relative? We need to check this!!!
-        tmpl += '    background: url(\'' + styleDest + '\') no-repeat;\n';
-        tmpl += '    font-size: 0;\n';
-        tmpl += '}\n\n';
-
-        for (i = 0; i < filesData.length; i += 1) {
-            fileData = filesData[i];
-            coordinates = result.coordinates[fileData.src];
-
-            tmpl += '.' + spriteName + '-' + fileData.name + ' {\n';
-            tmpl += '    width: ' + coordinates.width + 'px; height: ' + coordinates.height + 'px; ';
-            tmpl += 'background-position: -' + coordinates.x + 'px -' + coordinates.y + 'px;\n';
+            // Set the basis for the sprite icon
+            tmpl = '';
+            tmpl += '.' + spriteName + ' {\n';
+            tmpl += '    display: inline-block;\n';
+            tmpl += '    max-width: 100%;\n';
+            tmpl += '    max-height: 100%;\n';
+            tmpl += '    vertical-align: middle;\n';
+            // TODO: Should it be relative? We need to check this!!!
+            tmpl += '    background: url(\'' + styleDest + '\') no-repeat;\n';
+            tmpl += '    font-size: 0;\n';
             tmpl += '}\n\n';
-        }
 
-        // Output the image
-        fs.writeFileSync(tools.getAbsolute(fileObj.dest), result.image);
-        fs.writeFileSync(tools.getAbsolute(fileObj.style), tmpl, 'utf8');
+            for (i = 0; i < filesData.length; i += 1) {
+                fileData = filesData[i];
+                coordinates = result.coordinates[fileData.src];
+
+                tmpl += '.' + spriteName + '-' + fileData.name + ' {\n';
+                tmpl += '    width: ' + coordinates.width + 'px; height: ' + coordinates.height + 'px; ';
+                tmpl += 'background-position: -' + coordinates.x + 'px -' + coordinates.y + 'px;\n';
+                tmpl += '}\n\n';
+            }
+
+            // Output the image
+            fs.writeFileSync(tools.getAbsolute(fileObj.dest), result.image);
+            fs.writeFileSync(tools.getAbsolute(fileObj.style), tmpl, 'utf8');
+
+            return resolve(true);
+        });
     });
+
+    return promise;
 }
 
 // -----------------------------------------
@@ -98,16 +106,13 @@ function compileList(filesToSprite, fileObj) {
 /**
  * Compiles file
  * @param  {object} fileObj
+ * @return {promise}
  */
 function compile(fileObj) {
     var filesToSprite;
     var ignore;
 
     validate.type({ fileObj: fileObj }, { fileObj: struct });
-
-    if (tools.notExist(fileObj.src)) {
-        return tools.logErr('File doesn\'t exist');
-    }
 
     // First ensure the path
     tools.ensurePath(fileObj.dest);
@@ -132,16 +137,27 @@ function compile(fileObj) {
 
     tools.log(fileObj.dest);
 
+    if (!filesToSprite.length) {
+        return;
+    }
+
     // Now we need to go through the compiler
-    compileList(filesToSprite, fileObj);
+    return compileList(filesToSprite, fileObj)
+    .catch(function (err) {
+        tools.logErr(err);
+    });
 }
 
 /**
  * Create task for init
  * @param  {object} bedrockObj
  * @param  {object} config
+ * @return {promise}
  */
 function task(bedrockObj, configObj) {
+    var promises = [];
+
+    tools.setModule('sprite');
     validate.type({ config: configObj }, { config: Joi.array().items(struct) });
 
     // Go through each task
@@ -153,8 +169,10 @@ function task(bedrockObj, configObj) {
         }
 
         // Compile each task
-        compile(configTask);
+        promises.push(compile(configTask));
     });
+
+    return Promise.all(promises);
 }
 
 // -----------------------------------------

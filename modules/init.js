@@ -4,6 +4,8 @@
 // IMPORTS
 
 var Joi = require('joi');
+var Promise = require('bluebird');
+
 var tools = require('./tools/main');
 var config = require('./config');
 
@@ -51,7 +53,9 @@ function init(cmd, configPath, env, sys) {
 
     // Check if there is a config file and load it
     tools.setModule('config');
-    config.get(configPath).then(function (configObj) {
+    config.get(configPath)
+    .then(function (configObj) {
+        var promises = [];
         var bedrockObj;
         var oldWd;
         var order;
@@ -68,11 +72,22 @@ function init(cmd, configPath, env, sys) {
             // Lets create the bedrock object
             bedrockObj = { order: order, env: env, sys: sys, cmd: cmd };
 
-            runOrder(bedrockObj, configObj);
+            promises.push(runOrder(bedrockObj, configObj));
         }
 
         // Change back the working dir
         process.chdir(oldWd);
+
+        // Set all promises
+        return Promise.all(promises);
+    })
+    .then(function () {
+        tools.setModule('main');
+        tools.log('All done!');
+    })
+    .catch(function (err) {
+        tools.setModule('main');
+        tools.logErr(err);
     });
 }
 
@@ -85,38 +100,27 @@ function init(cmd, configPath, env, sys) {
  * @param  {object} configObj
  */
 function runOrder(bedrockObj, configObj) {
+    var promises;
+
     tools.validate.type(
         { bedrockObj: bedrockObj, config: configObj },
         { bedrockObj: struct, config: config.struct }
     );
 
     // Lets run the tasks
-    tools.setModule('copy');
-    file.task(bedrockObj, configObj.copy, 'copy');
+    promises = [
+        file.task(bedrockObj, configObj.copy, 'copy'),
+        file.task(bedrockObj, configObj.rename, 'rename'),
+        file.task(bedrockObj, configObj.remove, 'remove'),
+        create.task(bedrockObj, configObj.create),
+        sprite.task(bedrockObj, configObj.sprite),
+        style.task(bedrockObj, configObj.style),
+        script.task(bedrockObj, configObj.script),
+        raw.task(bedrockObj, configObj.raw),
+        server.task(bedrockObj, configObj.server)
+    ];
 
-    tools.setModule('rename');
-    file.task(bedrockObj, configObj.rename, 'rename');
-
-    tools.setModule('remove');
-    file.task(bedrockObj, configObj.remove, 'remove');
-
-    tools.setModule('create');
-    create.task(bedrockObj, configObj.create);
-
-    tools.setModule('sprite');
-    sprite.task(bedrockObj, configObj.sprite);
-
-    tools.setModule('style');
-    style.task(bedrockObj, configObj.style);
-
-    tools.setModule('script');
-    script.task(bedrockObj, configObj.script);
-
-    tools.setModule('raw');
-    raw.task(bedrockObj, configObj.raw);
-
-    tools.setModule('server');
-    server.task(bedrockObj, configObj.server);
+    return Promise.all(promises);
 }
 
 // -----------------------------------------

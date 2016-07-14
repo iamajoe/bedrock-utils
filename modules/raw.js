@@ -5,6 +5,7 @@
 
 var exec = require('sync-exec');
 var Joi = require('joi');
+var Promise = require('bluebird');
 
 var tools = require('./tools/main');
 var validate = tools.validate;
@@ -51,6 +52,9 @@ function command(obj) {
  * @param  {object} config
  */
 function task(bedrockObj, config) {
+    var promises = [];
+
+    tools.setModule('raw');
     validate.type(
         { config: config },
         { config: Joi.array().items(struct) }
@@ -67,6 +71,13 @@ function task(bedrockObj, config) {
         tools.log(configTask.command + ' ' + configTask.args.join(' '));
         command(configTask);
     });
+
+    // TODO: Set promises right
+    promises.push(new Promise(function (resolve) {
+        resolve();
+    }));
+
+    return Promise.all(promises);
 }
 
 // -----------------------------------------
