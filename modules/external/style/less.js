@@ -23,15 +23,22 @@ var less = require(path.join(vendor, 'less'));
  * @param  {string} options
  */
 var task = function (options) {
-    fs.readFile(src, (err, data) => {
+    var oldWd = process.cwd();
+
+    fs.readFile(src, function (err, data) {
         if (err) {
             throw err;
         }
+
+        // Change dir for the source
+        process.chdir(path.dirname(src));
 
         // Compile the less files
         less.render(data.toString(), {
             sourceMap: options.sourceMap ? { sourceMapFileInline: true } : null
         }, function (lessErr, result) {
+            process.chdir(oldWd);
+
             if (lessErr) {
                 throw lessErr;
             }
