@@ -44,14 +44,14 @@ Follow the types used in the below configuration, otherwise you will break the c
                     "query": ""
                 }],
                 "loaders": [{
-                    "test": "/\.json?$/",
+                    "test": "/\\.json?$/",
                     "loader": "json-loader",
                     "exclude": "/(node_modules|bower_components)/",
                     "include": [],
                     "loaders": [""],
                     "query": ""
                 }, {
-                    "test": "/\.html?$/",
+                    "test": "/\\.html?$/",
                     "loader": "raw-loader",
                     "exclude": "/(node_modules|bower_components)/",
                     "include": [],

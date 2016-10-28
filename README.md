@@ -68,7 +68,7 @@ This repo relies on usage of `*.json` config files. Below I try to explain the b
 ```json
 {
     "projectId": "<project_id>",
-    "projectName": "<project_name>"
+    "projectName": "<project_name>",
     "tasks": []
 }
 ```

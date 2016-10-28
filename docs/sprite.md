@@ -11,7 +11,7 @@ Module to spritesheet files.<br>
         "dest": "<task_src_glob>",
         "options": {
             "style": "<path_for_built_style>",
-            "styleTemplate": "<path_for_style_handlebars_template"
+            "styleTemplate": "<path_for_style_handlebars_template>"
         }
     }]
 }

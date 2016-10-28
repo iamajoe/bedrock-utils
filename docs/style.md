@@ -12,7 +12,7 @@ Check [autoprefixer](https://github.com/postcss/autoprefixer#readme) options if 
         "dest": "<task_src_glob>",
         "options": {
             "minify": true,
-            "autoprefixer": ['last 2 versions'],
+            "autoprefixer": ["last 2 versions"],
             "sourceMap": false,
             "include": []
         }
