@@ -15,7 +15,7 @@ npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.11
 ## Tasks
 
 Set a `.build.json` and run all the tasks you want when you pass it to `bedrock-utils`.<br>
-**Note:** Any kind of path should be absolute or relative to the `*.json`
+**Note:** Any kind of path should be absolute or relative to the place the script is called.
 
 ### Usage
 
@@ -90,7 +90,7 @@ This repo relies on usage of `*.json` config files. Below I try to explain the b
 {
     "data": [{
         "src": "<task_src_glob>",
-        "dest": "<task_src_glob>"
+        "dest": "<task_dest>"
     }]    
 }
 ```

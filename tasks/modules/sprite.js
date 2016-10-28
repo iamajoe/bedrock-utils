@@ -7,12 +7,13 @@ var path = require('path');
 var Joi = require('joi');
 var gulp = require('gulp');
 var gulpSpritesmith = require('gulp.spritesmith');
+var through = require('through2');
 var imagemin = require('gulp-imagemin');
 var merge = require('merge-stream');
 var buffer = require('vinyl-buffer');
 
 var OPTIONS_STRUCT = Joi.object().keys({
-    style: Joi.string().required(),
+    style: Joi.string(),
     styleTemplate: Joi.string()
 }).default({});
 
@@ -73,7 +74,14 @@ function gulpBuild(task, cb) {
         // Return a merged stream to handle both `end` events
         return merge(imgStream, cssStream);
     } else if (isSvg) {
-        // TODO: ...
+        // TODO: We need to take care of svg
+        gulpTask.pipe(through.obj(function (chunk, enc, cb) {
+            // TODO: We need to read it and template...
+            // console.log('chunk', chunk.path) // this should log now
+            cb(null, chunk);
+        }));
+
+        return;
     } else {
         return;
     }

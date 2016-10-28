@@ -10,7 +10,7 @@ Follow the types used in the below configuration, otherwise you will break the c
     "type": "script",
     "data": [{
         "src": "<task_src_glob>",
-        "dest": "<task_src_glob>",
+        "dest": "<task_dest>",
         "options": {
             "context": "",
             "entry": "",
@@ -121,4 +121,8 @@ Follow the types used in the below configuration, otherwise you will break the c
 ```
 
 ### Examples
-Go under the [../test/examples/script](../test/examples/script), [../test/examples/es6](../test/examples/es6), [../test/examples/flow](../test/examples/flow) or [../test/examples/typescript](../test/examples/typescript) folders and check the `*.json`.
+Go under the [../test/examples/script](../test/examples/script), [../test/examples/script/es6](../test/examples/script/es6), [../test/examples/script/flow](../test/examples/script/flow) or [../test/examples/script/typescript](../test/examples/script/typescript) folders and check the `*.json`.
+
+** Note for ES6: ** You should have installed these as dependencies to use the `config.json`: `babel-core`, `babel-loader`, `babel-plugin-transform-runtime`, `babel-preset-es2015`, `babel-preset-stage-2`
+** Note for Flow: ** You should have installed these as dependencies to use the `config.json`: `flow-bin`, `flow-status-webpack-plugin`, `babel-core`, `babel-loader`, `babel-plugin-transform-flow-strip-types`
+** Note for Typescript: ** You should have installed these as dependencies to use the `config.json`: `flow-bin`, `typescript`, `ts-loader`, `webpack-fail-plugin` 

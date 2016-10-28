@@ -4,6 +4,4 @@ tmp/*
 **/log
 **/tmp
 **/project
-example_create/*
-!example_create/create.toml
 **/node_modules

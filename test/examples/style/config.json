@@ -1,0 +1,24 @@
+{
+    "projectId": "test",
+    "projectName": "Test",
+    "tasks": [{
+        "type": "style",
+        "env": "dev",
+        "data": [{
+            "src": "./test/examples/style/style.scss",
+            "dest": "./test/build/style",
+            "options": {
+                "minify": false,
+                "sourceMap": true,
+                "autoprefixer": []
+            }
+        }]
+    }, {
+        "type": "style",
+        "env": "prod",
+        "data": [{
+            "src": "./test/examples/style/style.scss",
+            "dest": "./test/build/style"
+        }]
+    }]
+}

@@ -13,4 +13,4 @@ Module to remove files / folders.
 ```
 
 ### Examples
-Go under the [../test/examples/clean](../test/examples/clean) folder and check the `*.json`.
+Go under the [../test/examples/clean_copy](../test/examples/clean_copy) folder and check the `*.json`.

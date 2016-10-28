@@ -9,7 +9,7 @@ Check [autoprefixer](https://github.com/postcss/autoprefixer#readme) options if 
     "type": "style",
     "data": [{
         "src": "<task_src_glob>",
-        "dest": "<task_src_glob>",
+        "dest": "<task_dest>",
         "options": {
             "minify": true,
             "autoprefixer": ["last 2 versions"],
@@ -21,4 +21,4 @@ Check [autoprefixer](https://github.com/postcss/autoprefixer#readme) options if 
 ```
 
 ### Examples
-Go under the [../test/examples/build](../test/examples/build) folder and check the `*.json`.
+Go under the [../test/examples/style](../test/examples/style) folder and check the `*.json`.

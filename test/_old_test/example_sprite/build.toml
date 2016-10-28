@@ -1,9 +1,0 @@
-max_order = 2
-
-[[sprite]]
-source = "src"
-destination = "build/sprite.png"
-style = "build/sprite.scss"
-style_rel = "."
-style_name = "foo"
-order = 1

@@ -41,7 +41,7 @@ var LOADER_STRUCT = Joi.object().keys({
     include: Joi.array().items(Joi.string()).default([]),
     loader: Joi.string(),
     loaders: Joi.array().items(Joi.string()).default([]),
-    query: Joi.string()
+    query: Joi.alternatives().try(Joi.object(), Joi.string())
 }).default({});
 
 var MODULE_STRUCT = Joi.object().keys({

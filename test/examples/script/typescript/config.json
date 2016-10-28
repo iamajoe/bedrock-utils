@@ -1,0 +1,49 @@
+{
+    "projectId": "test",
+    "projectName": "Test",
+    "tasks": [{
+        "type": "script",
+        "env": "dev",
+        "data": [{
+            "src": "./test/examples/script/typescript/src/bootstrap.js",
+            "dest": "./test/build/script/typescript",
+            "options": {
+                "cache": false,
+                "debug": true,
+                "devtool": "source-map",
+                "module": {
+                    "loaders": [
+                        {
+                            "test": "/\\.json?$/",
+                            "loader": "json-loader",
+                            "exclude": "/(node_modules|bower_components)/"
+                        }, {
+                            "test": "/\\.html?$/",
+                            "loader": "raw-loader",
+                            "exclude": "/(node_modules|bower_components)/"
+                        }, {
+                            "test": "/\\.ts?$/",
+                            "loader": "ts-loader",
+                            "exclude": "/(node_modules|bower_components)/"
+                        }
+                    ]
+                },
+                "plugins": [{
+                    "name": "define",
+                    "args": [{
+                        "IS_BROWSER": true,
+                        "process.env.NODE_ENV": "development"
+                    }]
+                }, {
+                    "name": "provide",
+                    "args": [{
+                        "Promise": "imports?this=>global!exports?global.Promise!es6-promise"
+                    }]
+                }, {
+                    "name": "webpack-fail-plugin",
+                    "type": "function"
+                }]
+            }
+        }]
+    }]
+}

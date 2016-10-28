@@ -1,0 +1,165 @@
+{
+    "projectId": "test",
+    "projectName": "Test",
+    "tasks": [{
+        "type": "clean",
+        "env": "prod",
+        "data": [{ "src": "./test/build/*.php" }]
+    }, {
+        "type": "copy",
+        "env": "*",
+        "data": [
+            { "src": "./test/examples/copy/**/*.php", "dest": "./test/build" }
+        ]
+    }, {
+        "type": "sprite",
+        "env": "*",
+        "data": [{
+            "src": "./test/sprite/img/**/*.png",
+            "dest": "./test/build/img",
+            "options": {
+                "style": "./test/build/img_sprite.scss",
+                "styleTemplate": "./tasks/modules/_assets/sprite_template.css.handlebars"
+            }
+        }, {
+            "src": "./test/sprite/svg/**/*.svg",
+            "dest": "./test/build/svg"
+        }]
+    }, {
+        "type": "styleguide",
+        "env": "*",
+        "data": [{
+            "src": "./test/examples/styleguide",
+            "dest": "./test/build/styleguide",
+            "options": {
+                "layouts": {
+                    "general": "general_layout.html",
+                    "pattern": "pattern_layout.html",
+                    "pattern2": "pattern_2_layout.html"
+                },
+                "components": [
+                    "00_config/config.json",
+                    "01_button/button.json"
+                ],
+                "generalLayout": "general",
+                "patternLayout": "pattern",
+                "scriptCompileOptions": {
+                    "externals": { "jquery": "jQuery" },
+                    "cache": false,
+                    "debug": true,
+                    "devtool": "source-map",
+                    "plugins": [{
+                        "name": "define",
+                        "args": [{
+                            "IS_BROWSER": true
+                        }]
+                    }, {
+                        "name": "provide",
+                        "args": [{
+                            "$": "jquery",
+                            "jQuery": "jquery",
+                            "Promise": "imports?this=>global!exports?global.Promise!es6-promise"
+                        }]
+                    }]
+                },
+                "styleCompileOptions": {
+                    "minify": false,
+                    "sourceMap": true,
+                    "autoprefixer": []
+                }
+            }
+        }]
+    }, {
+        "type": "style",
+        "env": "dev",
+        "data": [{
+            "src": "./test/examples/style/style.scss",
+            "dest": "./test/build",
+            "options": {
+                "minify": false,
+                "sourceMap": true,
+                "autoprefixer": []
+            }
+        }]
+    }, {
+        "type": "style",
+        "env": "prod",
+        "data": [{
+            "src": "./test/examples/style/style.scss",
+            "dest": "./test/build"
+        }]
+    }, {
+        "type": "script",
+        "env": "dev",
+        "data": [{
+            "src": "./test/examples/script/main.js",
+            "dest": "./test/build",
+            "options": {
+                "externals": { "jquery": "jQuery" },
+                "cache": false,
+                "debug": true,
+                "devtool": "source-map",
+                "plugins": [{
+                    "name": "define",
+                    "args": [{
+                        "IS_BROWSER": true
+                    }]
+                }, {
+                    "name": "provide",
+                    "args": [{
+                        "$": "jquery",
+                        "jQuery": "jquery",
+                        "Promise": "imports?this=>global!exports?global.Promise!es6-promise"
+                    }]
+                }]
+            }
+        }]
+    }, {
+        "type": "script",
+        "env": "prod",
+        "data": [{
+            "src": "./test/examples/script/main.js",
+            "dest": "./test/build",
+            "options": {
+                "externals": { "jquery": "jQuery" },
+                "plugins": [{
+                    "name": "define",
+                    "args": [{
+                        "IS_BROWSER": true
+                    }]
+                }, {
+                    "name": "dedupe"
+                }, {
+                    "name": "provide",
+                    "args": [{
+                        "$": "jquery",
+                        "jQuery": "jquery",
+                        "Promise": "imports?this=>global!exports?global.Promise!es6-promise"
+                    }]
+                }, {
+                    "name": "webpack-closure-compiler",
+                    "args": [{
+                        "compiler": {
+                            "language_in": "ECMASCRIPT5",
+                            "language_out": "ECMASCRIPT5",
+                            "compilation_level": "ADVANCED"
+                        },
+                        "concurrency": 3
+                    }]
+                }, {
+                    "name": "uglify",
+                    "args": [{
+                        "mangle": {
+                            "except": ["$", "exports", "require"]
+                        },
+                        "compress": {
+                            "warnings": false
+                        },
+                        "comments": false,
+                        "sourceMap": false
+                    }]
+                }]
+            }
+        }]
+    }]
+}
