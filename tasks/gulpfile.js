@@ -189,9 +189,7 @@ gulp.task('project:copy', [], function (cb) {
 });
 
 gulp.task('project:sprite', [], function (cb) {
-    cb();
-    // TODO: need to setup
-    // setTasks(tasks.sprite.fn, getTasks(config, 'sprite'), cb);
+    setTasks(tasks.sprite.fn, getTasks(config, 'sprite'), cb);
 });
 
 gulp.task('project:style', ['project:styleguide', 'project:sprite'], function (cb) {

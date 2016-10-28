@@ -11,7 +11,7 @@
     "eslint": "./node_modules/.bin/eslint",
     "eslint-test": "npm run eslint -- ./tasks/**/*.js",
     "gulp": "./node_modules/.bin/gulp",
-    "suite-copy-test": "npm run gulp -- project:copy --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/config-copy.json\""
+    "suite-test": "npm run gulp -- project:build --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
@@ -30,6 +30,7 @@
     "gulp-less": "^3.1.0",
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-svg-sprites": "^4.0.2",
     "gulp-webpack": "^1.5.0",
     "gulp.spritesmith": "^6.2.1",
     "joi": "^9.2.0",

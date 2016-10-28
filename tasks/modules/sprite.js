@@ -7,6 +7,7 @@ var path = require('path');
 var Joi = require('joi');
 var gulp = require('gulp');
 var gulpSpritesmith = require('gulp.spritesmith');
+var gulpSvgSprite = require('gulp-svg-sprites');
 var through = require('through2');
 var imagemin = require('gulp-imagemin');
 var merge = require('merge-stream');
@@ -49,45 +50,42 @@ function gulpBuild(task, cb) {
     var gulpTask = gulp.src(task.src);
     var isSvg = task.src.replace('.svg', '') !== task.src;
     var isImage = task.src.replace('.png', '') !== task.src || task.src.replace('.jpg', '') !== task.src;
+    var dest = task.dest;
     var imgStream;
     var cssStream;
 
     if (isImage) {
         gulpTask = gulpTask.pipe(gulpSpritesmith({
-            imgName: path.basename(task.dest),
+            imgName: path.basename(dest),
             cssName: path.basename(task.options.style),
             cssTemplate: getPath(task.options.styleTemplate) || path.resolve(SPRITE_TEMPLATE),
             padding: 1
         }));
 
         // Lets take care of image
-        imgStream = task.img
+        imgStream = gulpTask.img
         // DEV: We must buffer our stream into a Buffer for `imagemin`
         .pipe(buffer())
         .pipe(imagemin())
-        .pipe(gulp.dest(path.dirname(task.dest)));
+        .pipe(gulp.dest(path.dirname(dest)));
 
         // Lets take care of css
-        cssStream = task.css
+        cssStream = gulpTask.css
         .pipe(gulp.dest(path.dirname(task.options.style)));
 
         // Return a merged stream to handle both `end` events
-        return merge(imgStream, cssStream);
+        return merge(imgStream, cssStream)
+        .on('end', function () { cb(); });
     } else if (isSvg) {
-        // TODO: We need to take care of svg
-        gulpTask.pipe(through.obj(function (chunk, enc, cb) {
-            // TODO: We need to read it and template...
-            // console.log('chunk', chunk.path) // this should log now
-            cb(null, chunk);
-        }));
+        gulpTask = gulpTask.pipe(gulpSvgSprite({ mode: 'defs' }));
 
-        return;
-    } else {
-        return;
+        if (path.basename(dest) === 'svg') {
+            dest = path.dirname(dest);
+        }
+
+        return gulpTask.pipe(gulp.dest(dest))
+        .on('end', function () { cb(); });
     }
-
-    return gulpTask.pipe(gulp.dest(task.dest))
-    .on('end', function () { cb(); });
 }
 
 // --------------------------------
