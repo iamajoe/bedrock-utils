@@ -3,16 +3,15 @@
 Module to copy files / folder.
 
 ### Config file parameters
-```toml
-[[copy]]
-source = "" # required
-destination = "" # required
-ignore = ""
-order = 0
-env = ""
-cmd = ""
-sys = "all"
+```json
+{
+    "type": "copy",
+    "data": [{
+        "src": "<task_src_glob>",
+        "dest": "<task_src_glob>"
+    }]    
+}
 ```
 
 ### Examples
-Go under the [../test/example_build](../test/example_build) folder and check the `*.toml`.
+Go under the [../test/examples/copy](../test/examples/copy) folder and check the `*.json`.

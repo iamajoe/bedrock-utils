@@ -1,24 +1,24 @@
 # Bedrock: Utils > Style
 
 Module to compile style files.<br>
-To use [autoprefixer](https://github.com/postcss/autoprefixer#readme) you'll need to install [Node.js](http://nodejs.org/) because it uses [PostCSS](https://github.com/postcss/postcss).
+Check [autoprefixer](https://github.com/postcss/autoprefixer#readme) options if you want to use it.
 
 ### Config file parameters
-```toml
-[[style]]
-source = "" # required
-destination = "" # required
-ignore = ""
-order = 0
-env = ""
-cmd = ""
-sys = "all"
-
-[style.options]
-minify = false
-autoprefixer = ""
-source_map = false
+```json
+{
+    "type": "style",
+    "data": [{
+        "src": "<task_src_glob>",
+        "dest": "<task_src_glob>",
+        "options": {
+            "minify": true,
+            "autoprefixer": ['last 2 versions'],
+            "sourceMap": false,
+            "include": []
+        }
+    }]
+}
 ```
 
 ### Examples
-Go under the [../test/example_build](../test/example_build) folder and check the `*.toml`.
+Go under the [../test/examples/build](../test/examples/build) folder and check the `*.json`.

@@ -3,19 +3,19 @@
 Module to spritesheet files.<br>
 
 ### Config file parameters
-```toml
-[[sprite]]
-source = "" # required
-destination = "" # required
-style = "" # required. location of the style file (extension required)
-style_name = "" # name for the css rules
-style_rel = "" # path of sprite relative to the style for the css rules
-ignore = ""
-order = 0
-env = ""
-cmd = ""
-sys = "all"
+```json
+{
+    "type": "sprite",
+    "data": [{
+        "src": "<task_src_glob>",
+        "dest": "<task_src_glob>",
+        "options": {
+            "style": "<path_for_built_style>",
+            "styleTemplate": "<path_for_style_handlebars_template"
+        }
+    }]
+}
 ```
 
 ### Examples
-Go under the [../test/example_build](../test/example_build) folder and check the `*.toml`.
+Go under the [../test/example/styleguide](../test/example/styleguide) folder and check the `*.json`.

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{= it.projectId }} | {{= it.projectName }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex, nofollow">
+        <link href="styleguide.css" rel="stylesheet">
+    </head>
+    <body class="no-script">
+        <div class="media-is-tablet"></div>
+        <div class="media-is-mobile"></div>
+        <div class="media-is-over"></div>
+
+        <div class="container">
+            {{= it.template }}
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="styleguide.js"></script>
+        {{? it.runtime }}
+            <script>{{= it.runtime }}</script>
+        {{?}}
+    </body>
+</html>

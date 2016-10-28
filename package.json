@@ -1,44 +1,47 @@
 {
   "name": "bedrock_utils",
   "version": "0.0.10",
-  "description": "Task system based on config files for your project",
+  "description": "Utils to use on frontend",
   "repository": {
     "type": "git",
     "url": "git@bitbucket.org:sendoushi/bedrock-utils.git"
   },
-  "bin": "./bin/bedrock.js",
   "scripts": {
-    "test": "npm run eslint-test",
-    "eslint": "./node_modules/eslint/bin/eslint.js",
-    "eslint-test": "npm run eslint -- ./modules/*",
-    "help": "bin/bedrock.js",
-    "example-create": "bin/bedrock.js init test/example_create/create.toml",
-    "example-build": "bin/bedrock.js build test/example_build/build.toml dev",
-    "example-sprite": "bin/bedrock.js build test/example_sprite/build.toml dev",
-    "example-es6": "bin/bedrock.js build test/example_es6/build.toml dev",
-    "example-typescript": "bin/bedrock.js run test/example_typescript/build.toml dev",
-    "example-flow": "bin/bedrock.js run test/example_flow/build.toml dev",
-    "example-server": "bin/bedrock.js run test/example_server/server.toml",
-    "example-wordpress-init": "bin/bedrock.js init test/example_wordpress/server.toml",
-    "example-wordpress-run": "bin/bedrock.js run test/example_wordpress/server.toml",
-    "example-wordpress-stop": "bin/bedrock.js stop test/example_wordpress/server.toml",
-    "example-wordpress-destroy": "bin/bedrock.js destroy test/example_wordpress/server.toml",
-    "example-container-init": "bin/bedrock.js init test/example_container/server.toml",
-    "example-container-run": "bin/bedrock.js run test/example_container/server.toml",
-    "example-container-stop": "bin/bedrock.js stop test/example_container/server.toml",
-    "example-container-destroy": "bin/bedrock.js destroy test/example_container/server.toml"
+    "test": "npm run eslint-test; npm run stylelint-test",
+    "eslint": "./node_modules/.bin/eslint",
+    "eslint-test": "npm run eslint -- ./tasks/**/*.js",
+    "gulp": "./node_modules/.bin/gulp",
+    "suite-copy-test": "npm run gulp -- project:copy --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/config-copy.json\""
   },
   "devDependencies": {
-    "eslint": "^1.10.3",
-    "eslint-config-defaults": "^8.0.2",
-    "eslint-config-sds": "git://github.com/sendoushi/eslint-config-sds.git"
+    "babel-eslint": "^6.1.2",
+    "eslint": "^2.0.0",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-plugin-react": "^6.2.0"
   },
   "dependencies": {
-    "bluebird": "^3.4.1",
-    "colors": "^1.1.2",
-    "glob": "^7.0.3",
-    "joi": "^8.4.1",
-    "sync-exec": "^0.6.2",
-    "toml": "^2.3.0"
+    "autoprefixer": "^6.5.1",
+    "del": "^2.2.2",
+    "dot": "^1.0.3",
+    "es6-promise": "^4.0.5",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-imagemin": "^3.1.0",
+    "gulp-less": "^3.1.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-webpack": "^1.5.0",
+    "gulp.spritesmith": "^6.2.1",
+    "joi": "^9.2.0",
+    "json-loader": "^0.5.4",
+    "merge-stream": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^3.10.1",
+    "postcss": "^5.2.5",
+    "raw-loader": "^0.5.1",
+    "vinyl-buffer": "^1.0.0",
+    "webpack": "^1.13.2",
+    "webpack-closure-compiler": "^2.1.1",
+    "yargs": "^6.3.0"
   }
 }

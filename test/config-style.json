@@ -1,0 +1,24 @@
+{
+    "projectId": "foostyle",
+    "projectName": "Foo style",
+    "tasks": [{
+        "type": "style",
+        "env": "dev",
+        "data": [{
+            "src": "./test/testsrc/style.scss",
+            "dest": "./test/testdest",
+            "options": {
+                "minify": false,
+                "sourceMap": true,
+                "autoprefixer": []
+            }
+        }]
+    }, {
+        "type": "style",
+        "env": "prod",
+        "data": [{
+            "src": "./test/testsrc/style.scss",
+            "dest": "./test/testdest"
+        }]
+    }]
+}

@@ -1,0 +1,18 @@
+.icon::before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0;
+    line-height: 1;
+    background-image: url("{{{escaped_image}}}");
+}
+
+{{#sprites}}.icon-{{name}}::before {
+    width: {{px.width}};
+    height: {{px.height}};
+    /* stylelint-disable length-zero-no-unit */
+    background-position: {{px.offset_x}} {{px.offset_y}};
+    /* stylelint-enable length-zero-no-unit */
+}
+
+{{/sprites}}

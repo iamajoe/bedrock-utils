@@ -1,88 +1,107 @@
 # Bedrock: Utils
 
-Task system based on config files for your project. Set a `create.toml` or a `build.toml` or a `server.toml` or even a `foo.toml` and run all the tasks you want when you pass it to `bedrock-utils`.<br>
+Utils to use on the frontend.
 
 ## Installation
 You need to have [node](http://nodejs.org) so you can have the package dependency management and use the tasks:
 - Install [node](http://nodejs.org)
 
-To install you may use ```bower```:
 ```
-bower install --save git@github.com:Sendoushi/bedrock-utils.git#v0.0.10
-```
-
-Or you may use ```npm```:
-```
+cd <project_folder>
+npm init # If you don't have a package.json already
 npm install --save git://github.com/Sendoushi/bedrock-utils.git#v0.0.10
 ```
 
-Or why don't you just simply clone it?
+## Tasks
+
+Set a `.build.json` and run all the tasks you want when you pass it to `bedrock-utils`.<br>
+**Note:** Any kind of path should be absolute or relative to the `*.json`
+
+### Usage
+
 ```
-git clone https://github.com/Sendoushi/bedrock-utils.git
+node <gulp_path> --gulpfile=<bedrock_utils_gulpfile> <task> --env=<task_env> --config=<config_src>
 ```
 
-## Usage
-**Note:** Any kind of path should be absolute or relative to the `*.toml`
+#### CLI Explanation
+```
+node <gulp_path>
+```
+Pass the path to `gulp`. From example `node_modules/.bin/gulp`. You could simply use `gulp` instead if you have it globally.
 
 ```
-./bedrock-utils/bedrock ...
-    init <*.toml>               # Initializes project"
-    build <*.toml> [env]        # Builds project"
-    run <*.toml>                # Run project"
-    stop <*.toml>               # Stop server"
-    destroy <*.toml>            # Destroy server related"
+--gulpfile=<bedrock_utils_gulpfile>
 ```
+Set the path for the `bedrock-utils` gulpfile.It is required.
 
-### Example
+```
+<task>
+```
+The task that you want to run from `bedrock-utils`. It is required.
+For the moment these are the available ones:
+- [x] `project:build`
+- [x] `project:clean`
+- [x] `project:copy`
+- [x] `project:sprite`
+- [x] `project:styleguide`
+- [x] `project:style`
+- [x] `project:script`
+
+```
+--env=<task_env>
+```
+Environment in which the task should run. It is optional.
+
+#### Example
 
 ```sh
-# To build the project
-./bedrock-utils/bedrock build build.toml
-
-# To run the project
-./bedrock-utils/bedrock init server.toml
-./bedrock-utils/bedrock run server.toml
-
-# To remove server
-./bedrock-utils/bedrock stop server.toml
-./bedrock-utils/bedrock destroy server.toml
+node ./node_modules/.bin/gulp --gulpfile="./node_modules/bedrock-utils/tasks/gulpfile.js" project:build --env=prod --config=".build.json"
 ```
 
 =========
 
 ## Configure
 
-This repo relies on usage of `*.toml` files. Below I try to explain the best I can how to.
+This repo relies on usage of `*.json` config files. Below I try to explain the best I can how to.
 
 ### Config file parameters
-```toml
-max_order = 30 # defaults to 30. set the minimum here for better performance
+```json
+{
+    "projectId": "<project_id>",
+    "projectName": "<project_name>"
+    "tasks": []
+}
+```
 
-# General explanation of modules parameters:
-#    [[<name>]] or [<name>]
-#    order = 0 # order in which the module should run
-#    env = "dev|prod" # decide on which type of environment it should run, allows empty
-#    cmd = "init|build|start|destroy" # decide on which bin command it should run, allows empty
-#    sys = "windows|darwin|linux|freesbd|all" # decide on which system it should run
+### Task common config
+```json
+{
+    "tasks": [{
+        "type": "<task_type>",
+        "env": "<environment>",
+        "data": []
+    }]    
+}
+```
+**Note: ** If `env` key is `*`, the task will run in all `env`.
+
+### Task data common config
+```json
+{
+    "data": [{
+        "src": "<task_src_glob>",
+        "dest": "<task_src_glob>"
+    }]    
+}
 ```
 
 ### Module list
-- [create](docs/create.md)
+- [clean](docs/file_clean.md)
 - [copy](docs/file_copy.md)
-- [rename](docs/file_rename.md)
-- [remove](docs/file_remove.md)
-- [raw](docs/raw.md)
 - [sprite](docs/sprite.md)
-- [script](docs/script.md)
+- [styleguide](docs/styleguide.md)
 - [style](docs/style.md)
-- [server.container](docs/server_container.md)
-- [server.php](docs/server_php.md)
+- [script](docs/script.md)
 
 ### Examples
-Go under the [test](test) folder and check the `*.toml` under the `example_*` folders.
-
-===============
-
-## Development
-- Clone the project
-- Run `npm run build` (or if you don't want to use [Node.js](http://nodejs.org/), check the script under the `package.json`)
+Go under the [test/examples](test/examples) folder and check the `*.json`.

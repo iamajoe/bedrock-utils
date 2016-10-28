@@ -10,3 +10,16 @@ insert_final_newline = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+### Frontend files
+# [*.{css,scss,less,js,json,ts,sass,php,html,hbs,mustache,phtml,html.twig}]
+
+### YAML
+[*.yml]
+indent_style = space
+indent_size = 2
+
+### Specific files
+[{package,bower}.json]
+indent_style = space
+indent_size = 2
