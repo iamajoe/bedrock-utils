@@ -201,6 +201,6 @@ gulp.task('project:script', [], function (cb) {
 });
 
 // Prepare build for dev
-gulp.task('project:build', ['project:clean', 'project:copy', 'project:style', 'project:script'], function (cb) {
+gulp.task('project:build', ['project:clean', 'project:style', 'project:script', 'project:copy'], function (cb) {
     cb();
 });
