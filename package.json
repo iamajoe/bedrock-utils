@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Utils to use on frontend",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
     "eslint": "./node_modules/.bin/eslint",
     "eslint-test": "npm run eslint -- ./tasks/**/*.js",
     "gulp": "./node_modules/.bin/gulp",
-    "suite-test": "npm run gulp -- project:build --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
+    "suite-test": "npm run gulp -- project:sprite --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",

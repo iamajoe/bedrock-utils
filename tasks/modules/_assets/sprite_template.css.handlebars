@@ -1,4 +1,4 @@
-.icon::before {
+.c-icon::before {
     content: "";
     display: inline-block;
     vertical-align: middle;
@@ -7,7 +7,7 @@
     background-image: url("{{{escaped_image}}}");
 }
 
-{{#sprites}}.icon-{{name}}::before {
+{{#sprites}}.c-icon__{{name}}::before {
     width: {{px.width}};
     height: {{px.height}};
     /* stylelint-disable length-zero-no-unit */
