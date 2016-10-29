@@ -62,21 +62,28 @@ function compileStyle(srcs, options, buildSrc) {
         tmpl += '@import \'' + srcs[i].src + '\';\n';
     }
 
-    // Write the temporary file
-    fs.writeFileSync(tmpFile, tmpl);
-
-    // Now finally compile the script
-    styleModule.raw({
-        src: tmpFile,
-        dest: path.join(buildSrc, 'styleguide.css'),
-        options: options
-    }, function (err) {
+    // Ensure dirs exist
+    mkdirp(path.dirname(tmpFile), function (err) {
         if (err) {
             throw new Error(err);
         }
 
-        // Remove tmp file
-        del.sync([tmpFile], { force: true });
+        // Write the temporary file
+        fs.writeFileSync(tmpFile, tmpl);
+
+        // Now finally compile the script
+        styleModule.raw({
+            src: tmpFile,
+            dest: path.join(buildSrc, 'styleguide.css'),
+            options: options
+        }, function (err) {
+            if (err) {
+                throw new Error(err);
+            }
+
+            // Remove tmp file
+            del.sync([tmpFile], { force: true });
+        });
     });
 }
 
@@ -103,21 +110,28 @@ function compileScript(srcs, options, buildSrc) {
     }
     tmpl += '};\n';
 
-    // Write the temporary file
-    fs.writeFileSync(tmpFile, tmpl);
-
-    // Now finally compile the script
-    scriptModule.raw({
-        src: tmpFile,
-        dest: path.join(buildSrc, 'styleguide.js'),
-        options: options
-    }, function (err) {
+    // Ensure dirs exist
+    mkdirp(path.dirname(tmpFile), function (err) {
         if (err) {
             throw new Error(err);
         }
 
-        // Remove tmp file
-        del.sync([tmpFile], { force: true });
+        // Write the temporary file
+        fs.writeFileSync(tmpFile, tmpl);
+
+        // Now finally compile the script
+        scriptModule.raw({
+            src: tmpFile,
+            dest: path.join(buildSrc, 'styleguide.js'),
+            options: options
+        }, function (err) {
+            if (err) {
+                throw new Error(err);
+            }
+
+            // Remove tmp file
+            del.sync([tmpFile], { force: true });
+        });
     });
 }
 
@@ -144,6 +158,8 @@ function buildComponents(comps, layouts) {
 
         // Now under the pattern
         compTmpl = compTmpl ? layouts[comp.patternLayout]({
+            id: comp.id || comp.name.toLowerCase().replace(/ /g, '-'),
+            name: comp.name,
             template: compTmpl,
             parentModifiers: comp.parentModifiers
         }) : '';
@@ -171,6 +187,7 @@ function getComponents(task) {
 
         // Lets build the final component
         comp = {
+            id: comp.id,
             name: comp.name,
 
             template: !!comp.template && readFile(path.join(base, comp.template)),
@@ -243,6 +260,11 @@ function build(task, cb) {
         projectId: task.projectId,
         projectName: task.projectName,
         template: tmpl,
+        components: components.filter(function (val) {
+            return !!val.template;
+        }).map(function (val) {
+            return { id: val.id, name: val.name };
+        }),
         runtime: runtime.join('\n\n')
     });
 

@@ -9,7 +9,7 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 ```
 cd <project_folder>
 npm init # If you don't have a package.json already
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.12
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.14
 ```
 
 ## Tasks
@@ -55,7 +55,7 @@ Environment in which the task should run. It is optional.
 #### Example
 
 ```sh
-node ./node_modules/.bin/gulp --gulpfile="./node_modules/bedrock-utils/tasks/gulpfile.js" project:build --env=prod --config=".build.json"
+node ./node_modules/.bin/gulp --gulpfile="./node_modules/bedrock_utils/tasks/gulpfile.js" project:build --env=prod --config=".build.json"
 ```
 
 =========
