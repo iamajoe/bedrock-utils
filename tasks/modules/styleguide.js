@@ -9,6 +9,10 @@ var mkdirp = require('mkdirp');
 var Joi = require('joi');
 var doT = require('dot');
 var del = require('del');
+var beautify = require('js-beautify');
+var merge = require('deepmerge');
+var escape = require('escape-html');
+var jsStringEscape = require('js-string-escape');
 var scriptModule = require('./script.js');
 var styleModule = require('./style.js');
 
@@ -39,7 +43,22 @@ var STRUCT = Joi.object().keys({
  */
 function readFile(pathSrc) {
     var filename = require.resolve(pathSrc);
-    return fs.readFileSync(filename, 'utf8');
+    var isJs = filename.replace('.js', '') !== filename;
+    var isHtml = filename.replace('.html', '') !== filename;
+    var isCss = filename.replace('.css', '') !== filename;
+    var isScss = filename.replace('.scss', '') !== filename;
+    var isLess = filename.replace('.less', '') !== filename;
+    var file = fs.readFileSync(filename, 'utf8');
+
+    if (isJs) {
+        file = beautify.js_beautify(file, { indent_size: 4 });
+    } else if (isScss || isCss) {
+        file = beautify.css(file, { indent_size: 4 });
+    } else if (isHtml) {
+        // Bypass because it will be done after templating
+    }
+
+    return file;
 }
 
 /**
@@ -76,9 +95,9 @@ function compileStyle(srcs, options, buildSrc) {
             src: tmpFile,
             dest: path.join(buildSrc, 'styleguide.css'),
             options: options
-        }, function (err) {
-            if (err) {
-                throw new Error(err);
+        }, function (compileErr) {
+            if (compileErr) {
+                throw new Error(compileErr);
             }
 
             // Remove tmp file
@@ -94,8 +113,9 @@ function compileStyle(srcs, options, buildSrc) {
  * @param  {string} buildSrc
  */
 function compileScript(srcs, options, buildSrc) {
-    var tmpl = '';
     var tmpFile = path.join(buildSrc, '_tmp.js');
+    var tmpl = '';
+    var name;
     var i;
 
     if (!srcs.length) {
@@ -105,7 +125,8 @@ function compileScript(srcs, options, buildSrc) {
     // First we need to create a global js
     tmpl += 'window.styleguide = {\n';
     for (i = 0; i < srcs.length; i += 1) {
-        tmpl += '    ' + srcs[i].name + ': require(\'' + srcs[i].src + '\')';
+        name = srcs[i].name.toLowerCase().replace(/ /g, '');
+        tmpl += '    ' + name + ': require(\'' + srcs[i].src + '\')';
         tmpl += (i + 1 === srcs.length - 1) ? ',\n' : '\n';
     }
     tmpl += '};\n';
@@ -124,9 +145,9 @@ function compileScript(srcs, options, buildSrc) {
             src: tmpFile,
             dest: path.join(buildSrc, 'styleguide.js'),
             options: options
-        }, function (err) {
-            if (err) {
-                throw new Error(err);
+        }, function (compileErr) {
+            if (compileErr) {
+                throw new Error(compileErr);
             }
 
             // Remove tmp file
@@ -144,25 +165,43 @@ function compileScript(srcs, options, buildSrc) {
 function buildComponents(comps, layouts) {
     var tmpl = '';
     var compTmpl;
+    var rawTmpl;
+    var rawRuntime;
     var comp;
+    var data;
     var i;
 
     // Lets go through each component
     for (i = 0; i < comps.length; i += 1) {
         comp = comps[i];
 
+        // Data for the templating
+        data = merge(comp, {
+            id: comp.id || comp.name.toLowerCase().replace(/ /g, '-')
+        }, { clone: true });
+
         // First the component template
-        compTmpl = !!comp.template && doT.template(comp.template)({
-            modifiers: comp.modifiers
-        });
+        compTmpl = !!comp.template && doT.template(comp.template)(data);
 
         // Now under the pattern
-        compTmpl = compTmpl ? layouts[comp.patternLayout]({
-            id: comp.id || comp.name.toLowerCase().replace(/ /g, '-'),
-            name: comp.name,
-            template: compTmpl,
-            parentModifiers: comp.parentModifiers
-        }) : '';
+        data.template = compTmpl;
+
+        // rawTmpl = compTmpl && escape(beautify.html(compTmpl, {
+        //     indent_size: 4, eol: '\n',
+        // }));
+        rawTmpl = compTmpl && escape(beautify.html(compTmpl, {
+             indent_size: 4, eol: '\n', unformatted: []
+         })).replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '&nbsp;&nbsp;');
+        data.rawTemplate = rawTmpl;
+
+        rawRuntime = comp.runtime && beautify.js_beautify(comp.runtime, {
+            indent_size: 4, eol: '\n',
+        });
+        rawRuntime = rawRuntime && jsStringEscape(rawRuntime.replace(/(?:\r\n|\r|\n)/g, '<br>'))
+        .replace(/\\'/g, '\'').replace(/  /g, '&nbsp;&nbsp;');
+        data.rawRuntime = rawRuntime;
+
+        compTmpl = compTmpl ? layouts[comp.patternLayout](data) : '';
 
         tmpl += compTmpl;
     }
@@ -186,10 +225,7 @@ function getComponents(task) {
         var comp = require(src);
 
         // Lets build the final component
-        comp = {
-            id: comp.id,
-            name: comp.name,
-
+        comp = merge(comp, {
             template: !!comp.template && readFile(path.join(base, comp.template)),
             style: !!comp.style && path.join(base, comp.style),
             script: !!comp.script && path.join(base, comp.script),
@@ -198,7 +234,7 @@ function getComponents(task) {
             parentModifiers: comp.parentModifiers || [''],
             modifiers: comp.modifiers || [''],
             patternLayout: comp.patternLayout || task.options.patternLayout
-        };
+        }, { clone: true });
 
         return comp;
     });
@@ -262,11 +298,11 @@ function build(task, cb) {
         template: tmpl,
         components: components.filter(function (val) {
             return !!val.template;
-        }).map(function (val) {
-            return { id: val.id, name: val.name };
         }),
         runtime: runtime.join('\n\n')
     });
+
+    tmpl = beautify.html(tmpl, { indent_size: 4 });
 
     // Ensure dirs exist
     mkdirp(path.dirname(task.dest), function (err) {

@@ -1,0 +1,150 @@
+@import "./config.scss";
+
+$sg-header-height: 60px;
+
+body {
+    padding-top: $sg-header-height;
+    padding-bottom: 20px;
+}
+
+.o-sgheader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $sg-header-height;
+    z-index: 1000;
+
+    .o-wrapper {
+        height: 100%;
+    }
+}
+
+.o-sgheader__id {
+    float: left;
+
+    h1 {
+        margin: 0;
+        font-weight: 100;
+        line-height: 1;
+        font-size: 30px;
+    }
+}
+
+.o-sgheader__nav {
+    float: right;
+    position: relative;
+    text-align: right !important; // Force because of align middle
+
+    > * {
+        font-size: 14px;
+    }
+
+    ul {
+        display: none;
+        position: relative;
+        right: 0;
+        width: 200px;
+        background: $color-neutral-100;
+        border: 2px solid $color-neutral-0;
+        z-index: 1000;
+
+        margin-left: -$padding-huge;
+        margin-right: -$padding-huge;
+        padding-left: $padding-huge;
+        padding-right: $padding-huge;
+
+        @include breakpoint(large) {
+            margin-left: -$padding-large;
+            margin-right: -$padding-large;
+            padding-left: $padding-large;
+            padding-right: $padding-large;
+        }
+
+        @include breakpoint(medium) {
+            margin-left: -$padding-medium;
+            margin-right: -$padding-medium;
+            padding-left: $padding-medium;
+            padding-right: $padding-medium;
+        }
+
+        @include breakpoint(small) {
+            margin-left: -$padding-small;
+            margin-right: -$padding-small;
+            padding-left: $padding-small;
+            padding-right: $padding-small;
+        }
+    }
+
+    &:hover ul,
+    ul:hover {
+        display: block;
+    }
+
+    li {
+        padding: 10px;
+        font-size: 18px;
+
+        a {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            &,
+            &:hover,
+            &:focus {
+                color: $color-neutral-0;
+                text-decoration: none;
+                outline: none;
+            }
+
+            &:hover {
+                &:after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 1px;
+                    border-bottom: 2px dotted $color-primary-50;
+                }
+            }
+        }
+    }
+}
+
+.o_sgheader__nav__anchor {
+    cursor: pointer;
+}
+
+.o-sgcomponent__wrapper {
+    display: none;
+
+    &:target {
+        display: block;
+    }
+
+    h3 {
+        padding-bottom: 20px;
+        font-size: 25px;
+        color: $color-primary-50;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .o-sghalf-size {
+        width: 50%;
+    }
+}
+
+.o-sgcomponent--code {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+
+    code {
+        display: block;
+        padding: 20px;
+        background-color: #efefef;
+        border: 1px solid #ccc;
+    }
+}

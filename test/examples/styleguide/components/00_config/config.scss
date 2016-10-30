@@ -1,8 +1,4 @@
-// @import 'bedrock/src/_assets/css/normalize.scss';
-// @import 'bedrock/src/_assets/css/breakpoints.scss';
-@import './colors.scss';
+@import '../../../node_modules/bedrock/src/_assets/css/normalize.scss';
+@import '../../../node_modules/bedrock/src/_assets/css/breakpoints.scss';
+@import '../02_colors/colors.scss';
 @import './sizes.scss';
-// @import 'bedrock/src/_assets/css/utils.scss';
-// @import 'bedrock/src/_assets/css/general.scss';
-
-// @include wrapper();

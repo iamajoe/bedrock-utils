@@ -2,26 +2,38 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>{{= it.projectId }} | {{= it.projectName }}</title>
+        <title>{{= it.projectName }} | Styleguide</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex, nofollow">
         <link href="styleguide.css" rel="stylesheet">
     </head>
-    <body class="no-script">
-        <div class="o-is-mobile"></div>
+    <body class="no-script" data-id="{{= it.projectId }}">
         <div class="o-is-tablet"></div>
-        <div class="o-is-desktop"></div>
+        <div class="o-is-mobile"></div>
         <div class="o-is-over"></div>
 
-        <div class="container">
-            {{= it.template }}
+        <header class="u-clearfix o-sgheader t-primary-color-back t-neutral-100-color">
+            <div class="o-wrapper">
+                <div class="u-align-middle__wrapper o-sgheader__id">
+                    <h1 class="u-align-middle">{{= it.projectName}} styleguide</h1>
+                </div>
+                <div class="u-align-middle__wrapper o-sgheader__nav">
+                    <div class="u-align-middle o_sgheader__nav__anchor">Components</div>
+                    <ul class="not-general">
+                        {{~ it.components :comp:index }}
+                            <li><a href="#comp-{{= comp.id}}">{{= comp.name}}</a></li>
+                        {{~}}
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="o-wrapper o-container">
+            <div class="o-sgcontainer__template">{{= it.template }}</div>
         </div>
 
         <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
         <script src="styleguide.js"></script>
-        {{? it.runtime }}
-            <script>{{= it.runtime }}</script>
-        {{?}}
+        {{? it.runtime }}<script>{{= it.runtime }}</script>{{?}}
     </body>
 </html>

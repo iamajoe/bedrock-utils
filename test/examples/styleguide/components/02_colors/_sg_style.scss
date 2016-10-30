@@ -1,0 +1,28 @@
+@import "./colors.scss";
+
+.t-primary-color-back {
+    background: $color-primary-50;
+}
+
+.t-neutral-100-color {
+    color: $color-neutral-100;
+}
+
+.c-styleguide-color {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    width: 175px;
+    height: 114px;
+    margin-bottom: 2px;
+
+    span {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        display: block;
+        color: $color-neutral-100;
+        font-size: 12px;
+    }
+}

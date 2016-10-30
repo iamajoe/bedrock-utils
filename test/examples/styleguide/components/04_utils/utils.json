@@ -1,0 +1,10 @@
+{
+    "id": "04_utils",
+    "name": "Utils",
+
+    "template": "utils.html",
+    "style": "utils.scss",
+
+    "parentModifiers": [""],
+    "modifiers": [""]
+}

@@ -1,0 +1,10 @@
+{
+    "id": "03_type",
+    "name": "Type",
+
+    "template": "type.html",
+    "style": "type.scss",
+
+    "parentModifiers": [""],
+    "modifiers": [""]
+}

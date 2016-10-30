@@ -1,0 +1,19 @@
+@import '../../../node_modules/bedrock/src/components/_assets/css/accordion.scss';
+
+@include accordion-resp();
+
+.c-accordion__anchor {
+    &::before {
+        content: "-";
+    }
+}
+
+.c-accordion.is-out,
+.c-accordion--tablet.is-out,
+.c-accordion--mobile.is-out {
+    .c-accordion__anchor {
+        &::before {
+            content: "+";
+        }
+    }
+}

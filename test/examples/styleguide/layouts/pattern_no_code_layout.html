@@ -1,0 +1,6 @@
+<div class="o-sgcomponent__wrapper" data-id="{{= it.id }}" id="comp-{{= it.id}}">
+    <h3>{{= it.name }}</h3>
+    {{~ it.parentModifiers :value:index }}
+        <div class="o-sgcomponent {{=value}}">{{= it.template}}</div>
+    {{~}}
+</div>

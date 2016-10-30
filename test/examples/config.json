@@ -35,11 +35,18 @@
                 "layouts": {
                     "general": "general_layout.html",
                     "pattern": "pattern_layout.html",
-                    "pattern2": "pattern_2_layout.html"
+                    "pattern_no_code": "pattern_no_code_layout.html"
                 },
                 "components": [
                     "00_config/config.json",
-                    "01_button/button.json"
+                    "01_favicons/favicons.json",
+                    "02_colors/colors.json",
+                    "03_type/type.json",
+                    "04_utils/utils.json",
+                    "05_general/general.json",
+                    "06_list/list.json",
+                    "07_button/button.json",
+                    "08_accordion/accordion.json"
                 ],
                 "generalLayout": "general",
                 "patternLayout": "pattern",

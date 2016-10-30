@@ -1,0 +1,10 @@
+{
+    "id": "05_general",
+    "name": "General",
+
+    "template": "general.html",
+    "style": "general.scss",
+
+    "parentModifiers": [""],
+    "modifiers": [""]
+}

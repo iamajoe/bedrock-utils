@@ -1,0 +1,12 @@
+{{~ it.data :modifier:index }}
+    {{? typeof modifier === 'object' && typeof modifier.data === 'object' }}
+    <div class="c-styleguide-color__wrapper" data-id="{{= modifier.id }}">
+        <h4>{{= modifier.name }}</h4>
+        {{ var key; var color; var i; var keys = Object.keys(modifier.data); }}
+        {{ for(i = 0; i < keys.length; i += 1) { }}
+        {{ key = keys[i]; color = modifier.data[key]; }}
+            <div class="c-styleguide-color" data-id="{{= keys[i] }}" style="background-color: {{= color}}"><span>{{= key }}: {{= color }}</span></div>
+        {{ } }}
+    </div>
+    {{?}}
+{{~}}

@@ -1,0 +1,10 @@
+{
+    "id": "07_button",
+    "name": "Button",
+
+    "template": "button.html",
+    "style": "button.scss",
+
+    "parentModifiers": ["", "inverse"],
+    "modifiers": ["", "is-active", "is-hover", "is-focus"]
+}
