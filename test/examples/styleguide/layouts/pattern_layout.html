@@ -1,7 +1,7 @@
 <div class="o-sgcomponent__wrapper" data-id="{{= it.id }}" id="comp-{{= it.id}}">
-    <h3>{{= it.name }}</h3>
+    <h3 class="c-sgh3">{{= it.name }}</h3>
     <div class="o-sgcomponent">
-        <h4>Example:</h4>
+        <h4 class="c-sgh4">Example:</h4>
         {{~ it.parentModifiers :value:index }}
             <div class="o-sgcomponent__template {{=value}}">
                 {{= it.template}}
@@ -10,13 +10,13 @@
     </div>
     {{? it.rawTemplate}}
         <div class="o-sgcomponent--code">
-            <h4>Template snippet:</h4>
+            <h4 class="c-sgh4">Template snippet:</h4>
             <code>{{= it.rawTemplate}}</code>
         </div>
     {{?}}
     {{? it.rawRuntime}}
         <div class="o-sgcomponent--code">
-            <h4>Javascript snippet:</h4>
+            <h4 class="c-sgh4">Javascript snippet:</h4>
             <code>{{= it.rawRuntime}}</code>
         </div>
     {{?}}

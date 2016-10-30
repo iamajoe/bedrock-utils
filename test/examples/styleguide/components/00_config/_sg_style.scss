@@ -120,12 +120,14 @@ body {
 
 .o-sgcomponent__wrapper {
     display: none;
+    margin-top: -$sg-header-height;
+    padding-top: $sg-header-height;
 
     &:target {
         display: block;
     }
 
-    h3 {
+    .c-sgh3 {
         padding-bottom: 20px;
         font-size: 25px;
         color: $color-primary-50;
