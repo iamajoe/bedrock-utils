@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Utils to use on frontend",
   "repository": {
     "type": "git",
@@ -38,7 +38,6 @@
     "joi": "^9.2.0",
     "js-beautify": "^1.6.4",
     "js-string-escape": "^1.0.1",
-    "json-loader": "^0.5.4",
     "merge-stream": "^1.0.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.10.1",

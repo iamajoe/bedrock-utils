@@ -9,7 +9,7 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 ```
 cd <project_folder>
 npm init # If you don't have a package.json already
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.15
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.16
 ```
 
 ## Tasks

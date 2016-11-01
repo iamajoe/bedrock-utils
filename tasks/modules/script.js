@@ -47,11 +47,11 @@ var LOADER_STRUCT = Joi.object().keys({
 var MODULE_STRUCT = Joi.object().keys({
     preLoaders: Joi.array().items(LOADER_STRUCT).default([]),
     loaders: Joi.array().items(LOADER_STRUCT).default([{
-        test: /\.json?$/,
-        loader: 'json-loader',
+        test: /\.json$/,
+        loader: 'raw-loader',
         exclude: /(node_modules|bower_components)/
     }, {
-        test: /\.html?$/,
+        test: /\.html$/,
         loader: 'raw-loader',
         exclude: /(node_modules|bower_components)/
     }]),
@@ -64,7 +64,15 @@ var MODULE_STRUCT = Joi.object().keys({
     wrappedContextRegExp: Joi.string(),
     wrappedContextCritical: Joi.boolean()
 }).default({
-    preLoaders: [], loaders: [], postLoaders: [], noParse: []
+    preLoaders: [], loaders: [{
+        test: /\.json$/,
+        loader: 'raw-loader',
+        exclude: /(node_modules|bower_components)/
+    }, {
+        test: /\.html$/,
+        loader: 'raw-loader',
+        exclude: /(node_modules|bower_components)/
+    }], postLoaders: [], noParse: []
 });
 
 var OUTPUT_STRUCT = Joi.object().keys({
@@ -106,7 +114,7 @@ var OPTIONS_STRUCT = Joi.object().keys({
     debug: Joi.boolean().default(false),
     devtool: Joi.string().default(''),
     devServer: Joi.string(),
-    node: Joi.string(),
+    node: Joi.object(),
     amd: Joi.string(),
     loader: Joi.string(),
     recordsPath: Joi.string(),
