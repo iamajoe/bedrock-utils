@@ -153,6 +153,10 @@ function getTasks(config, type) {
 function setTasks(fn, tasks, cb) {
     var cbs = [];
 
+    // Maybe there isn't anything
+    cbs.length === tasks.length && cb()
+
+    // Lets go per task
     tasks.forEach(function (task) {
         fn(task, function () {
             cbs.push(1);

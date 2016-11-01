@@ -1,6 +1,6 @@
 {
   "name": "bedrock_utils",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Utils to use on frontend",
   "repository": {
     "type": "git",
@@ -42,7 +42,6 @@
     "mkdirp": "^0.5.1",
     "node-sass": "^3.10.1",
     "postcss": "^5.2.5",
-    "raw-loader": "^0.5.1",
     "through2": "^2.0.1",
     "vinyl-buffer": "^1.0.0",
     "webpack": "^1.13.2",

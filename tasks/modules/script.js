@@ -42,19 +42,11 @@ var LOADER_STRUCT = Joi.object().keys({
     loader: Joi.string(),
     loaders: Joi.array().items(Joi.string()).default([]),
     query: Joi.alternatives().try(Joi.object(), Joi.string())
-}).default({});
+});
 
 var MODULE_STRUCT = Joi.object().keys({
     preLoaders: Joi.array().items(LOADER_STRUCT).default([]),
-    loaders: Joi.array().items(LOADER_STRUCT).default([{
-        test: /\.json$/,
-        loader: 'raw-loader',
-        exclude: /(node_modules|bower_components)/
-    }, {
-        test: /\.html$/,
-        loader: 'raw-loader',
-        exclude: /(node_modules|bower_components)/
-    }]),
+    loaders: Joi.array().items(LOADER_STRUCT).default([]),
     postLoaders: Joi.array().items(LOADER_STRUCT).default([]),
     noParse: Joi.array().items(Joi.string()).default([]),
     unknownContextRegExp: Joi.string(),
@@ -64,15 +56,7 @@ var MODULE_STRUCT = Joi.object().keys({
     wrappedContextRegExp: Joi.string(),
     wrappedContextCritical: Joi.boolean()
 }).default({
-    preLoaders: [], loaders: [{
-        test: /\.json$/,
-        loader: 'raw-loader',
-        exclude: /(node_modules|bower_components)/
-    }, {
-        test: /\.html$/,
-        loader: 'raw-loader',
-        exclude: /(node_modules|bower_components)/
-    }], postLoaders: [], noParse: []
+    preLoaders: [], loaders: [], postLoaders: [], noParse: []
 });
 
 var OUTPUT_STRUCT = Joi.object().keys({
