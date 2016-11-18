@@ -62,6 +62,7 @@ function gulpBuild(task, cb) {
     var dest = task.dest;
     var imgStream;
     var cssStream;
+    var options;
 
     if (isImage) {
         gulpTask = gulpTask.pipe(gulpSpritesmith({
@@ -86,19 +87,27 @@ function gulpBuild(task, cb) {
         return merge(imgStream, cssStream)
         .on('end', function () { cb(); });
     } else if (isSvg) {
-        gulpTask = gulpTask.pipe(gulpSvgSprite({
-            preview: !task.options.preview ? false : null,
-            cssFile: task.options.style,
+        options = {
             mode: task.options.mode,
-            baseSize: task.options.baseSize,
             selector: task.options.selector,
-            svgId: task.options.svgId
+            svgId: task.options.svgId,
             svg: {
                 sprite: 'sprite.svg',
                 defs: 'defs.svg',
                 symbols: 'symbols.svg'
             }
-        }));
+        };
+        if (task.options.preview === false) {
+            options.preview = false;
+        }
+        if (task.options.style) {
+            options.cssFile = task.options.style;
+        }
+        if (task.options.baseSize) {
+            options.baseSize = task.options.baseSize;
+        }
+
+        gulpTask = gulpTask.pipe(gulpSvgSprite(options));
 
         if (path.basename(dest) === 'svg') {
             dest = path.dirname(dest);
