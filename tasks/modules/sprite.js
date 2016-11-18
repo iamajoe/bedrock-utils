@@ -93,6 +93,11 @@ function gulpBuild(task, cb) {
             baseSize: task.options.baseSize,
             selector: task.options.selector,
             svgId: task.options.svgId
+            svg: {
+                sprite: 'sprite.svg',
+                defs: 'defs.svg',
+                symbols: 'symbols.svg'
+            }
         }));
 
         if (path.basename(dest) === 'svg') {
