@@ -14,4 +14,4 @@ Module to copy files / folder.
 ```
 
 ### Examples
-Go under the [../test/examples/clean_copy](../test/examples/clean_copy) folder and check the `*.json`.
+Go under the [test/examples/clean_copy](test/examples/clean_copy) folder and check the `*.json`.

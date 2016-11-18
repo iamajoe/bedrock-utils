@@ -22,4 +22,4 @@ Module to compile styleguide into a folder.
 ```
 
 ### Examples
-Go under the [../test/examples/styleguide](../test/examples/styleguide) folder and check the `*.json`.
+Go under the [test/examples/styleguide](test/examples/styleguide) folder and check the `*.json`.

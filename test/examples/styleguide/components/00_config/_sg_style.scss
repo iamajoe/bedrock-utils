@@ -7,7 +7,7 @@ body {
     padding-bottom: 20px;
 }
 
-.o-sgheader {
+.sgheader {
     position: fixed;
     top: 0;
     left: 0;
@@ -15,12 +15,12 @@ body {
     height: $sg-header-height;
     z-index: 1000;
 
-    .o-wrapper {
+    .wrapper {
         height: 100%;
     }
 }
 
-.o-sgheader__id {
+.sgheader__id {
     float: left;
 
     h1 {
@@ -31,7 +31,7 @@ body {
     }
 }
 
-.o-sgheader__nav {
+.sgheader__nav {
     float: right;
     position: relative;
     text-align: right !important; // Force because of align middle
@@ -118,7 +118,7 @@ body {
     cursor: pointer;
 }
 
-.o-sgcomponent__wrapper {
+.sgcomponent__wrapper {
     display: none;
     margin-top: -$sg-header-height;
     padding-top: $sg-header-height;
@@ -127,19 +127,19 @@ body {
         display: block;
     }
 
-    .c-sgh3 {
+    .sgh3 {
         padding-bottom: 20px;
         font-size: 25px;
         color: $color-primary-50;
         border-bottom: 1px solid #ddd;
     }
 
-    .o-sghalf-size {
+    .sghalf-size {
         width: 50%;
     }
 }
 
-.o-sgcomponent--code {
+.sgcomponent--code {
     margin-top: 20px;
     border-top: 1px solid #ddd;
 

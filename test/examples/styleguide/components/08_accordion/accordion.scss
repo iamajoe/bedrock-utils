@@ -2,16 +2,16 @@
 
 @include accordion-resp();
 
-.c-accordion__anchor {
+.accordion__anchor {
     &::before {
         content: "-";
     }
 }
 
-.c-accordion.is-out,
-.c-accordion--tablet.is-out,
-.c-accordion--mobile.is-out {
-    .c-accordion__anchor {
+.accordion.is-out,
+.accordion--tablet.is-out,
+.accordion--mobile.is-out {
+    .accordion__anchor {
         &::before {
             content: "+";
         }

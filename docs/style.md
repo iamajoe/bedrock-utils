@@ -21,4 +21,4 @@ Check [autoprefixer](https://github.com/postcss/autoprefixer#readme) options if 
 ```
 
 ### Examples
-Go under the [../test/examples/style](../test/examples/style) folder and check the `*.json`.
+Go under the [test/examples/style](test/examples/style) folder and check the `*.json`.

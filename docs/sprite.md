@@ -17,11 +17,16 @@ Module to spritesheet files.<br>
         "src": "<task_src_glob>.svg",
         "dest": "<task_dest>",
         "options": {
-            "style": "<path_for_built_style>"
+            "style": "<path_for_built_style>",
+            "preview": "<false||true>",
+            "mode": "<defs||symbols>",
+            "baseSize": "<font_size_icon>",
+            "selector": "<css_selector_example:icon-%f>",
+            "svgId": "<css_id_example:svg-%f>"
         }
     }]
 }
 ```
 
 ### Examples
-Go under the [../test/example/sprite](../test/example/sprite) folder and check the `*.json`.
+Go under the [../test/examples/sprite](test/examples/sprite) folder and check the `*.json`.

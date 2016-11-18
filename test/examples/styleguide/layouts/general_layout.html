@@ -7,18 +7,18 @@
         <meta name="robots" content="noindex, nofollow">
         <link href="styleguide.css" rel="stylesheet">
     </head>
-    <body class="no-script" data-id="{{= it.projectId }}">
-        <div class="o-is-tablet"></div>
-        <div class="o-is-mobile"></div>
-        <div class="o-is-over"></div>
+    <body class="nscript" data-id="{{= it.projectId }}">
+        <div class="is-tablet"></div>
+        <div class="is-mobile"></div>
+        <div class="is-over"></div>
 
-        <header class="u-clearfix o-sgheader t-primary-color-back t-neutral-100-color">
-            <div class="o-wrapper">
-                <div class="u-align-middle__wrapper o-sgheader__id">
-                    <h1 class="u-align-middle">{{= it.projectName}} styleguide</h1>
+        <header class="clearfix sgheader primary-color-back neutral-100-color">
+            <div class="wrapper">
+                <div class="align-middle__wrapper sgheader__id">
+                    <h1 class="align-middle">{{= it.projectName}} styleguide</h1>
                 </div>
-                <div class="u-align-middle__wrapper o-sgheader__nav">
-                    <div class="u-align-middle o_sgheader__nav__anchor">Components</div>
+                <div class="align-middle__wrapper sgheader__nav">
+                    <div class="align-middle o_sgheader__nav__anchor">Components</div>
                     <ul class="not-general">
                         {{~ it.components :comp:index }}
                             <li><a href="#comp-{{= comp.id}}">{{= comp.name}}</a></li>
@@ -27,8 +27,8 @@
                 </div>
             </div>
         </header>
-        <div class="o-wrapper o-container">
-            <div class="o-sgcontainer__template">{{= it.template }}</div>
+        <div class="wrapper container">
+            <div class="sgcontainer__template">{{= it.template }}</div>
         </div>
 
         <!-- Scripts -->

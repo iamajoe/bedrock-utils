@@ -8,15 +8,24 @@ var Joi = require('joi');
 var gulp = require('gulp');
 var gulpSpritesmith = require('gulp.spritesmith');
 var gulpSvgSprite = require('gulp-svg-sprites');
-var through = require('through2');
 var imagemin = require('gulp-imagemin');
 var merge = require('merge-stream');
 var buffer = require('vinyl-buffer');
 
 var OPTIONS_STRUCT = Joi.object().keys({
     style: Joi.string(),
-    styleTemplate: Joi.string()
-}).default({});
+    styleTemplate: Joi.string(),
+    // SVG related
+    preview: Joi.boolean(),
+    mode: Joi.string().default('defs'),
+    baseSize: Joi.number(),
+    selector: Joi.string().default('icon-%f'),
+    svgId: Joi.string().default('svg-%f')
+}).default({
+    mode: 'defs',
+    selector: 'icon-%f',
+    svgId: 'svg-%f'
+});
 
 var STRUCT = Joi.object().keys({
     src: Joi.string().required(),
@@ -77,7 +86,14 @@ function gulpBuild(task, cb) {
         return merge(imgStream, cssStream)
         .on('end', function () { cb(); });
     } else if (isSvg) {
-        gulpTask = gulpTask.pipe(gulpSvgSprite({ mode: 'defs' }));
+        gulpTask = gulpTask.pipe(gulpSvgSprite({
+            preview: !task.options.preview ? false : null,
+            cssFile: task.options.style,
+            mode: task.options.mode,
+            baseSize: task.options.baseSize,
+            selector: task.options.selector,
+            svgId: task.options.svgId
+        }));
 
         if (path.basename(dest) === 'svg') {
             dest = path.dirname(dest);

@@ -13,7 +13,14 @@
             }
         }, {
             "src": "./test/sprite/svg/**/*.svg",
-            "dest": "./test/build/sprite/svg"
+            "dest": "./test/build/sprite/svg",
+            "options": {
+                "preview": false,
+                "mode": "defs",
+                "baseSize": 16,
+                "selector": "icon-%f",
+                "svgId": "svg-%f"
+            }
         }]
     }]
 }
