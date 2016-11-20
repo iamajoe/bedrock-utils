@@ -134,8 +134,8 @@ function getTasks(config, type) {
         for (c = 0; c < tasks[i].length; c += 1) {
             tasks[i][c].projectId = config.projectId;
             tasks[i][c].projectName = config.projectName;
-            tasks[i][c].src = getPath(tasks[i][c].src),
-            tasks[i][c].dest = getPath(tasks[i][c].dest)
+            tasks[i][c].src = getPath(tasks[i][c].src);
+            tasks[i][c].dest = getPath(tasks[i][c].dest);
 
             internTasks.push(tasks[i][c]);
         }
@@ -154,7 +154,7 @@ function setTasks(fn, tasks, cb) {
     var cbs = [];
 
     // Maybe there isn't anything
-    cbs.length === tasks.length && cb()
+    cbs.length === tasks.length && cb();
 
     // Lets go per task
     tasks.forEach(function (task) {
@@ -200,7 +200,7 @@ gulp.task('project:style', ['project:styleguide', 'project:sprite'], function (c
     setTasks(tasks.style.fn, getTasks(config, 'style'), cb);
 });
 
-gulp.task('project:script', [], function (cb) {
+gulp.task('project:script', ['project:sprite'], function (cb) {
     setTasks(tasks.script.fn, getTasks(config, 'script'), cb);
 });
 

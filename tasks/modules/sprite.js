@@ -19,12 +19,12 @@ var OPTIONS_STRUCT = Joi.object().keys({
     preview: Joi.boolean(),
     mode: Joi.string().default('defs'),
     baseSize: Joi.number(),
-    selector: Joi.string().default('icon-%f'),
-    svgId: Joi.string().default('svg-%f')
+    selector: Joi.string().default('%f'),
+    svgId: Joi.string().default('%f')
 }).default({
     mode: 'defs',
-    selector: 'icon-%f',
-    svgId: 'svg-%f'
+    selector: '%f',
+    svgId: '%f'
 });
 
 var STRUCT = Joi.object().keys({
