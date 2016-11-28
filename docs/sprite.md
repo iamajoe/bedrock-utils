@@ -22,7 +22,8 @@ Module to spritesheet files.<br>
             "mode": "<defs||symbols>",
             "baseSize": "<font_size_icon>",
             "selector": "<css_selector_example:icon-%f>",
-            "svgId": "<css_id_example:svg-%f>"
+            "svgId": "<css_id_example:svg-%f>",
+            "transformData": "<function_content_as_string>"
         }
     }]
 }

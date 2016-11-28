@@ -17,9 +17,9 @@
             "options": {
                 "preview": false,
                 "mode": "defs",
-                "baseSize": 16,
-                "selector": "icon-%f",
-                "svgId": "svg-%f"
+                "selector": "%f",
+                "svgId": "%f",
+                "transformData": "var data = arguments[0]; var i; for (i = 0; i < data.svg.length; i += 1) { data.svg[i].width = null; data.svg[i].height = null; data.svg[i].data = data.svg[i].data.replace(/<svg(.*)viewBox=/g, '<svg viewBox='); } return data;"
             }
         }]
     }]

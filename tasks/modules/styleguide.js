@@ -52,7 +52,7 @@ function readFile(pathSrc) {
 
     if (isJs) {
         file = beautify.js_beautify(file, { indent_size: 4 });
-    } else if (isScss || isCss) {
+    } else if (isScss || isLess || isCss) {
         file = beautify.css(file, { indent_size: 4 });
     } else if (isHtml) {
         // Bypass because it will be done after templating

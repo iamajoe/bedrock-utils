@@ -20,7 +20,8 @@ var OPTIONS_STRUCT = Joi.object().keys({
     mode: Joi.string().default('defs'),
     baseSize: Joi.number(),
     selector: Joi.string().default('%f'),
-    svgId: Joi.string().default('%f')
+    svgId: Joi.string().default('%f'),
+    transformData: Joi.string()
 }).default({
     mode: 'defs',
     selector: '%f',
@@ -105,6 +106,13 @@ function gulpBuild(task, cb) {
         }
         if (task.options.baseSize) {
             options.baseSize = task.options.baseSize;
+        }
+        if (task.options.transformData) {
+            /* eslint-disable no-new-func */
+            options.transformData = function (data, config) {
+                return Function(task.options.transformData)(data, config);
+            };
+            /* eslint-enable no-new-func */
         }
 
         gulpTask = gulpTask.pipe(gulpSvgSprite(options));
