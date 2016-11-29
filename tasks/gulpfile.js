@@ -19,9 +19,7 @@ var modules = {
     script: require('./modules/script.js'),
     style: require('./modules/style.js'),
     sprite: require('./modules/sprite.js'),
-    styleguide: require('./modules/styleguide.js'),
-    scraper: require('./modules/scraper.js'),
-    audit: require('./modules/audit.js')
+    styleguide: require('./modules/styleguide.js')
 };
 var tasks = {
     clean: { struct: modules.file.STRUCT, fn: modules.file.clean },
@@ -29,9 +27,7 @@ var tasks = {
     script: { struct: modules.script.STRUCT, fn: modules.script.build },
     style: { struct: modules.style.STRUCT, fn: modules.style.build },
     sprite: { struct: modules.sprite.STRUCT, fn: modules.sprite.build },
-    styleguide: { struct: modules.styleguide.STRUCT, fn: modules.styleguide.build },
-    scraper: { struct: modules.scraper.STRUCT, fn: modules.scraper.compile },
-    audit: { struct: modules.audit.STRUCT, fn: modules.audit.compile }
+    styleguide: { struct: modules.styleguide.STRUCT, fn: modules.styleguide.build }
 };
 
 var STRUCT = Joi.object().keys({
@@ -231,12 +227,3 @@ gulp.task('project:script', ['project:sprite'], function (cb) {
 
 // Prepare build for dev
 gulp.task('project:build', ['project:clean', 'project:style', 'project:script', 'project:copy']);
-
-// Special ones
-gulp.task('scraper', function (cb) {
-    setTasks(tasks.scraper.fn, getTasks(config, 'scraper'), cb);
-});
-
-gulp.task('audit', function (cb) {
-    setTasks(tasks.audit.fn, getTasks(config, 'audit'), cb);
-});

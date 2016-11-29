@@ -46,8 +46,6 @@ For the moment these are the available ones:
 - [x] `project:styleguide`
 - [x] `project:style`
 - [x] `project:script`
-- [x] `audit`
-- [ ] `scraper`
 
 ```
 --env=<task_env>
@@ -104,8 +102,6 @@ This repo relies on usage of `*.json` config files. Below I try to explain the b
 - [styleguide](docs/styleguide.md)
 - [style](docs/style.md)
 - [script](docs/script.md)
-- [audit](docs/audit.md)
-- [scraper](docs/scraper.md)
 
 ### Examples
 Go under the [test/examples](test/examples) folder and check the `*.json`.
