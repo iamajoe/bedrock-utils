@@ -1,0 +1,31 @@
+{
+    "projectId": "test",
+    "projectName": "Test",
+    "tasks": [{
+        "type": "audit",
+        "env": "*",
+        "data": [{
+            "src": ["http://google.pt"],
+            "dest": "./test/build/audit/report_url.json",
+            "options": {
+                "defaults": ["W3"]
+            }
+        }, {
+            "src": [
+                "/search?q=foo&oq=foo&aqs=chrome..69i57j69i60j69i61j69i60.567j0j7&sourceid=chrome&ie=UTF-8",
+                "/search?q=bar&oq=bar&aqs=chrome..69i57j69i60j69i61j69i60.567j0j7&sourceid=chrome&ie=UTF-8"
+            ],
+            "dest": "./test/build/audit/report_based.json",
+            "options": {
+                "base": "http://google.pt",
+                "custom": ["./test/examples/audit/custom.js"]
+            }
+        }, {
+            "src": ["/search?q=bar&oq=bar&aqs=chrome.0.69i59j69i60.253j0j9&sourceid=chrome&ie=UTF-8"],
+            "dest": "./test/build/audit/report_based_env.json",
+            "options": {
+                "baseEnv": "ENV_BEDROCK_AUDIT_BASE"
+            }
+        }]
+    }]
+}

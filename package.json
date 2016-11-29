@@ -11,7 +11,7 @@
     "eslint": "./node_modules/.bin/eslint",
     "eslint-test": "npm run eslint -- ./tasks/**/*.js",
     "gulp": "./node_modules/.bin/gulp",
-    "suite-test": "npm run gulp -- project:sprite --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
+    "suite-test": "npm run gulp -- audit --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
@@ -38,12 +38,15 @@
     "joi": "^9.2.0",
     "js-beautify": "^1.6.4",
     "js-string-escape": "^1.0.1",
+    "jsdom": "^9.8.3",
+    "lighthouse": "^1.2.1",
     "merge-stream": "^1.0.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^3.10.1",
     "postcss": "^5.2.5",
     "through2": "^2.0.1",
     "vinyl-buffer": "^1.0.0",
+    "w3cjs": "^0.3.0",
     "webpack": "^1.13.2",
     "webpack-closure-compiler": "^2.1.1",
     "yargs": "^6.3.0"

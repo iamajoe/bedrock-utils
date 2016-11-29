@@ -11,6 +11,7 @@ var path = require('path');
 var argv = require('yargs').argv;
 var Joi = require('joi');
 var gulp = require('gulp');
+var logger = require('./utils/logger.js');
 
 // Import modules
 var modules = {
@@ -18,7 +19,9 @@ var modules = {
     script: require('./modules/script.js'),
     style: require('./modules/style.js'),
     sprite: require('./modules/sprite.js'),
-    styleguide: require('./modules/styleguide.js')
+    styleguide: require('./modules/styleguide.js'),
+    scraper: require('./modules/scraper.js'),
+    audit: require('./modules/audit.js')
 };
 var tasks = {
     clean: { struct: modules.file.STRUCT, fn: modules.file.clean },
@@ -26,7 +29,9 @@ var tasks = {
     script: { struct: modules.script.STRUCT, fn: modules.script.build },
     style: { struct: modules.style.STRUCT, fn: modules.style.build },
     sprite: { struct: modules.sprite.STRUCT, fn: modules.sprite.build },
-    styleguide: { struct: modules.styleguide.STRUCT, fn: modules.styleguide.build }
+    styleguide: { struct: modules.styleguide.STRUCT, fn: modules.styleguide.build },
+    scraper: { struct: modules.scraper.STRUCT, fn: modules.scraper.compile },
+    audit: { struct: modules.audit.STRUCT, fn: modules.audit.compile }
 };
 
 var STRUCT = Joi.object().keys({
@@ -45,13 +50,36 @@ var config;
 // Functions
 
 /**
+ * Check if url is valid
+ *
+ * @param {string} url
+ * @returns
+ */
+function checkUrl(url) {
+    var pattern = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+
+    return pattern.test(url);
+}
+
+/**
  * Gets path
  * @param  {string} src
  * @return {string}
  */
 function getPath(src) {
-    if (!src) { return; }
-    return (src[0] !== '/') ? path.join(process.env.PWD, src) : src;
+    var newSrc = src;
+
+    if (src && typeof src === 'string') {
+        if (checkUrl(src)) {
+            return src;
+        }
+
+        newSrc = (src[0] !== '/') ? path.join(process.env.PWD, src) : src;
+    } else if (src && typeof src === 'object' && src.hasOwnProperty('length')) {
+        newSrc = src.map(function (val) { return getPath(val); });
+    }
+
+    return newSrc;
 }
 
 /**
@@ -69,8 +97,8 @@ function readFile(pathSrc) {
  * @param  {object} config
  * @return {boolean}
  */
-function verify(config) {
-    var result = Joi.validate(config, STRUCT);
+function verify(vConfig) {
+    var result = Joi.validate(vConfig, STRUCT);
     var value = result.value;
     var schema;
     var task;
@@ -95,9 +123,9 @@ function verify(config) {
                 return {
                     error: { type: task.type, msg: result.error }
                 };
-            } else {
-                task.data[c] = result.value;
             }
+
+            task.data[c] = result.value;
         }
     }
 
@@ -110,17 +138,14 @@ function verify(config) {
  * @param  {type} type
  * @return {array}
  */
-function getTasks(config, type) {
-    var projectName = config.projectName;
-    var projectId = config.projectId;
-    var tasks = config.tasks;
+function getTasks(tConfig, type) {
+    var tTasks = tConfig.tasks;
     var internTasks = [];
-    var dataTask;
     var c;
     var i;
 
     // Lets filter!
-    tasks = tasks.filter(function (task) {
+    tTasks = tTasks.filter(function (task) {
         var isType = task.type === type;
         var isEnv = task.env === '*' || argv.env === task.env;
 
@@ -130,14 +155,14 @@ function getTasks(config, type) {
     });
 
     // Go per task...
-    for (i = 0; i < tasks.length; i += 1) {
-        for (c = 0; c < tasks[i].length; c += 1) {
-            tasks[i][c].projectId = config.projectId;
-            tasks[i][c].projectName = config.projectName;
-            tasks[i][c].src = getPath(tasks[i][c].src);
-            tasks[i][c].dest = getPath(tasks[i][c].dest);
+    for (i = 0; i < tTasks.length; i += 1) {
+        for (c = 0; c < tTasks[i].length; c += 1) {
+            tTasks[i][c].projectId = tConfig.projectId;
+            tTasks[i][c].projectName = tConfig.projectName;
+            tTasks[i][c].src = getPath(tTasks[i][c].src);
+            tTasks[i][c].dest = getPath(tTasks[i][c].dest);
 
-            internTasks.push(tasks[i][c]);
+            internTasks.push(tTasks[i][c]);
         }
     }
 
@@ -150,17 +175,17 @@ function getTasks(config, type) {
  * @param {array} tasks
  * @param {Function} cb
  */
-function setTasks(fn, tasks, cb) {
+function setTasks(fn, tTasks, cb) {
     var cbs = [];
 
     // Maybe there isn't anything
-    cbs.length === tasks.length && cb();
+    cbs.length === tTasks.length && cb();
 
     // Lets go per task
-    tasks.forEach(function (task) {
+    tTasks.forEach(function (task) {
         fn(task, function () {
             cbs.push(1);
-            cbs.length === tasks.length && cb();
+            cbs.length === tTasks.length && cb();
         });
     });
 }
@@ -173,7 +198,7 @@ config = verify(JSON.parse(config));
 
 // Verify config
 if (config.error) {
-    console.error('Error happened in: ' + config.error.type);
+    logger.err('Validation', 'Error happened in: ' + config.error.type);
     throw new Error(config.error.msg);
 } else {
     config = config.value;
@@ -184,16 +209,16 @@ gulp.task('project:clean', [], function (cb) {
     setTasks(tasks.clean.fn, getTasks(config, 'clean'), cb);
 });
 
-gulp.task('project:styleguide', [], function (cb) {
+gulp.task('project:styleguide', ['project:clean'], function (cb) {
     setTasks(tasks.styleguide.fn, getTasks(config, 'styleguide'), cb);
 });
 
-gulp.task('project:copy', [], function (cb) {
-    setTasks(tasks.copy.fn, getTasks(config, 'copy'), cb);
+gulp.task('project:sprite', ['project:clean'], function (cb) {
+    setTasks(tasks.sprite.fn, getTasks(config, 'sprite'), cb);
 });
 
-gulp.task('project:sprite', [], function (cb) {
-    setTasks(tasks.sprite.fn, getTasks(config, 'sprite'), cb);
+gulp.task('project:copy', ['project:clean'], function (cb) {
+    setTasks(tasks.copy.fn, getTasks(config, 'copy'), cb);
 });
 
 gulp.task('project:style', ['project:styleguide', 'project:sprite'], function (cb) {
@@ -205,6 +230,13 @@ gulp.task('project:script', ['project:sprite'], function (cb) {
 });
 
 // Prepare build for dev
-gulp.task('project:build', ['project:clean', 'project:style', 'project:script', 'project:copy'], function (cb) {
-    cb();
+gulp.task('project:build', ['project:clean', 'project:style', 'project:script', 'project:copy']);
+
+// Special ones
+gulp.task('scraper', function (cb) {
+    setTasks(tasks.scraper.fn, getTasks(config, 'scraper'), cb);
+});
+
+gulp.task('audit', function (cb) {
+    setTasks(tasks.audit.fn, getTasks(config, 'audit'), cb);
 });

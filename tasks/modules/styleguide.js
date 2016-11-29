@@ -190,12 +190,12 @@ function buildComponents(comps, layouts) {
         //     indent_size: 4, eol: '\n',
         // }));
         rawTmpl = compTmpl && escape(beautify.html(compTmpl, {
-             indent_size: 4, eol: '\n', unformatted: []
-         })).replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '&nbsp;&nbsp;');
+            indent_size: 4, eol: '\n', unformatted: []
+        })).replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '&nbsp;&nbsp;');
         data.rawTemplate = rawTmpl;
 
         rawRuntime = comp.runtime && beautify.js_beautify(comp.runtime, {
-            indent_size: 4, eol: '\n',
+            indent_size: 4, eol: '\n'
         });
         rawRuntime = rawRuntime && jsStringEscape(rawRuntime.replace(/(?:\r\n|\r|\n)/g, '<br>'))
         .replace(/\\'/g, '\'').replace(/  /g, '&nbsp;&nbsp;');
