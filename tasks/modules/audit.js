@@ -10,6 +10,7 @@ var Joi = require('joi');
 var mkdirp = require('mkdirp');
 var logger = require('../utils/logger.js');
 var scraper = require('../utils/scraper.js');
+var styleguide = require('./styleguide');
 var modules = {
     w3: require('./audit/w3.js'),
     SEO: require('./audit/seo.js'),
@@ -21,6 +22,7 @@ var modules = {
 var OPTIONS_STRUCT = Joi.object().keys({
     base: Joi.string(),
     baseEnv: Joi.string(),
+    generateHtml: Joi.boolean(),
     defaults: Joi.array().items(Joi.string()).default(['w3', 'SEO']),
     custom: Joi.array().items(Joi.string()).default([])
 }).default({
@@ -122,6 +124,70 @@ function setScrapPromises(scraps, auditList) {
 }
 
 /**
+ * Generate html
+ *
+ * @param {object} task
+ * @param {array} report
+ * @param {function} cb
+ */
+function generateHtml(task, report, cb) {
+    // Set data object under the config json
+    var auditAssets = path.join(__dirname, './audit/_assets');
+    var dest = task.dest.replace('.json', '');
+    var data = report.map(function (req) {
+        return {
+            src: req.src,
+            audits: req.audits.map(function (audit) {
+                return {
+                    ok: audit.ok,
+                    name: audit.name,
+                    rules: audit.rules && JSON.stringify(audit.rules, null, 4),
+                    err: audit.err && JSON.stringify(audit.err, null, 4)
+                };
+            })
+        };
+    });
+
+    // Lets use styleguide to generate the static
+    styleguide.build({
+        src: auditAssets,
+        dest: dest,
+        options: {
+            layouts: {
+                general: '../general_layout.html',
+                pattern: '../pattern_layout.html'
+            },
+            components: [{
+                id: '00_component',
+                name: 'component',
+                template: 'component.html',
+                style: 'style.scss',
+                base: auditAssets,
+                data: data
+            }],
+            generalLayout: 'general',
+            patternLayout: 'pattern',
+            styleCompileOptions: {
+                minify: true,
+                autoprefixer: ['last 2 versions'],
+                include: []
+            },
+            scriptCompileOptions: {}
+        }
+    }, function (err) {
+        if (err) {
+            return cb(err);
+        }
+
+        // Lets rename the files
+        fs.renameSync(path.join(dest, 'styleguide.html'), path.join(dest, 'audit.html'));
+        fs.renameSync(path.join(dest, 'styleguide.css'), path.join(dest, 'audit.css'));
+
+        cb(null, report);
+    });
+}
+
+/**
  * Scrapes
  *
  * @param  {object} task
@@ -147,7 +213,11 @@ function compile(task, cb) {
         mkdirp.sync(path.dirname(task.dest));
         fs.writeFileSync(task.dest, JSON.stringify(report, null, 4));
 
-        cb(null, report);
+        if (task.options.generateHtml) {
+            generateHtml(task, report, cb);
+        } else {
+            cb(null, report);
+        }
     })
     .catch(function (err) {
         cb(err);

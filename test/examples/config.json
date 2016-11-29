@@ -194,7 +194,8 @@
             "src": ["http://google.pt"],
             "dest": "./test/build/audit/report_url.json",
             "options": {
-                "defaults": ["W3", "lighthouse"]
+                "defaults": ["W3", "lighthouse"],
+                "generateHtml": true
             }
         }, {
             "src": [

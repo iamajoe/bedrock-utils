@@ -18,7 +18,7 @@ var styleModule = require('./style.js');
 
 var OPTIONS_STRUCT = Joi.object().keys({
     layouts: Joi.object().min(2).required(),
-    components: Joi.array().items(Joi.string()).required().default([]),
+    components: Joi.array().required().default([]),
     generalLayout: Joi.string().required(),
     patternLayout: Joi.string().required(),
     scriptCompileOptions: scriptModule.OPTIONS_STRUCT,
@@ -220,9 +220,18 @@ function getComponents(task) {
 
     // Lets require and template each in config now
     components = task.options.components.map(function (val) {
-        var src = path.join(pathSrc, val);
-        var base = path.dirname(src);
-        var comp = require(src);
+        var src;
+        var base;
+        var comp;
+
+        if (typeof val === 'string') {
+            src = path.join(pathSrc, val);
+            base = path.dirname(src);
+            comp = require(src);
+        } else if (typeof val === 'object') {
+            base = val.base;
+            comp = val;
+        }
 
         // Lets build the final component
         comp = merge(comp, {

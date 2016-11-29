@@ -11,6 +11,7 @@ This module is very different since it isn't supposed to be in a build config. F
         "src": ["<task_url_src>"],
         "dest": "<task_dest_report_json>",
         "options": {
+            "generateHtml": "<boolean>",
             "base": "<base_to_be_added_before_each_src>",
             "baseEnv": "<base_environment_variable_to_be_added_before_each_src>",
             "defaults": ["w3", "SEO"],

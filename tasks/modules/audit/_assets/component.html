@@ -1,0 +1,17 @@
+{{~ it.data :req:index }}
+    <div class="styleguide-req__wrapper" data-id="{{= index }}" id="comp-{{= index}}">
+        <h3>{{! req.src }}</h3>
+        {{~ req.audits :audit:index }}
+            {{? audit.ok }}
+            <div class="styleguide-req">
+            {{??}}
+            <div class="styleguide-req styleguide-req--error">
+            {{?}}
+                <div class="styleguide-req__title">{{! audit.name }}</div>
+                <div class="styleguide-req__title"><pre class="prettyprint">
+                    <code lang="json">{{! audit.rules || audit.err }}</code>
+                </pre></div>
+            </div>
+        {{~}}
+    </div>
+{{~}}
