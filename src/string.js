@@ -9,13 +9,7 @@
  * @return  {string}
  */
 function normalize(str) {
-    str = !!str ? ('' + str).trim() : null;
-
-    if (!str || !str.replace(/ /g, '').length) {
-        return;
-    }
-
-    return str;
+    return ('' + (str || '')).trim();
 }
 
 /**
@@ -24,13 +18,7 @@ function normalize(str) {
  * @return  {string}
  */
 function dashize(str) {
-    str = normalize(str);
-
-    if (!str) {
-        return str;
-    }
-
-    return str.toLowerCase().replace(/ /g, '-');
+    return normalize(str).toLowerCase().replace(/ /g, '-');
 }
 
 /**
@@ -43,7 +31,7 @@ function dashize(str) {
 function camelcase(str, alsoFirst, dontJoin) {
     str = normalize(str);
 
-    if (!str) {
+    if (str === '') {
         return str;
     }
 

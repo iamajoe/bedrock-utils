@@ -11,16 +11,19 @@
     "node": ">=5"
   },
   "scripts": {
-    "test": "npm run eslint-test",
+    "test": "npm run eslint-test; npm run mocha-test",
+    "mocha-test": "$(npm bin)/mocha ./test/test.js",
     "eslint": "$(npm bin)/eslint",
     "eslint-test": "npm run eslint -- ./tasks/**/*.js"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "chai": "^3.5.0",
     "es6-promise": "^4.0.5",
     "eslint": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",
-    "eslint-plugin-react": "^6.2.0"
+    "eslint-plugin-react": "^6.2.0",
+    "mocha": "^3.2.0"
   },
   "dependencies": {}
 }

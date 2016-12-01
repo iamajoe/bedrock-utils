@@ -71,13 +71,14 @@ function touch() {
  * @return {boolean}
  */
 function media(target) {
-    var body = document.body;
+    var body;
 
-    if (typeof $ === 'undefined') {
+    if (typeof document === 'undefined' || typeof $ === 'undefined' || !target || target === '') {
         // TODO: We should try to do without $
-        return;
+        return false;
     }
 
+    body = document.body;
     body = $(body);
 
     if (target === 'mobile') {

@@ -2,7 +2,7 @@
 
 var path = require('path');
 var bedrockPath = require('../path.js');
-var type = require('./type.js');
+var type = require('../type.js');
 
 // -----------------------------------------
 // Functions
