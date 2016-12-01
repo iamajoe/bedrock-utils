@@ -9,7 +9,7 @@ You need to have [node](http://nodejs.org) so you can have the package dependenc
 ```
 cd <project_folder>
 npm init # If you don't have a package.json already
-npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.22
+npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.0.23
 ```
 
 ## Tasks
@@ -32,7 +32,7 @@ Pass the path to `gulp`. From example `node_modules/.bin/gulp`. You could simply
 ```
 --gulpfile=<bedrock_utils_gulpfile>
 ```
-Set the path for the `bedrock-utils` gulpfile.It is required.
+Set the path for the `bedrock-utils` gulpfile. It is required.
 
 ```
 <task>
