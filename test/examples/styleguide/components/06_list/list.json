@@ -1,9 +1,0 @@
-{
-    "id": "06_list",
-    "name": "List",
-
-    "template": "list.html",
-    "style": "list.scss",
-
-    "parentModifiers": ["", "inverse"]
-}

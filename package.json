@@ -1,51 +1,26 @@
 {
-  "name": "bedrock_utils",
-  "version": "0.0.23",
-  "description": "Utils to use on frontend",
+  "name": "bedrock-utils",
+  "version": "0.1.1",
+  "description": "Utils to use on the frontend and node",
   "repository": {
     "type": "git",
     "url": "git@bitbucket.org:sendoushi/bedrock-utils.git"
   },
+  "main": "./src/index.js",
+  "engines": {
+    "node": ">=5"
+  },
   "scripts": {
-    "test": "npm run eslint-test; npm run stylelint-test",
-    "eslint": "./node_modules/.bin/eslint",
-    "eslint-test": "npm run eslint -- ./tasks/**/*.js",
-    "gulp": "./node_modules/.bin/gulp",
-    "suite-test": "npm run gulp -- audit --env=dev --gulpfile=\"./tasks/gulpfile.js\" --config=\"./test/examples/config.json\""
+    "test": "npm run eslint-test",
+    "eslint": "$(npm bin)/eslint",
+    "eslint-test": "npm run eslint -- ./tasks/**/*.js"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
+    "es6-promise": "^4.0.5",
     "eslint": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",
     "eslint-plugin-react": "^6.2.0"
   },
-  "dependencies": {
-    "autoprefixer": "^6.5.1",
-    "deepmerge": "^1.2.0",
-    "del": "^2.2.2",
-    "dot": "^1.0.3",
-    "es6-promise": "^4.0.5",
-    "escape-html": "^1.0.3",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-imagemin": "^3.1.0",
-    "gulp-less": "^3.1.0",
-    "gulp-sass": "^2.3.2",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-svg-sprites": "^4.0.2",
-    "gulp-webpack": "^1.5.0",
-    "gulp.spritesmith": "^6.2.1",
-    "joi": "^9.2.0",
-    "js-beautify": "^1.6.4",
-    "js-string-escape": "^1.0.1",
-    "merge-stream": "^1.0.0",
-    "mkdirp": "^0.5.1",
-    "node-sass": "^3.10.1",
-    "postcss": "^5.2.5",
-    "through2": "^2.0.1",
-    "vinyl-buffer": "^1.0.0",
-    "webpack": "^1.13.2",
-    "webpack-closure-compiler": "^2.1.1",
-    "yargs": "^6.3.0"
-  }
+  "dependencies": {}
 }
