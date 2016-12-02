@@ -2,6 +2,8 @@
 
 Utils to use on the frontend and node.
 
+[![Build Status](https://travis-ci.org/Sendoushi/bedrock-utils.svg?branch=master)](https://travis-ci.org/Sendoushi/bedrock-utils)
+
 ## Installation
 You need to have [node](http://nodejs.org) so you can have the package dependency management and use the tasks:
 - Install [node](http://nodejs.org)
