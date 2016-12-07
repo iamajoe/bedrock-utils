@@ -21,7 +21,7 @@ function getPwd(src) {
         }
 
         newSrc = (src[0] !== '/') ? path.join(process.env.PWD, src) : src;
-    } else if (type.isArray(src)) {
+    } else if (src && type.isArray(src)) {
         newSrc = src.map(function (val) { return getPwd(val); });
     }
 

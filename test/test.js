@@ -1,14 +1,12 @@
 /* eslint-disable strict */'use strict';/* eslint-enable */
 
+const path = require('path');
+const glob = require('glob');
+
 // --------------------------------
 // Imports test modules
 
-require('./modules/is.js');
-require('./modules/logger.js');
-require('./modules/path.js');
-require('./modules/request.js');
-require('./modules/string.js');
-require('./modules/type.js');
+const specs = glob.sync('./src/**/*.spec.js');
 
-require('./modules/node/file.js');
-require('./modules/node/path.js');
+// Now lets require it
+specs.forEach(val => require(path.join(process.cwd(), val)));

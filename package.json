@@ -15,7 +15,7 @@
     "mocha-test": "$(npm bin)/mocha ./test/test.js",
     "mocha-html-test": "npm run mocha-test -- --reporter mochawesome --reporter-options reportDir=\"test/_report\",reportName=\"report\",reportTitle=\"Bedrock utils report\",inlineAssets=true",
     "eslint": "$(npm bin)/eslint",
-    "eslint-test": "npm run eslint -- ./tasks/**/*.js"
+    "eslint-test": "npm run eslint -- ./src/**/*.js"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
@@ -24,6 +24,7 @@
     "eslint": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",
     "eslint-plugin-react": "^6.2.0",
+    "glob": "^7.1.1",
     "mocha": "^3.2.0",
     "mochawesome": "^1.5.4"
   },

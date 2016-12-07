@@ -9,10 +9,11 @@ var path = require('path');
 /**
  * Returns file in raw mode
  * @param  {string} pathSrc
+ * @param  {string} dirname
  * @return {string}
  */
-function readFile(pathSrc) {
-    var filename = path.resolve(pathSrc);
+function readFile(pathSrc, dirname) {
+    var filename = !!dirname ? path.join(dirname, pathSrc) : path.resolve(pathSrc);
 
     if (!fs.existsSync(filename)) {
         return false;

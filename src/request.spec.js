@@ -2,7 +2,7 @@
 /* global describe it */
 
 // var expect = require('chai').expect;
-// var utils = require('../../src/request.js');
+// var utils = require('./request.js');
 
 // --------------------------------
 // Functions

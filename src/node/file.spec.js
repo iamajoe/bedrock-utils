@@ -2,7 +2,7 @@
 /* global describe it */
 
 var expect = require('chai').expect;
-var utils = require('../../../src/node/file.js');
+var utils = require('./file.js');
 
 // --------------------------------
 // Functions
@@ -14,7 +14,7 @@ describe('node/file', function () {
     // readFile
     describe('readFile', function () {
         it('should load file', function () {
-            var result = utils.readFile('./test/test_data/config.json');
+            var result = utils.readFile('../../test/data/config.json', __dirname);
 
             expect(result).to.be.a('string');
 
