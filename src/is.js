@@ -82,14 +82,14 @@ function media(target) {
     body = $(body);
 
     if (target === 'mobile') {
-        return body.find('.is-mobile').is(':visible');
+        return body.find('> .is-mobile').is(':visible');
     } else if (target === 'tablet') {
-        return body.find('.is-tablet').is(':visible');
+        return body.find('> .is-tablet').is(':visible');
     } else if (target === 'desktop') {
-        return !(body.find('.is-mobile').is(':visible')) &&
-               !(body.find('.is-tablet').is(':visible'));
+        return !(body.find('> .is-mobile').is(':visible')) &&
+               !(body.find('> .is-tablet').is(':visible'));
     } else if (target === 'over') {
-        return body.find('.is-over').is(':visible');
+        return body.find('> .is-over').is(':visible');
     }
 }
 
