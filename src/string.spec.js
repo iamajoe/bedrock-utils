@@ -63,6 +63,32 @@ describe('string', function () {
         });
     });
 
+    // underscore
+    describe('underscore', function () {
+        it('should return a string', function () {
+            var result = utils.underscore('foo');
+
+            expect(result).to.be.a('string');
+            expect(result).to.equal('foo');
+        });
+
+        it('should return empty if no string', function () {
+            var result = utils.underscore();
+
+            expect(result).to.be.a('string');
+            expect(result).to.equal('');
+        });
+
+        it('should underscore string', function () {
+            ['foo_bar foobar foo', 'foo_bar foobar Foo'].forEach(function (val) {
+                var result = utils.underscore(val);
+
+                expect(result).to.be.a('string');
+                expect(result).to.equal('foo_bar_foobar_foo');
+            });
+        });
+    });
+
     // camelcase
     describe('camelcase', function () {
         // string.camelcase('foo_bar-foobar Foo'); // will return "fooBarFoobarFoo"

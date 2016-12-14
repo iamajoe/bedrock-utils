@@ -22,6 +22,15 @@ function dashize(str) {
 }
 
 /**
+ * Underscores string
+ * @param   {string} str
+ * @return  {string}
+ */
+function underscore(str) {
+    return normalize(str).toLowerCase().replace(/ /g, '_');
+}
+
+/**
  * Camel case a string
  * @param  {string} str
  * @param  {boolean} alsoFirst
@@ -63,5 +72,6 @@ function camelcase(str, alsoFirst, dontJoin) {
 module.exports = {
     normalize: normalize,
     dashize: dashize,
-    camelcase: camelcase
+    camelcase: camelcase,
+    underscore: underscore
 };
