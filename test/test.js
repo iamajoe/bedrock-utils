@@ -1,7 +1,7 @@
-/* eslint-disable strict */'use strict';/* eslint-enable */
+'use strict';
 
-const path = require('path');
-const glob = require('glob');
+import path from 'path';
+import glob from 'glob';
 
 // --------------------------------
 // Imports test modules

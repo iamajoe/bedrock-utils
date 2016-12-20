@@ -1,7 +1,0 @@
-tmp/*
-*/build
-**/build
-**/log
-**/tmp
-**/project
-**/node_modules

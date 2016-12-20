@@ -1,8 +1,8 @@
-/* eslint-disable strict */'use strict';/* eslint-enable */
+'use strict';
 /* global describe it */
 
-var expect = require('chai').expect;
-var utils = require('./path.js');
+import { expect } from 'chai';
+import utils from '../path.js';
 
 // --------------------------------
 // Functions
@@ -10,19 +10,19 @@ var utils = require('./path.js');
 // --------------------------------
 // Suite of tests
 
-describe('node/path', function () {
+describe('node/path', () => {
     // getPwd
-    describe('getPwd', function () {
-        it('should get absolute path of string', function () {
-            var result = utils.getPwd('foo');
+    describe('getPwd', () => {
+        it('should get absolute path of string', () => {
+            const result = utils.getPwd('foo');
 
             expect(result).to.be.a('string');
             expect(result).to.contain('foo');
             expect(result[0]).to.equal('/');
         });
 
-        it('should get absolute path of array', function () {
-            var result = utils.getPwd(['foo', '/bar']);
+        it('should get absolute path of array', () => {
+            const result = utils.getPwd(['foo', '/bar']);
 
             expect(result).to.be.an('array');
             expect(result).to.have.length(2);
@@ -31,18 +31,18 @@ describe('node/path', function () {
             expect(result[1]).to.equal('/bar');
         });
 
-        it('should return if already absolute', function () {
-            var result = utils.getPwd('/bar');
+        it('should return if already absolute', () => {
+            const result = utils.getPwd('/bar');
 
             expect(result).to.be.a('string');
             expect(result).to.equal('/bar');
         });
 
-        it('should return if url', function () {
-            var urls = ['http://www.google.com', 'http://google.com'];
-            var result;
+        it('should return if url', () => {
+            const urls = ['http://www.google.com', 'http://google.com'];
+            let result;
 
-            urls.forEach(function (url) {
+            urls.forEach((url) => {
                 result = utils.getPwd(url);
 
                 expect(result).to.be.a('string');

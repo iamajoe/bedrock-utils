@@ -1,0 +1,13 @@
+[ignore]
+.*/node_modules/.*
+.*/dist/*
+
+[include]
+./src/**/*.js
+
+[libs]
+./src/_test/_interfaces.flow.js
+
+[options]
+log.file=./flow-debug.log
+module.file_ext=.js

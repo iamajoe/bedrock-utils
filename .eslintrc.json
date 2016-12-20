@@ -1,17 +1,21 @@
 {
     "root": true,
     "extends": [
-        "./node_modules/eslint-config-defaults/configurations/airbnb/es5.js"
+        "./node_modules/eslint-config-defaults/configurations/airbnb/es6.js"
     ],
+    "env": {
+        "es6": true
+    },
     "parserOptions": {
-        "ecmaVersion": 5,
+        "ecmaVersion": 6,
         "sourceType": "module",
+        "impliedStrict": false,
         "ecmaFeatures": {
             "jsx": false
         }
     },
     "rules": {
-        "strict": [2, "global"],
+        "strict": "off",
         "indent": [2, 4],
         "comma-dangle": [2, "never"],
         "func-names": [0],
