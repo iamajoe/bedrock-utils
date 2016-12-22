@@ -8,11 +8,11 @@
   },
   "main": "./dist/index.js",
   "engines": {
-    "node": ">=5"
+    "node": ">=6"
   },
   "scripts": {
     "test": "npm run eslint-test && npm run mocha-test && npm run flow",
-    "flow": "flow stop; flow; test $? -eq 0 -o $? -eq 2",
+    "flow": "flow check",
     "flow-typed": "flow-typed install",
     "mocha-test": "mocha ./test/test.js --compilers js:babel-core/register",
     "eslint-test": "eslint ./src/**/*.js",
