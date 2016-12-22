@@ -1,6 +1,6 @@
 {
   "name": "bedrock-utils",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Utils to use on the frontend and node",
   "repository": {
     "type": "git",
