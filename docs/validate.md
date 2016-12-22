@@ -1,9 +1,9 @@
 # Bedrock: Utils > Validate
 
-Module to validate variables and check if all is as supposed. Uses [JSON Schema]() validation.
+Module to validate variables and check if all is as supposed. Uses [JSON Schema draft 4](http://json-schema.org/documentation.html) validation.
 The only modification is the `required` boolean that sets the type index as required.
 
-** Note: ** You shouldn't use this in production because it will slow down the performance speed. Use [validate.stub](src/validate.stub.js) instead as a stub.
+** Note: ** You shouldn't use this in production because it will slow down the performance speed. Use [validate.stub](src/validate.stub.js) instead as a stub for the import of the module.
 
 ### Usage API
 ```js
