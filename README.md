@@ -19,3 +19,4 @@ npm install --save git://github.com/Sendoushi/bedrock-utils.git#0.1.2
 ### Module list and documentation
 - [file](docs/file.md)
 - [path](docs/path.md)
+- [validate](docs/validate.md)
