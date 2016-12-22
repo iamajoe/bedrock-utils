@@ -1,8 +1,8 @@
-/* @flow *//* :: import type {IsUrl, GetPwd} from "./_test/path.flow.js" */
 'use strict';
 
 import path from 'path';
 import isArray from 'lodash/isArray.js';
+import { validate } from './validate.js';
 
 // -----------------------------------------
 // Functions
@@ -13,17 +13,32 @@ import isArray from 'lodash/isArray.js';
  * @param {string} url
  * @returns {boolean}
  */
-const isUrl/* :: :IsUrl */ = (url) => !!(/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(url));
+const isUrl = (url) => {
+    validate([{ title: 'url', type: 'string' }], null, url);
+    return !!(/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(url));
+};
+export { isUrl };
 
 /**
  * Gets pwd path
  * @param  {string|array} src
  * @return {string|array}
  */
-const getPwd/* :: :GetPwd */ = (src) => {
+const getPwd = (src) => {
+    validate([
+        { title: 'src', anyOf: [
+            { type: 'string', minLength: 1 },
+            { type: 'array', items: { type: 'string' } }
+        ] }
+    ], null, src);
+
     let newSrc = src;
 
-    if (src && typeof src === 'string') {
+    if (!src) {
+        return src;
+    }
+
+    if (typeof src === 'string') {
         if (isUrl(src)) { return src; }
 
         const pwd = process.env.PWD;
@@ -32,14 +47,10 @@ const getPwd/* :: :GetPwd */ = (src) => {
         }
 
         newSrc = (src[0] !== '/') ? path.join(pwd, src) : src;
-    } else if (src && isArray(src)/* :: && Array.isArray(src) */) {
+    } else if (isArray(src)) {
         newSrc = src.map(val => getPwd(val));
     }
 
     return newSrc;
 };
-
-// ------------------------------------
-// Export
-
-export default { isUrl, getPwd };
+export { getPwd };

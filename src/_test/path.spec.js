@@ -2,7 +2,7 @@
 /* global describe it */
 
 import { expect } from 'chai';
-import utils from '../path.js';
+import { getPwd } from '../path.js';
 
 // --------------------------------
 // Functions
@@ -10,11 +10,11 @@ import utils from '../path.js';
 // --------------------------------
 // Suite of tests
 
-describe('node/path', () => {
+describe('path', () => {
     // getPwd
     describe('getPwd', () => {
         it('should get absolute path of string', () => {
-            const result = utils.getPwd('foo');
+            const result = getPwd('foo');
 
             expect(result).to.be.a('string');
             expect(result).to.contain('foo');
@@ -22,7 +22,7 @@ describe('node/path', () => {
         });
 
         it('should get absolute path of array', () => {
-            const result = utils.getPwd(['foo', '/bar']);
+            const result = getPwd(['foo', '/bar']);
 
             expect(result).to.be.an('array');
             expect(result).to.have.length(2);
@@ -32,7 +32,7 @@ describe('node/path', () => {
         });
 
         it('should return if already absolute', () => {
-            const result = utils.getPwd('/bar');
+            const result = getPwd('/bar');
 
             expect(result).to.be.a('string');
             expect(result).to.equal('/bar');
@@ -43,7 +43,7 @@ describe('node/path', () => {
             let result;
 
             urls.forEach((url) => {
-                result = utils.getPwd(url);
+                result = getPwd(url);
 
                 expect(result).to.be.a('string');
                 expect(result).to.equal(url);

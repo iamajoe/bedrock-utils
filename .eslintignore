@@ -6,6 +6,4 @@
 **/*.php
 **/.*
 node_modules
-vendor
-build/*
 dist/*

@@ -4,7 +4,8 @@ Module to modify and check paths. Only for node.
 
 ### Usage API
 ```js
-var path = require('bedrock-utils/src/path.js');
+const path = require('bedrock-utils/src/path.js');
+
 path.getPwd('./'); // Will return current PWD
 path.isUrl('http://google.com'); // Will return true
 ```

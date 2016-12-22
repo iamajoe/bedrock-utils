@@ -1,8 +1,8 @@
-/* @flow *//* :: import type {ReadFile} from "./_test/file.flow.js" */
 'use strict';
 
 import fs from 'fs';
 import path from 'path';
+import { validate } from './validate.js';
 
 // -----------------------------------------
 // Functions
@@ -13,12 +13,13 @@ import path from 'path';
  * @param  {string} dirname
  * @return {string}
  */
-const readFile/* :: :ReadFile */ = (pathSrc, dirname) => {
+const readFile = (pathSrc, dirname) => {
+    validate([
+        { title: 'pathSrc', type: 'string', minLength: 1, required: true },
+        { title: 'dirname', type: 'string', minLength: 1, required: false }
+    ], null, pathSrc, dirname);
+
     const filename = !!dirname ? path.join(dirname, pathSrc) : path.resolve(pathSrc);
     return !fs.existsSync(filename) ? '' : fs.readFileSync(filename, 'utf8');
 };
-
-// ------------------------------------
-// Export
-
-export default { readFile };
+export { readFile };

@@ -11,11 +11,9 @@
     "node": ">=6"
   },
   "scripts": {
-    "test": "npm run eslint-test && npm run mocha-test && npm run flow",
-    "flow": "flow check",
-    "flow-typed": "flow-typed install",
-    "mocha-test": "mocha ./test/test.js --compilers js:babel-core/register",
-    "eslint-test": "eslint ./src/**/*.js",
+    "test": "npm run eslint && npm run mocha",
+    "mocha": "mocha ./test/test.js --compilers js:babel-core/register",
+    "eslint": "eslint ./src/**/*.js",
     "build": "rm -rf dist/* && babel src --out-dir dist --source-maps inline --ignore *.spec.js"
   },
   "devDependencies": {
@@ -31,12 +29,11 @@
     "eslint": "^2.0.0",
     "eslint-config-defaults": "^9.0.0",
     "eslint-plugin-react": "^6.2.0",
-    "flow-bin": "^0.37.0",
-    "flow-typed": "^2.0.0",
     "glob": "^7.1.1",
     "mocha": "^3.2.0"
   },
   "dependencies": {
+    "ajv": "^4.10.0",
     "lodash": "^4.17.2"
   }
 }
