@@ -3,6 +3,8 @@
 Module to validate variables and check if all is as supposed. Uses [JSON Schema]() validation.
 The only modification is the `required` boolean that sets the type index as required.
 
+** Note: ** You shouldn't use this in production because it will slow down the performance speed. Use [validate.stub](src/validate.stub.js) instead.
+
 ### Usage API
 ```js
 import { validate } from 'bedrock-utils/src/validate.js';

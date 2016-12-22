@@ -1,7 +1,7 @@
 'use strict';
 
 // Stub exists to be imported when in production mode
-// Validation in runtime takes a hit at performance speeds
+// Validation in runtime will slow down performance speeds
 // And there is no need to run it in production
 
 // -----------------------------------------
