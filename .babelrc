@@ -1,4 +1,6 @@
 {
     "presets": ["es2015"],
-    "plugins": ["syntax-flow", "transform-flow-strip-types", "transform-flow-comments"]
+    "plugins": [
+        [ "discard-module-references", { "targets": ["validate", "./validate.js"] } ]
+    ]
 }
