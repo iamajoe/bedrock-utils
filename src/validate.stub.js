@@ -21,4 +21,4 @@ const validate = (items, fn, ...args) => typeof fn === 'function' && fn(...args)
 export { validate };
 
 // Just for tests... We will get rid of this on the build process
-export const testsFn = () => ({ validate });
+export const __test__ = { validate };
