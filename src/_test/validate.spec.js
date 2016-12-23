@@ -1,8 +1,11 @@
 'use strict';
-/* global describe it */
+/* global describe it before after beforeEach afterEach */
 
 import { expect } from 'chai';
-import { validate } from '../validate.js';
+import { __test__ as module } from '../validate.js';
+
+// --------------------------------
+// Variables
 
 // --------------------------------
 // Functions
@@ -15,7 +18,7 @@ describe('validate', () => {
     describe('validate', () => {
         it('should error without schema', (done) => {
             try {
-                validate(null, () => done('It should\'ve errored'), 'simple string');
+                module.validate(null, () => done('It should\'ve errored'), 'simple string');
             } catch (err) {
                 done();
             }
@@ -23,14 +26,14 @@ describe('validate', () => {
 
         it('should error without data', (done) => {
             try {
-                validate([{ title: 'without-data', type: 'string' }], () => done('It should\'ve errored'));
+                module.validate([{ title: 'without-data', type: 'string' }], () => done('It should\'ve errored'));
             } catch (err) {
                 done();
             }
         });
 
         it('should validate a simple string', (done) => {
-            validate([{ type: 'string' }], (str) => {
+            module.validate([{ type: 'string' }], (str) => {
                 expect(str).to.be.a('string');
                 expect(str).to.be.equal('simple string');
                 done();
@@ -38,19 +41,19 @@ describe('validate', () => {
         });
 
         it('should validate a simple string without function', () => {
-            validate([{ type: 'string' }], null, 'simple string');
+            module.validate([{ type: 'string' }], null, 'simple string');
         });
 
         it('should error with a number as string', (done) => {
             try {
-                validate([{ type: 'string' }], () => done('It should\'ve errored'), 1);
+                module.validate([{ type: 'string' }], () => done('It should\'ve errored'), 1);
             } catch (err) {
                 done();
             }
         });
 
         it('should validate two in the arguments', (done) => {
-            validate([
+            module.validate([
                 { type: 'string' },
                 { type: 'number' }
             ], (str, num) => {
@@ -63,7 +66,7 @@ describe('validate', () => {
         });
 
         it('should validate one required argument', (done) => {
-            validate([
+            module.validate([
                 { type: 'string', required: true },
                 { type: 'number', required: false }
             ], (str) => {

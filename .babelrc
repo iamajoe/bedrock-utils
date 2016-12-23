@@ -1,6 +1,18 @@
 {
     "presets": ["es2015"],
-    "plugins": [
-        [ "discard-module-references", { "targets": ["validate", "./validate.js"] } ]
-    ]
+    "plugins": [],
+    "env": {
+        "test": {
+            "plugins": []
+        },
+        "dev": {
+            "plugins": []
+        },
+        "production": {
+            "plugins": [
+                ["discard-module-references", { "targets": ["validate", "./validate.js"] }],
+                "babel-strip-test-code"
+            ]
+        }
+    }
 }

@@ -1,8 +1,11 @@
 'use strict';
-/* global describe it */
+/* global describe it before after beforeEach afterEach */
 
 import { expect } from 'chai';
-import { readFile } from '../file.js';
+import { __test__ as module } from '../file.js';
+
+// --------------------------------
+// Variables
 
 const config = './data/config.json';
 
@@ -16,7 +19,7 @@ describe('file', () => {
     // readFile
     describe('readFile', () => {
         it('should load file', () => {
-            let result = readFile(config, __dirname);
+            let result = module.readFile(config, __dirname);
 
             expect(result).to.be.a('string');
 
@@ -27,7 +30,7 @@ describe('file', () => {
         });
 
         it.skip('should load file without dirname', () => {
-            let result = readFile(config);
+            let result = module.readFile(config);
 
             expect(result).to.be.a('string');
 
@@ -38,7 +41,7 @@ describe('file', () => {
         });
 
         it('should be false if file doesn\'t exit', () => {
-            const result = readFile('/bar');
+            const result = module.readFile('/bar');
 
             expect(result).to.be.a('string');
             expect(result).to.equal('');

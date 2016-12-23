@@ -1,8 +1,11 @@
 'use strict';
-/* global describe it */
+/* global describe it before after beforeEach afterEach */
 
 import { expect } from 'chai';
-import { getPwd } from '../path.js';
+import { __test__ as module } from '../path.js';
+
+// --------------------------------
+// Variables
 
 // --------------------------------
 // Functions
@@ -14,7 +17,7 @@ describe('path', () => {
     // getPwd
     describe('getPwd', () => {
         it('should get absolute path of string', () => {
-            const result = getPwd('foo');
+            const result = module.getPwd('foo');
 
             expect(result).to.be.a('string');
             expect(result).to.contain('foo');
@@ -22,7 +25,7 @@ describe('path', () => {
         });
 
         it('should get absolute path of array', () => {
-            const result = getPwd(['foo', '/bar']);
+            const result = module.getPwd(['foo', '/bar']);
 
             expect(result).to.be.an('array');
             expect(result).to.have.length(2);
@@ -32,7 +35,7 @@ describe('path', () => {
         });
 
         it('should return if already absolute', () => {
-            const result = getPwd('/bar');
+            const result = module.getPwd('/bar');
 
             expect(result).to.be.a('string');
             expect(result).to.equal('/bar');
@@ -43,7 +46,7 @@ describe('path', () => {
             let result;
 
             urls.forEach((url) => {
-                result = getPwd(url);
+                result = module.getPwd(url);
 
                 expect(result).to.be.a('string');
                 expect(result).to.equal(url);

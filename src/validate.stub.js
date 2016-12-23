@@ -14,4 +14,11 @@
  * @return {string}
  */
 const validate = (items, fn, ...args) => typeof fn === 'function' && fn(...args);
+
+// -----------------------------------------
+// Export
+
 export { validate };
+
+// Just for tests... We will get rid of this on the build process
+export const testsFn = () => ({ validate });

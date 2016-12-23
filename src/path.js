@@ -17,7 +17,6 @@ const isUrl = (url) => {
     validate([{ title: 'url', type: 'string' }], null, url);
     return !!(/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(url));
 };
-export { isUrl };
 
 /**
  * Gets pwd path
@@ -53,4 +52,12 @@ const getPwd = (src) => {
 
     return newSrc;
 };
+
+// -----------------------------------------
+// Export
+
 export { getPwd };
+export { isUrl };
+
+// Just for tests... We will get rid of this on the build process
+export const __test__ = { getPwd, isUrl };

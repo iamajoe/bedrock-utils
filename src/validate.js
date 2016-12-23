@@ -94,4 +94,11 @@ const validate = (items, fn, ...args) => {
     // Lets run the function now or just return the data
     return typeof fn === 'function' && fn(...args);
 };
+
+// -----------------------------------------
+// Export
+
 export { validate };
+
+// Just for tests... We will get rid of this on the build process
+export const __test__ = { _validate, validate };

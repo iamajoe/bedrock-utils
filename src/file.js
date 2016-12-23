@@ -22,4 +22,11 @@ const readFile = (pathSrc, dirname) => {
     const filename = !!dirname ? path.join(dirname, pathSrc) : path.resolve(pathSrc);
     return !fs.existsSync(filename) ? '' : fs.readFileSync(filename, 'utf8');
 };
+
+// -----------------------------------------
+// Export
+
 export { readFile };
+
+// Just for tests... We will get rid of this on the build process
+export const __test__ = { readFile };
