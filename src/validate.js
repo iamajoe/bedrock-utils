@@ -1,31 +1,56 @@
 'use strict';
 
 import Ajv from 'ajv';
-import cloneDeep from 'lodash/cloneDeep.js';
+import isArray from 'lodash/isArray.js';
+import clone from 'lodash/clone.js';
+import merge from 'lodash/merge.js';
+
+const DEFAULT_SCHEMA = {
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    title: 'Validation data',
+    type: 'object',
+    additionalItems: false
+};
 
 // -----------------------------------------
 // Functions
 
 /**
+ * Validates schema
+ *
+ * @param {object} schema
+ * @param {array} args
+ * @returns {object}
+ */
+const _validateSchema = (schema, args) => {
+    const enforcedSchema = merge(clone(DEFAULT_SCHEMA), schema);
+
+    // Lets parse arguments
+    const argsObj = {};
+    for (let i = 0; i < args.length; i += 1) {
+        argsObj[`${i}`] = args[i];
+    }
+
+    // Finally check the results
+    const ajv = new Ajv({ allErrors: true });
+    const valid = ajv.validate(enforcedSchema, argsObj);
+
+    // Check for errors
+    return !valid && ajv.errors;
+};
+
+/**
  * Validates function arguments in private
  * @param  {array} items
- * @param  {array} args
- * @return {string}
+ * @return {object}
  */
-const _validate = (items, args) => {
-    // TODO: Should check for dev env vars and remove all this and the lib from import
-    const schema = {
-        $schema: 'http://json-schema.org/draft-04/schema#',
-        title: 'Validation data',
-        type: 'object',
-        properties: {},
-        additionalItems: false
-    };
+const _getSchema = (items) => {
+    const schema = { properties: {} };
     const required = [];
 
     // Lets parse all items
     for (let i = 0; i < items.length; i += 1) {
-        const item = cloneDeep(items[i]);
+        const item = items[i];
 
         // Lets cache required. Not json schema valid
         item.required && required.push(`${i}`);
@@ -40,18 +65,8 @@ const _validate = (items, args) => {
     // Check if there are requireds
     if (required.length) { schema.required = required; }
 
-    // Lets parse arguments
-    const argsObj = {};
-    for (let i = 0; i < args.length; i += 1) {
-        argsObj[`${i}`] = args[i];
-    }
-
-    // Finally check the results
-    const ajv = new Ajv({ allErrors: true });
-    const valid = ajv.validate(schema, argsObj);
-
     // Check for errors
-    return !valid && ajv.errors;
+    return schema;
 };
 
 /**
@@ -62,11 +77,18 @@ const _validate = (items, args) => {
  * @return {string}
  */
 const validate = (items, fn, ...args) => {
+    let isntValid;
+
     // Check if this function has the right values
-    let isntValid = _validate([
-        { title: 'items', type: 'array', items: { type: 'object' }, minItems: 1, required: true },
-        { title: 'args', type: 'array', minItems: 1, required: true }
-    ], [items, args]);
+    // It doesn't use the validate schema because it
+    // takes a speed toll without an actual need for
+    if (typeof items !== 'object') {
+        isntValid = 'Items should be an array with schema items or a schema object';
+    } else if (isArray(items) && !items.length) {
+        isntValid = 'Items should have more than 0 items';
+    } else if (!isArray(args) || !args.length) {
+        isntValid = 'Arguments should be and array and have more than 0 items';
+    }
 
     // This function isn't valid
     if (isntValid) {
@@ -80,7 +102,9 @@ const validate = (items, fn, ...args) => {
     }
 
     // Lets check the real one now
-    isntValid = _validate(items, args);
+    const hasSchema = !items.hasOwnProperty('length') || !items.length;
+    const schema = hasSchema ? items : _getSchema(items);
+    isntValid = _validateSchema(schema, args);
     if (isntValid) {
         /* eslint-disable no-throw-literal */
         throw {
@@ -101,4 +125,4 @@ const validate = (items, fn, ...args) => {
 export { validate };
 
 // Just for tests... We will get rid of this on the build process
-export const __test__ = { _validate, validate };
+export const __test__ = { _validateSchema, _getSchema, validate };

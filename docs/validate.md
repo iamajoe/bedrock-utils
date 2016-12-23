@@ -39,4 +39,20 @@ try {
 } catch (err) {
     // There is no error
 }
+
+// You can also pass a full compliant schema instead of passing an array of the items
+try {    
+    validate({
+        $schema: 'http://json-schema.org/draft-04/schema#',
+        title: 'Validation data',
+        type: 'object',
+        additionalItems: false,
+        properties: {
+            '0': { title: 'bool', type: 'boolean' }
+        },
+        required: ['0']
+    }, null, bool);
+} catch (err) {
+    // There is no error
+}
 ```

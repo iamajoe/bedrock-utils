@@ -52,6 +52,14 @@ describe('validate', () => {
             }
         });
 
+        it('should error with a string as object', (done) => {
+            try {
+                module.validate([{ type: 'object' }], () => done('It should\'ve errored'), 'simple string');
+            } catch (err) {
+                done();
+            }
+        });
+
         it('should validate two in the arguments', (done) => {
             module.validate([
                 { type: 'string' },
@@ -70,6 +78,26 @@ describe('validate', () => {
                 { type: 'string', required: true },
                 { type: 'number', required: false }
             ], (str) => {
+                expect(str).to.be.a('string');
+                expect(str).to.be.equal('simple string');
+                done();
+            }, 'simple string');
+        });
+
+        it('should validate one required argument with a full schema object', (done) => {
+            module.validate({
+                $schema: 'http://json-schema.org/draft-04/schema#',
+                title: 'Validation data',
+                type: 'object',
+                additionalItems: false,
+                properties: {
+                    /* eslint-disable quote-props */
+                    '0': { type: 'string' },
+                    '1': { type: 'number' }
+                    /* eslint-enable quote-props */
+                },
+                required: ['0']
+            }, (str) => {
                 expect(str).to.be.a('string');
                 expect(str).to.be.equal('simple string');
                 done();
