@@ -27,7 +27,7 @@ If you want to get rid of it in production you can use [validate.stub](../src/va
 Or even better, use something like [babel-plugin-discard-module-references](https://github.com/ArnaudRinquin/babel-plugin-discard-module-references) and remove the module completely.
 The [dist](../dist) already has this module removed from being imported.
 
-Besides that, the [ajv](https://github.com/epoberezkin/ajv) lib used for the actual validation has a steep file size (`123kb`) if included entirely. This is a possible issue when working in a browser. For now... I have two possible solutions for this.
+Besides that, the [ajv](https://github.com/epoberezkin/ajv) lib used for the actual validation has a steep file size (`123kb` minified) if included entirely. This is a possible issue when working in a browser. For now... I have two possible solutions for this.
 - You could use [babel-plugin-discard-module-references](https://github.com/ArnaudRinquin/babel-plugin-discard-module-references) to discard modules like `./async`, `./keyword`, `./cache` and `./v5`
 - You could `defer` the load of the `ajv` and then set it on the window as a global (when calling `validate()` a verification needs to be done though). This way the application will load, the application will be ready to navigate and the validation lib may be loaded underneath.
 
