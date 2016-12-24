@@ -14,6 +14,16 @@ import { __test__ as module } from '../validate.js';
 // Suite of tests
 
 describe('validate', () => {
+    // getSchema
+    describe('getSchema', () => {
+        it.skip('should be tested', () => {});
+    });
+
+    // compileSchema
+    describe('compileSchema', () => {
+        it.skip('should be tested', () => {});
+    });
+
     // validate
     describe('validate', () => {
         it('should error without schema', (done) => {

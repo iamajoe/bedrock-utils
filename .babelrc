@@ -10,7 +10,9 @@
         },
         "production": {
             "plugins": [
-                ["discard-module-references", { "targets": ["validate", "./validate.js"] }],
+                ["discard-module-references", {
+                    "targets": ["validate", "./validate.js"]
+                }],
                 "babel-strip-test-code"
             ]
         }

@@ -5,9 +5,30 @@ The only modification is the `required` boolean that sets the type index as requ
 
 **Note**
 
-You shouldn't use this in production because it will slow down the speed of your application. Use [validate.stub](../src/validate.stub.js) instead as a stub for the import of the module.
+You should be careful using this in production because it may slow down the speed of your application.
+
+My speed tests per single function call:
+- `readFile` from [file.js](../src/file.js) -> around `40-50ms`
+- `getPwd` from [path.js](../src/path.js) -> around `2-3ms`
+- Test below, around `30-40ms`
+    ```js
+    validate([
+        { type: 'string', minLength: 1, required: true },
+        { type: 'string', minLength: 1, required: false },
+        { type: 'string', minLength: 1, required: true },
+        { type: 'string', minLength: 1, required: false },
+        { type: 'string', minLength: 1, required: true },
+        { type: 'string', minLength: 1, required: false }
+    ], null, '1', 'foo', 'small text', 'reallly long text. a lorem ipsum would be better', 'bar', 'what to right now?');
+    ```
+
+If you want to get rid of it in production you can use [validate.stub](../src/validate.stub.js) instead as a stub for the import of the module using for example [babel-plugin-module-resolver](https://github.com/tleunen/babel-plugin-module-resolver).
 Or even better, use something like [babel-plugin-discard-module-references](https://github.com/ArnaudRinquin/babel-plugin-discard-module-references) and remove the module completely.
 The [dist](../dist) already has this module removed from being imported.
+
+Besides that, the [ajv](https://github.com/epoberezkin/ajv) lib used for the actual validation has a steep file size (`123kb`) if included entirely. This is a possible issue when working in a browser. For now... I have two possible solutions for this.
+- You could use [babel-plugin-discard-module-references](https://github.com/ArnaudRinquin/babel-plugin-discard-module-references) to discard modules like `./async`, `./keyword`, `./cache` and `./v5`
+- You could `defer` the load of the `ajv` and then set it on the window as a global (when calling `validate()` a verification needs to be done though). This way the application will load, the application will be ready to navigate and the validation lib may be loaded underneath.
 
 ### Usage API
 ```js
@@ -54,5 +75,32 @@ try {
     }, null, bool);
 } catch (err) {
     // There is no error
+}
+```
+
+#### Usage of cached variables
+
+You may want to cache schema compilations for better performance also.
+
+```js
+import { compileSchema, getSchema } from 'bedrock-utils/src/validate.js';
+
+const items = [{ title: 'bool', type: 'boolean', required: true }];
+const validate = compileSchema(getSchema(items));
+
+const bool = true;
+
+// There won't be an error in this case
+try {
+    validate([bool]);
+
+    try {
+        bool = 'string';
+        validate([bool]);
+    } catch (err) {
+        // It will error now
+    }
+} catch (err) {
+    // No error to show
 }
 ```
