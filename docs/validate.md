@@ -11,6 +11,7 @@ My speed tests per single function call:
 - `readFile` from [file.js](../src/file.js) -> around `40-50ms`
 - `getPwd` from [path.js](../src/path.js) -> around `2-3ms`
 - Test below, around `30-40ms`
+
     ```js
     validate([
         { type: 'string', minLength: 1, required: true },
