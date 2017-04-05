@@ -1,3 +1,7 @@
+# NOTE: Deprecated
+
+==========
+
 # Bedrock: Utils
 
 Utils to use on the frontend and node.
